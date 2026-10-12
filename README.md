@@ -34,10 +34,10 @@ RO is the default language; the RO/EN toggle sits in the nav (`src/i18n.tsx` hol
 
 ## Placeholders to confirm
 
-- Contact email `hello@exedria.ro` (`src/components/Contact.tsx`).
+- Contact email `hello@exedria.tech` (`src/components/Contact.tsx`).
 - Process claims: fixed-price proposals, week ranges, preview link per iteration (`src/i18n.tsx`).
 - Marina Park copy describes it as Exedria work; scene timings were read off the video.
-- The contact form posts to `api/contact.ts` (Vercel Function), which emails the brief to hello@exedria.ro via Resend. Needs `RESEND_API_KEY` in Vercel and a verified exedria.ro sender (see `.env.example`). `npm run dev` does not serve `/api`; use `vercel dev` to test it locally.
+- The contact form posts to `api/contact.ts` (Vercel Function), which emails the brief to hello@exedria.tech via Resend. Needs `RESEND_API_KEY` in Vercel and a verified exedria.tech sender (see `.env.example`). `npm run dev` does not serve `/api`; use `vercel dev` to test it locally.
 
 ## Media
 

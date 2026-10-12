@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ro, useT } from '../i18n';
 import { Label, Reveal, cx } from './ui';
 
-export const EMAIL = 'hello@exedria.ro';
+export const EMAIL = 'hello@exedria.tech';
 const RENDER_FRAMES = 48;
 
 type ContactResult = { success: true; id: string } | { success: false; error: string };

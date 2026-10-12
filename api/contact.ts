@@ -1,14 +1,14 @@
 // Vercel Function: POST /api/contact
-// Validates the brief from the contact form and sends it to hello@exedria.ro via Resend.
-// Needs RESEND_API_KEY (and optionally RESEND_FROM) in the Vercel project env.
+// Validates the brief from the contact form and sends it to CONTACT_TO (default hello@exedria.tech) via Resend.
+// Needs RESEND_API_KEY (and optionally RESEND_FROM, CONTACT_TO) in the Vercel project env.
 import { Resend } from 'resend';
 import { z } from 'zod';
 
 const SERVICII = ['Video promo', 'Site', 'Rezervări', 'Software', 'Suport'] as const;
 const TERMENE = ['Urgent', 'O lună', 'Flexibil'] as const;
 
-const TO = 'hello@exedria.ro';
-const FROM = process.env.RESEND_FROM ?? 'Exedria Brief <brief@exedria.ro>';
+const TO = process.env.CONTACT_TO ?? 'hello@exedria.tech';
+const FROM = process.env.RESEND_FROM ?? 'Exedria Brief <brief@exedria.tech>';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9\s().-]{7,20}$/;
@@ -111,7 +111,7 @@ function renderHtml(d: Brief) {
   <table role="presentation" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d5dce6;border-collapse:collapse;">
     <tr>
       <td colspan="2" style="padding:14px;background:#0b1220;color:#f5f7fa;font:12px ${mono};letter-spacing:.08em;">
-        <span style="color:#e0179e;">●</span> BRIEF NOU · exedria.ro
+        <span style="color:#e0179e;">●</span> BRIEF NOU · exedria.tech
         <span style="float:right;color:#94a3b8;">[${esc(timecode(new Date()))}]</span>
       </td>
     </tr>
