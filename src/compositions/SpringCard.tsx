@@ -56,8 +56,6 @@ export function SpringCard({ damping, mass, stiffness, business, offer, kicker }
         color: '#0b1220',
       }}
     >
-      {/* title-safe guide */}
-      <div style={{ position: 'absolute', inset: '5%', border: '1px dashed rgba(11,18,32,0.16)' }} />
 
       {/* Card */}
       <div
@@ -132,15 +130,6 @@ export function SpringCard({ damping, mass, stiffness, business, offer, kicker }
         ))}
         <line x1={gx(frame)} x2={gx(frame)} y1={graph.y} y2={graph.y + graph.h} stroke="#e0179e" strokeWidth={1} />
         <rect x={gx(frame) - u * 0.9} y={gy(samples[frame] ?? 1) - u * 0.9} width={u * 1.8} height={u * 1.8} fill="#e0179e" />
-        <text
-          x={graph.x}
-          y={graph.y - u * 2}
-          fill="#4a5664"
-          fontFamily='"Geist Mono Variable", monospace'
-          fontSize={u * 2.4}
-        >
-          spring() = {(samples[frame] ?? 1).toFixed(3)} · f {frame}
-        </text>
       </svg>
     </AbsoluteFill>
   );

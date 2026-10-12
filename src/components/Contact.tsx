@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useT } from '../i18n';
-import { Corners, Label, Reveal, Segmented, cx } from './ui';
+import { Label, Reveal, cx } from './ui';
 
 export const EMAIL = 'hello@exedria.ro';
 const RENDER_FRAMES = 48;
@@ -10,15 +10,9 @@ export function Contact() {
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
   const [needs, setNeeds] = useState<number[]>([0]);
-  const [timeline, setTimeline] = useState(t.contact.timelineOptions[2]);
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done'>('idle');
   const [frame, setFrame] = useState(0);
-
-  // keep segmented value valid when the language flips
-  useEffect(() => {
-    if (!t.contact.timelineOptions.includes(timeline)) setTimeline(t.contact.timelineOptions[2]);
-  }, [t, timeline]);
 
   const toggleNeed = (i: number) => setNeeds((n) => (n.includes(i) ? n.filter((x) => x !== i) : [...n, i]));
 
@@ -38,7 +32,6 @@ export function Contact() {
           `${t.contact.name}: ${name}`,
           `${t.contact.email}: ${reach}`,
           `${t.contact.needs}: ${needs.map((i) => t.contact.needOptions[i]).join(', ')}`,
-          `${t.contact.timeline}: ${timeline}`,
           '',
           message,
         ].join('\n');
@@ -71,7 +64,6 @@ export function Contact() {
 
         <Reveal delay={120} className="lg:col-span-7">
           <form onSubmit={submit} className="relative rounded-[3px] border border-line bg-panel p-5 sm:p-7">
-            <Corners className="text-fg/30" size={10} />
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label={t.contact.name}>
                 <input required value={name} onChange={(e) => setName(e.target.value)} className={field} autoComplete="name" />
@@ -104,10 +96,6 @@ export function Contact() {
               </div>
             </Field>
 
-            <Field label={t.contact.timeline} className="mt-5">
-              <Segmented options={t.contact.timelineOptions} value={timeline} onChange={setTimeline} ariaLabel={t.contact.timeline} />
-            </Field>
-
             <Field label={t.contact.message} className="mt-5">
               <textarea
                 rows={4}
@@ -130,13 +118,13 @@ export function Contact() {
                 <span className="relative flex items-center justify-between gap-6">
                   <span>{phase === 'rendering' ? `${t.contact.sending}…` : t.contact.submit}</span>
                   <span className="font-mono text-[11.5px] tabular-nums">
-                    {phase === 'idle' ? '→' : `${String(frame).padStart(2, '0')}/${RENDER_FRAMES}`}
+                    {phase === 'idle' ? '→' : `${Math.round((frame / RENDER_FRAMES) * 100)}%`}
                   </span>
                 </span>
               </button>
               {phase === 'done' && (
                 <span className="fade-up font-mono text-[11.5px] text-phosphor">
-                  ✓ {'{ status: "queued" }'} <span className="text-dim">{t.contact.done}</span> <span className="select-all text-fg">{EMAIL}</span>
+                  ✓ <span className="text-dim">{t.contact.done}</span> <span className="select-all text-fg">{EMAIL}</span>
                 </span>
               )}
             </div>

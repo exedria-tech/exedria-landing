@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import wave from '../data/marina-wave.json';
 import { MARINA, SCENES } from '../data/marina';
 import { useT } from '../i18n';
-import { Corners, Label, Reveal, cx, timecode } from './ui';
+import { Label, Reveal, cx } from './ui';
 
 const D = MARINA.duration;
 const pct = (s: number) => `${(s / D) * 100}%`;
@@ -50,7 +49,6 @@ export function Work() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const { time, playing } = useVideoClock(videoRef);
   const [muted, setMuted] = useState(true);
-  const [selected, setSelected] = useState<number | null>(null);
   const [hoverT, setHoverT] = useState<number | null>(null);
   const scrubRef = useRef<HTMLDivElement>(null);
   const dragging = useRef(false);
@@ -82,9 +80,7 @@ export function Work() {
   };
 
   const currentScene = SCENES.findIndex((s) => time >= s.from && time < s.to);
-  const shownScene = selected ?? currentScene;
   const progress = time / D;
-  const frame = Math.round(time * MARINA.fps);
 
   const toggle = () => {
     const v = videoRef.current;
@@ -95,21 +91,7 @@ export function Work() {
 
   return (
     <section id="work" className="relative border-t border-line py-24 md:py-32">
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <Reveal className="lg:col-span-7">
-            <Label>{t.work.label}</Label>
-            <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.16em] text-sky-ink">{t.work.client}</p>
-            <h2 className="mt-3 max-w-[16ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
-              {t.work.title}
-            </h2>
-          </Reveal>
-          <Reveal delay={120} className="flex flex-col justify-end lg:col-span-5">
-            <p className="text-[16.5px] leading-[1.6] text-dim">{t.work.body}</p>
-          </Reveal>
-        </div>
-
-        <div ref={wrapRef} className="mt-14 grid gap-6 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:gap-8">
+      <div ref={wrapRef} className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-8 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:gap-16">
           {/* Viewer */}
           <Reveal>
             <div className="relative mx-auto max-w-[400px]">
@@ -125,9 +107,6 @@ export function Work() {
                   onClick={toggle}
                   className="h-full w-full cursor-pointer object-cover"
                 />
-                <div className="pointer-events-none absolute left-3 top-3 rounded-[2px] bg-paper/85 px-2 py-1 font-mono text-[10.5px] tabular-nums text-fg">
-                  {timecode(frame, MARINA.fps)}
-                </div>
                 {!playing && (
                   <button
                     onClick={toggle}
@@ -142,7 +121,6 @@ export function Work() {
                   </button>
                 )}
               </div>
-              <Corners className="text-fg/40" size={10} />
 
               {/* Scrub bar with scene segments and hover thumbnail */}
               <div className="mt-3 flex items-center gap-2">
@@ -208,9 +186,6 @@ export function Work() {
                             }}
                           />
                         </div>
-                        <div className="px-1.5 py-1 text-center font-mono text-[9.5px] tabular-nums text-dim">
-                          {timecode(hoverT * MARINA.fps, MARINA.fps)}
-                        </div>
                       </div>
                     </div>
                   )}
@@ -228,135 +203,50 @@ export function Work() {
             </div>
           </Reveal>
 
-          {/* Track view */}
-          <Reveal delay={120} className="min-w-0">
-            <div className="relative rounded-[3px] border border-line bg-panel">
-              <div className="flex items-center justify-between border-b border-line px-4 py-3 font-mono text-[11px]">
-                <span className="uppercase tracking-[0.16em] text-dim">{t.work.tracks} · marina-park.tsx</span>
-                <span className="tabular-nums text-fg">{timecode(frame, MARINA.fps)}</span>
-              </div>
+          <Reveal delay={120} className="flex min-w-0 flex-col justify-center">
+            <Label>{t.work.label}</Label>
+            <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.16em] text-sky-ink">{t.work.client}</p>
+            <h2 className="mt-3 max-w-[16ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
+              {t.work.title}
+            </h2>
+            <p className="mt-5 max-w-[44ch] text-[16.5px] leading-[1.6] text-dim">{t.work.body}</p>
 
-              <div className="grid grid-cols-[64px_minmax(0,1fr)] sm:grid-cols-[84px_minmax(0,1fr)]">
-                {/* ruler */}
-                <div className="border-b border-r border-line" />
-                <div
-                  className="relative h-8 cursor-ew-resize border-b border-line"
-                  onPointerDown={(e) => seek(timeAt(e.clientX, e.currentTarget))}
-                >
-                  {Array.from({ length: D + 1 }, (_, s) => (
+            {/* Scenes: one thumbnail each, the playing one lifts */}
+            <div className="mt-10 grid grid-cols-8 gap-1.5 sm:gap-2.5">
+              {SCENES.map((sc, i) => {
+                const on = i === currentScene;
+                const k = Math.min(MARINA.stripFrames - 1, Math.floor(sc.from) + 1);
+                return (
+                  <button
+                    key={i}
+                    onClick={() => {
+                      seek(sc.from + 0.02);
+                      videoRef.current?.play().catch(() => {});
+                    }}
+                    aria-label={t.scenes[i].name}
+                    className={cx(
+                      'relative aspect-[9/16] overflow-hidden rounded-[2px] border transition-[transform,border-color] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1',
+                      on ? '-translate-y-2 border-sky' : 'border-line-strong',
+                    )}
+                    style={{
+                      backgroundImage: `url(${MARINA.strip})`,
+                      backgroundSize: `${MARINA.stripFrames * 100}% 100%`,
+                      backgroundPosition: `${(k / (MARINA.stripFrames - 1)) * 100}% 0`,
+                    }}
+                  >
                     <span
-                      key={s}
-                      className={cx('absolute bottom-0 w-px', s % 5 === 0 ? 'h-3 bg-line-strong' : 'h-1.5 bg-line')}
-                      style={{ left: pct(s) }}
+                      className="absolute inset-x-0 bottom-0 h-[3px] origin-left bg-sky"
+                      style={{ transform: `scaleX(${on ? Math.min(1, (time - sc.from) / (sc.to - sc.from)) : 0})` }}
                     />
-                  ))}
-                  {Array.from({ length: D / 5 }, (_, i) => (
-                    <span key={i} className="absolute top-1.5 ml-1 font-mono text-[9.5px] text-faint" style={{ left: pct(i * 5) }}>
-                      {i * 5}s
-                    </span>
-                  ))}
-                </div>
-
-                {/* V1 scenes */}
-                <TrackLabel name="V1" sub={t.work.scenes} />
-                <div className="relative h-[76px] border-b border-line">
-                  {SCENES.map((s, i) => {
-                    const active = i === shownScene;
-                    return (
-                      <button
-                        key={i}
-                        onClick={() => {
-                          setSelected(i);
-                          seek(s.from + 0.02);
-                        }}
-                        className={cx(
-                          'group absolute inset-y-2 overflow-hidden rounded-[2px] border text-left transition-transform duration-300 ease-[var(--ease-spring)] active:scale-y-90',
-                          active ? 'border-sky bg-sky/10' : 'border-line-strong bg-raised hover:border-sky/50',
-                        )}
-                        style={{ left: `calc(${pct(s.from)} + 1px)`, width: `calc(${pct(s.to - s.from)} - 2px)` }}
-                      >
-                        {/* filmstrip: thumbnails from the sprite */}
-                        <span className="absolute inset-0 flex opacity-40 transition-opacity duration-300 group-hover:opacity-70">
-                          {Array.from({ length: Math.max(1, Math.round(s.to - s.from)) }, (_, k) => (
-                            <span key={k} className="relative h-full min-w-0 flex-1 overflow-hidden">
-                              <img
-                                src={MARINA.strip}
-                                alt=""
-                                className="absolute top-1/2 h-[120px] max-w-none -translate-y-1/2"
-                                style={{ width: 67.5 * MARINA.stripFrames, left: -Math.min(39, Math.floor(s.from) + k) * 67.5 }}
-                              />
-                            </span>
-                          ))}
-                        </span>
-                        <span className="relative block truncate bg-paper/70 px-1.5 py-1 font-mono text-[10px] text-fg">
-                          {t.scenes[i].name}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* A1 waveform */}
-                <TrackLabel name="A1" sub={t.work.audio} />
-                <div className="relative flex h-14 items-center gap-px px-px">
-                  {(wave as number[]).map((v, i) => {
-                    const passed = i / wave.length < progress;
-                    return (
-                      <span
-                        key={i}
-                        className={cx('min-w-0 flex-1 rounded-[1px]', passed ? 'bg-magenta/90' : 'bg-magenta/30')}
-                        style={{ height: `${Math.max(6, v * 92)}%` }}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* shared playhead across tracks */}
-              <div className="pointer-events-none absolute bottom-0 left-[64px] right-0 top-[45px] sm:left-[84px]">
-                <div className="absolute inset-0" style={{ transform: `translateX(${progress * 100}%)` }}>
-                  <span className="absolute inset-y-0 left-0 w-px bg-sky shadow-[0_0_10px_rgb(34_174_245/0.6)]" />
-                  <span className="absolute -top-px left-0 size-[9px] -translate-x-1/2 bg-sky [clip-path:polygon(0_0,100%_0,100%_55%,50%_100%,0_55%)]" />
-                </div>
-              </div>
+                  </button>
+                );
+              })}
             </div>
-
-            {/* Scene detail */}
-            {shownScene >= 0 && (
-              <div key={shownScene} className="fade-up mt-4 grid gap-4 rounded-[3px] border border-line bg-panel p-5 sm:grid-cols-[1fr_auto]">
-                <div>
-                  <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
-                    {timecode(SCENES[shownScene].from * MARINA.fps, MARINA.fps)} → {timecode(SCENES[shownScene].to * MARINA.fps, MARINA.fps)}
-                  </div>
-                  <h3 className="mt-2 text-[22px] font-medium tracking-[-0.02em]">{t.scenes[shownScene].name}</h3>
-                  <p className="mt-1.5 text-[15px] leading-[1.55] text-dim">{t.scenes[shownScene].note}</p>
-                </div>
-                <pre className="self-end overflow-x-auto rounded-[2px] border border-line bg-paper px-4 py-3 font-mono text-[12px] leading-[1.6] text-dim">
-                  <span className="text-sky-ink">{'<Sequence'}</span> <span className="text-fg">from</span>={'{'}
-                  <span className="text-magenta">{Math.round(SCENES[shownScene].from * MARINA.fps)}</span>
-                  {'}'} <span className="text-fg">durationInFrames</span>={'{'}
-                  <span className="text-magenta">{Math.round((SCENES[shownScene].to - SCENES[shownScene].from) * MARINA.fps)}</span>
-                  {'}'}
-                  <span className="text-sky-ink">{'>'}</span>
-                  {'\n  '}
-                  <span className="text-fg">{`<${SCENES[shownScene].component} />`}</span>
-                  {'\n'}
-                  <span className="text-sky-ink">{'</Sequence>'}</span>
-                </pre>
-              </div>
-            )}
+            <p key={currentScene} className="fade-up mt-4 text-[15px] text-dim">
+              <span className="font-medium text-fg">{t.scenes[Math.max(0, currentScene)].name}</span>
+            </p>
           </Reveal>
-        </div>
       </div>
     </section>
-  );
-}
-
-function TrackLabel({ name, sub }: { name: string; sub: string }) {
-  return (
-    <div className="flex flex-col justify-center border-b border-r border-line px-2.5 font-mono sm:px-3">
-      <span className="text-[11px] text-fg">{name}</span>
-      <span className="truncate text-[9.5px] uppercase tracking-[0.12em] text-faint">{sub}</span>
-    </div>
   );
 }

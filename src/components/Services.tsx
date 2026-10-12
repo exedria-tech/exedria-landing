@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { MARINA } from '../data/marina';
 import { useT } from '../i18n';
-import { Chip, Corners, Label, Reveal, cx, timecode } from './ui';
+import { Corners, Label, Reveal, cx } from './ui';
 
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
@@ -11,24 +11,19 @@ export function Services() {
   return (
     <section id="services" className="relative border-t border-line py-24 md:py-32">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <Reveal className="lg:col-span-7">
-            <Label>{t.services.label}</Label>
-            <h2 className="mt-6 max-w-[18ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
-              {t.services.title}
-            </h2>
-          </Reveal>
-          <Reveal delay={120} className="flex items-end lg:col-span-5">
-            <p className="text-[16.5px] leading-[1.6] text-dim">{t.services.body}</p>
-          </Reveal>
-        </div>
+        <Reveal>
+          <Label>{t.services.label}</Label>
+          <h2 className="mt-6 max-w-[18ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
+            {t.services.title}
+          </h2>
+        </Reveal>
 
         <div className="mt-14 grid border-l border-t border-line md:grid-cols-2">
           {t.services.items.map((s, i) => {
             const Preview = previews[i];
             return (
               <Reveal key={i} delay={(i % 2) * 100} className="border-b border-r border-line">
-                <Card>{(state) => <Preview {...state} title={s.title} body={s.body} tags={s.tags} />}</Card>
+                <Card>{(state) => <Preview {...state} title={s.title} body={s.body} />}</Card>
               </Reveal>
             );
           })}
@@ -39,7 +34,7 @@ export function Services() {
 }
 
 type PreviewState = { active: boolean; px: number };
-type CardContent = { title: string; body: string; tags: string[] };
+type CardContent = { title: string; body: string };
 
 function Card({ children }: { children: (s: PreviewState) => React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -70,16 +65,11 @@ function Card({ children }: { children: (s: PreviewState) => React.ReactNode }) 
   );
 }
 
-function CardBody({ title, body, tags }: CardContent) {
+function CardBody({ title, body }: CardContent) {
   return (
     <div className="relative px-6 pb-7 pt-6 sm:px-8">
       <h3 className="text-[24px] font-medium tracking-[-0.025em] text-fg">{title}</h3>
-      <p className="mt-2.5 max-w-[46ch] text-[15.5px] leading-[1.6] text-dim">{body}</p>
-      <div className="mt-5 flex flex-wrap gap-2">
-        {tags.slice(0, 3).map((tg) => (
-          <Chip key={tg}>{tg}</Chip>
-        ))}
-      </div>
+      <p className="mt-2 text-[15.5px] leading-[1.6] text-dim">{body}</p>
     </div>
   );
 }
@@ -116,19 +106,9 @@ function VideoPreview({ active, px, ...c }: PreviewState & CardContent) {
                   className="absolute left-0 top-0 h-[208px] max-w-none select-none"
                   style={{ width: W * N, transform: `translateX(${-k * W}px)` }}
                 />
-                {o === 0 && <div className="absolute inset-[6%] border border-dashed border-white/30" />}
               </div>
             );
           })}
-        </div>
-        <div className="absolute inset-x-6 bottom-4 flex items-center gap-3 font-mono text-[10.5px] text-dim">
-          <span className="tabular-nums text-fg">{timecode(idx * MARINA.fps, MARINA.fps)}</span>
-          <div className="relative h-px flex-1 bg-line-strong">
-            <div className="absolute inset-0" style={{ transform: `translateX(${(idx / (N - 1)) * 100}%)` }}>
-              <span className="absolute -top-[5px] left-0 h-[11px] w-px bg-sky" />
-            </div>
-          </div>
-          <span>9:16</span>
         </div>
       </Stage>
       <CardBody {...c} />
@@ -245,7 +225,7 @@ function BookingPreview({ active, ...c }: PreviewState & CardContent) {
             transitionTimingFunction: spring,
           }}
         >
-          ✓ {'{ booking: "confirmed", sms: true }'}
+          ✓ 14:30 · OK
         </div>
       </Stage>
       <CardBody {...c} />
@@ -257,11 +237,8 @@ function BookingPreview({ active, ...c }: PreviewState & CardContent) {
 function OpsPreview({ active, ...c }: PreviewState & CardContent) {
   const lines: [string, string][] = [
     ['text-fg', '$ exedria deploy --env=prod'],
-    ['text-dim', '  build ............ 2.4s'],
-    ['text-dim', '  migrations ....... 3/3'],
     ['text-phosphor', '  health ........... 200 OK'],
-    ['text-sky-ink', '$ support --open'],
-    ['text-magenta', '  #482  "export facturi"  → resolved'],
+    ['text-magenta', '  #482 → resolved'],
   ];
   return (
     <>

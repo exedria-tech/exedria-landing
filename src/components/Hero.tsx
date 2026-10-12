@@ -1,33 +1,15 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { Player, type PlayerRef } from '@remotion/player';
 import { HERO, HeroField } from '../compositions/HeroField';
 import { useT } from '../i18n';
-import { Transport } from './Transport';
-import { Button, Corners, timecode } from './ui';
+import { Button } from './ui';
 
 const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-export function usePlayerFrame(ref: React.RefObject<PlayerRef | null>) {
-  const [frame, setFrame] = useState(0);
-  useEffect(() => {
-    const p = ref.current;
-    if (!p) return;
-    const cb = (e: { detail: { frame: number } }) => setFrame(e.detail.frame);
-    p.addEventListener('frameupdate', cb);
-    p.addEventListener('seeked', cb);
-    return () => {
-      p.removeEventListener('frameupdate', cb);
-      p.removeEventListener('seeked', cb);
-    };
-  }, [ref]);
-  return frame;
-}
 
 export function Hero() {
   const { t } = useT();
   const playerRef = useRef<PlayerRef>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  const frame = usePlayerFrame(playerRef);
 
   // Pause the composition while the hero is off screen.
   useEffect(() => {
@@ -78,21 +60,8 @@ export function Hero() {
         <div className="absolute inset-0 bg-[linear-gradient(to_top,var(--color-paper)_30%,transparent_75%)] md:bg-[linear-gradient(to_top,var(--color-paper)_0%,transparent_38%)]" />
       </div>
 
-      {/* Safe-zone guide */}
-      <div className="pointer-events-none absolute inset-x-4 bottom-[132px] top-[84px] hidden border border-dashed border-fg/[0.12] sm:inset-x-8 md:block" aria-hidden>
-        <Corners className="text-fg/30" size={12} />
-      </div>
-
-      <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1440px] flex-col justify-between px-4 pb-6 pt-8 sm:px-8 md:pt-12">
-        <div className="flex flex-wrap items-start justify-between gap-4 md:px-6">
-          <div className="font-mono text-[11px] uppercase leading-[1.7] tracking-[0.18em] text-dim">
-            <div>{t.hero.metaA}</div>
-          </div>
-          <span className="rounded-[2px] bg-paper/80 px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-dim">
-            [{timecode(frame, HERO.fps)}]
-          </span>
-        </div>
-
+      <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1440px] flex-col justify-between px-4 pb-14 pt-8 md:pb-20 sm:px-8 md:pt-12">
+        <span />
         <div>
           <div className="grid items-end gap-10 md:px-6 lg:grid-cols-12">
             <h1 className="font-semibold leading-[0.86] tracking-[-0.055em] text-fg lg:col-span-8" style={{ fontSize: 'clamp(56px, 10.4vw, 172px)' }}>
@@ -119,9 +88,6 @@ export function Hero() {
             </div>
           </div>
 
-          <div className="mt-10 md:mt-14">
-            <Transport playerRef={playerRef} durationInFrames={HERO.durationInFrames} fps={HERO.fps} />
-          </div>
         </div>
       </div>
     </section>
