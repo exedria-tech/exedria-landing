@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import wave from '../data/marina-wave.json';
-import { MARINA, SCENES, TEXT_LAYERS } from '../data/marina';
+import { MARINA, SCENES } from '../data/marina';
 import { useT } from '../i18n';
 import { Corners, Label, Reveal, cx, timecode } from './ui';
 
@@ -104,16 +104,8 @@ export function Work() {
               {t.work.title}
             </h2>
           </Reveal>
-          <Reveal delay={120} className="flex flex-col justify-end gap-8 lg:col-span-5">
+          <Reveal delay={120} className="flex flex-col justify-end lg:col-span-5">
             <p className="text-[16.5px] leading-[1.6] text-dim">{t.work.body}</p>
-            <dl className="grid gap-4 border-t border-line pt-4 font-mono text-[11px] sm:grid-cols-3">
-              {t.work.meta.map(([k, v]) => (
-                <div key={k}>
-                  <dt className="uppercase tracking-[0.14em] text-faint">{k}</dt>
-                  <dd className="mt-1.5 text-fg">{v}</dd>
-                </div>
-              ))}
-            </dl>
           </Reveal>
         </div>
 
@@ -133,13 +125,8 @@ export function Work() {
                   onClick={toggle}
                   className="h-full w-full cursor-pointer object-cover"
                 />
-                {/* safe zone + overlays */}
-                <div className="pointer-events-none absolute inset-[6%] border border-dashed border-white/25" />
                 <div className="pointer-events-none absolute left-3 top-3 rounded-[2px] bg-paper/85 px-2 py-1 font-mono text-[10.5px] tabular-nums text-fg">
                   {timecode(frame, MARINA.fps)}
-                </div>
-                <div className="pointer-events-none absolute right-3 top-3 rounded-[2px] bg-paper/85 px-2 py-1 font-mono text-[10.5px] text-dim">
-                  9:16
                 </div>
                 {!playing && (
                   <button
@@ -309,27 +296,6 @@ export function Work() {
                   })}
                 </div>
 
-                {/* T1 text layers */}
-                <TrackLabel name="T1" sub={t.work.text} />
-                <div className="relative h-11 border-b border-line">
-                  {TEXT_LAYERS.map((l, i) => {
-                    const on = time >= l.from && time < l.to;
-                    return (
-                      <span
-                        key={i}
-                        className={cx(
-                          'absolute inset-y-2.5 flex items-center overflow-hidden rounded-[2px] border px-1 font-mono text-[9px] transition-colors duration-200',
-                          on ? 'border-fg bg-fg/15 text-fg' : l.display ? 'border-fg/40 text-dim' : 'border-line-strong text-faint',
-                        )}
-                        style={{ left: pct(l.from), width: pct(l.to - l.from) }}
-                        title={l.text}
-                      >
-                        <span className="truncate">{l.text}</span>
-                      </span>
-                    );
-                  })}
-                </div>
-
                 {/* A1 waveform */}
                 <TrackLabel name="A1" sub={t.work.audio} />
                 <div className="relative flex h-14 items-center gap-px px-px">
@@ -379,7 +345,6 @@ export function Work() {
                 </pre>
               </div>
             )}
-            <p className="mt-3 font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">{t.work.hintTrack}</p>
           </Reveal>
         </div>
       </div>

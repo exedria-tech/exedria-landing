@@ -28,7 +28,7 @@ export function Services() {
             const Preview = previews[i];
             return (
               <Reveal key={i} delay={(i % 2) * 100} className="border-b border-r border-line">
-                <Card hint={t.services.hoverHint}>{(state) => <Preview {...state} title={s.title} body={s.body} tags={s.tags} />}</Card>
+                <Card>{(state) => <Preview {...state} title={s.title} body={s.body} tags={s.tags} />}</Card>
               </Reveal>
             );
           })}
@@ -41,7 +41,7 @@ export function Services() {
 type PreviewState = { active: boolean; px: number };
 type CardContent = { title: string; body: string; tags: string[] };
 
-function Card({ children, hint }: { children: (s: PreviewState) => React.ReactNode; hint: string }) {
+function Card({ children }: { children: (s: PreviewState) => React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const spot = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<PreviewState>({ active: false, px: 0.5 });
@@ -66,9 +66,6 @@ function Card({ children, hint }: { children: (s: PreviewState) => React.ReactNo
       />
       <Corners className="text-sky-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100" size={10} />
       {children(state)}
-      <span className="pointer-events-none absolute right-3 top-3 z-10 rounded-[2px] bg-paper px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.16em] text-faint transition-opacity duration-300 group-hover:opacity-0">
-        ↔ {hint}
-      </span>
     </div>
   );
 }
@@ -79,7 +76,7 @@ function CardBody({ title, body, tags }: CardContent) {
       <h3 className="text-[24px] font-medium tracking-[-0.025em] text-fg">{title}</h3>
       <p className="mt-2.5 max-w-[46ch] text-[15.5px] leading-[1.6] text-dim">{body}</p>
       <div className="mt-5 flex flex-wrap gap-2">
-        {tags.map((tg) => (
+        {tags.slice(0, 3).map((tg) => (
           <Chip key={tg}>{tg}</Chip>
         ))}
       </div>

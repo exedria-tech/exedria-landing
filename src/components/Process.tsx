@@ -123,10 +123,7 @@ export function Process() {
                         />
                         <span className={cx('relative flex h-full items-center justify-between px-2.5 font-mono text-[10.5px] uppercase tracking-[0.1em]', 'text-fg')}>
                           <span className="truncate">{s.name}</span>
-                          {i === SPANS.length - 1 && <span className="shrink-0">{t.process.ongoing} →</span>}
                         </span>
-                        {/* keyframes at clip edges */}
-                        <span className="absolute left-0 top-1/2 size-[7px] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-fg" />
                       </button>
                     </div>
                   </div>

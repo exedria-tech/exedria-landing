@@ -81,30 +81,16 @@ export function Hero() {
       {/* Safe-zone guide */}
       <div className="pointer-events-none absolute inset-x-4 bottom-[132px] top-[84px] hidden border border-dashed border-fg/[0.12] sm:inset-x-8 md:block" aria-hidden>
         <Corners className="text-fg/30" size={12} />
-        <span className="absolute -top-[9px] right-6 bg-paper px-2 font-mono text-[9.5px] uppercase tracking-[0.2em] text-faint">
-          title safe · 90%
-        </span>
-        <span className="absolute left-1/2 top-1/2 h-4 w-px -translate-x-1/2 -translate-y-1/2 bg-fg/15" />
-        <span className="absolute left-1/2 top-1/2 h-px w-4 -translate-x-1/2 -translate-y-1/2 bg-fg/15" />
       </div>
 
       <div className="relative z-10 mx-auto flex min-h-[calc(100svh-4rem)] max-w-[1440px] flex-col justify-between px-4 pb-6 pt-8 sm:px-8 md:pt-12">
         <div className="flex flex-wrap items-start justify-between gap-4 md:px-6">
           <div className="font-mono text-[11px] uppercase leading-[1.7] tracking-[0.18em] text-dim">
             <div>{t.hero.metaA}</div>
-            <div className="text-faint">{t.hero.metaB}</div>
           </div>
-          <div className="flex flex-col items-end gap-2 font-mono text-[11px]">
-            <span className="inline-flex items-center gap-2 rounded-[2px] border border-line-strong bg-paper/80 px-2.5 py-1.5 text-dim">
-              <span className="blink size-1.5 bg-phosphor" />
-              {'{ status: '}
-              <span className="text-phosphor">"{t.hero.status}"</span>
-              {' }'}
-            </span>
-            <span className="rounded-[2px] bg-paper/80 px-1.5 py-0.5 tabular-nums text-dim">
-              [{timecode(frame, HERO.fps)}] · {HERO.width}×{HERO.height}
-            </span>
-          </div>
+          <span className="rounded-[2px] bg-paper/80 px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-dim">
+            [{timecode(frame, HERO.fps)}]
+          </span>
         </div>
 
         <div>
@@ -134,10 +120,7 @@ export function Hero() {
           </div>
 
           <div className="mt-10 md:mt-14">
-            <Transport playerRef={playerRef} durationInFrames={HERO.durationInFrames} fps={HERO.fps} markers={[0, 75, 150, 225]} />
-            <p className="mt-2.5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">
-              <span className="text-sky-ink">↔</span> {t.hero.scrubHint}
-            </p>
+            <Transport playerRef={playerRef} durationInFrames={HERO.durationInFrames} fps={HERO.fps} />
           </div>
         </div>
       </div>

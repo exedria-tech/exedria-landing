@@ -72,14 +72,6 @@ export function Contact() {
         <Reveal delay={120} className="lg:col-span-7">
           <form onSubmit={submit} className="relative rounded-[3px] border border-line bg-panel p-5 sm:p-7">
             <Corners className="text-fg/30" size={10} />
-            <div className="mb-6 flex items-center justify-between border-b border-line pb-4 font-mono text-[11px] text-faint">
-              <span className="uppercase tracking-[0.16em]">render-settings.json</span>
-              <span>
-                {'{ '}
-                <span className="text-dim">format</span>: <span className="text-sky-ink">"brief"</span>
-                {' }'}
-              </span>
-            </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <Field label={t.contact.name}>
                 <input required value={name} onChange={(e) => setName(e.target.value)} className={field} autoComplete="name" />

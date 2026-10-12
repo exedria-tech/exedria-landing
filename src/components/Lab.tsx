@@ -89,9 +89,6 @@ export function Lab() {
                   style={{ width: '100%', height: '100%' }}
                 />
                 <Corners className="text-fg/30" size={10} />
-                <span className="pointer-events-none absolute left-3 top-3 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
-                  {width}×{height} · {fps} fps
-                </span>
               </div>
               <Transport className="mt-3" playerRef={playerRef} durationInFrames={dur} fps={fps} markers={settle < dur ? [settle] : []} />
             </div>

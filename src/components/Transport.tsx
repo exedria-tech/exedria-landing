@@ -182,10 +182,6 @@ export function Transport({
         </div>
       </div>
 
-      <div className="hidden shrink-0 flex-col justify-center text-right md:flex">
-        <span className="text-fg">{fps} FPS</span>
-        <span className="text-faint">{(durationInFrames / fps).toFixed(1)}s</span>
-      </div>
     </div>
   );
 }

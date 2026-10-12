@@ -37,7 +37,6 @@ export function Footer() {
 
       <div className="mx-auto mt-4 flex max-w-[1440px] flex-wrap items-center justify-between gap-4 border-t border-line px-4 py-5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint sm:px-8">
         <span>© 2026 {t.footer.rights}</span>
-        <span className="hidden sm:inline">{t.footer.built}</span>
         <a href="#top" className="group inline-flex items-center gap-2 text-dim transition-colors hover:text-fg">
           <span className="inline-block transition-transform duration-500 ease-[var(--ease-spring)] group-hover:-translate-x-1">⏮</span>
           {t.footer.top}
