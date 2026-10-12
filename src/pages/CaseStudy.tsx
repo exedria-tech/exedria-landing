@@ -1,7 +1,8 @@
 import { Link, useParams } from 'react-router';
+import { MoreLink, SERVICES } from '../components/Services';
 import { Work } from '../components/Work';
 import { Button, Label, PageHeader, Reveal, usePageTitle } from '../components/ui';
-import { findProject, type Project } from '../data/projects';
+import { PROJECTS, findProject, type Project } from '../data/projects';
 import { useT } from '../i18n';
 import { NotFound } from './NotFound';
 
@@ -17,6 +18,9 @@ function CaseStudyPage({ p }: { p: Project }) {
   usePageTitle(p.client);
 
   const details = <Details p={p} />;
+  const serviceIdx = SERVICES.findIndex((s) => s.category === p.category);
+  const i = PROJECTS.indexOf(p);
+  const next = PROJECTS.length > 1 ? PROJECTS[(i + 1) % PROJECTS.length] : null;
 
   return (
     <>
@@ -49,9 +53,23 @@ function CaseStudyPage({ p }: { p: Project }) {
       )}
 
       <section className="subgrid border-t border-line py-20 md:py-28">
-        <Reveal className="mx-auto flex max-w-[1440px] flex-wrap items-end justify-between gap-8 px-4 sm:px-8">
-          <h2 className="max-w-[16ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">{t.caseStudy.next}</h2>
-          <Button href="/contact">{t.caseStudy.cta}</Button>
+        <Reveal className="mx-auto max-w-[1440px] px-4 sm:px-8">
+          <div className="flex flex-wrap items-end justify-between gap-8">
+            <h2 className="max-w-[16ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">{t.caseStudy.ask}</h2>
+            <Button href={serviceIdx >= 0 ? `/contact?serviciu=${SERVICES[serviceIdx].slug}` : '/contact'}>{t.caseStudy.cta}</Button>
+          </div>
+          <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-6">
+            {serviceIdx >= 0 && (
+              <MoreLink to={`/servicii#${SERVICES[serviceIdx].slug}`}>
+                {t.caseStudy.service}: {t.services.items[serviceIdx].title}
+              </MoreLink>
+            )}
+            {next && (
+              <MoreLink to={`/lucrari/${next.slug}`}>
+                {t.caseStudy.next}: {next.client}
+              </MoreLink>
+            )}
+          </div>
         </Reveal>
       </section>
     </>
