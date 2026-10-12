@@ -1,41 +1,79 @@
 import { useState } from 'react';
-import { useT } from '../i18n';
+import { ro, useT } from '../i18n';
 import { Label, Reveal, cx } from './ui';
 
 export const EMAIL = 'hello@exedria.ro';
 const RENDER_FRAMES = 48;
 
+type ContactResult = { success: true; id: string } | { success: false; error: string };
+
+async function postBrief(payload: Record<string, unknown>): Promise<ContactResult> {
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return (await res.json()) as ContactResult;
+  } catch {
+    return { success: false, error: '' };
+  }
+}
+
 export function Contact() {
-  const { t } = useT();
+  const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
   const [needs, setNeeds] = useState<number[]>([0]);
+  const [timeline, setTimeline] = useState(2);
   const [message, setMessage] = useState('');
-  const [phase, setPhase] = useState<'idle' | 'rendering' | 'done'>('idle');
+  const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');
   const [frame, setFrame] = useState(0);
+  const [error, setError] = useState('');
 
   const toggleNeed = (i: number) => setNeeds((n) => (n.includes(i) ? n.filter((x) => x !== i) : [...n, i]));
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (phase === 'rendering') return;
+    if (needs.length === 0) {
+      setPhase('error');
+      setError(t.contact.pickNeed);
+      return;
+    }
     setPhase('rendering');
+    setError('');
     setFrame(0);
+
+    // The server always receives the Romanian option labels, whatever language the page is in.
+    let result: ContactResult | null = null;
+    postBrief({
+      nume: name,
+      contact: reach,
+      servicii: needs.map((i) => ro.contact.needOptions[i]),
+      termen: ro.contact.timelineOptions[timeline],
+      mesaj: message,
+    }).then((r) => (result = r));
+
+    // Progress runs on its own clock but holds just short of 100% until the server answers.
     const start = performance.now();
     const tick = (now: number) => {
-      const f = Math.min(RENDER_FRAMES, Math.floor(((now - start) / 1400) * RENDER_FRAMES));
+      const cap = result ? RENDER_FRAMES : RENDER_FRAMES - 4;
+      const f = Math.min(cap, Math.floor(((now - start) / 1400) * RENDER_FRAMES));
       setFrame(f);
-      if (f < RENDER_FRAMES) requestAnimationFrame(tick);
-      else {
+      if (f < RENDER_FRAMES) {
+        requestAnimationFrame(tick);
+        return;
+      }
+      const r = result as ContactResult | null;
+      if (r?.success) {
         setPhase('done');
-        const body = [
-          `${t.contact.name}: ${name}`,
-          `${t.contact.email}: ${reach}`,
-          `${t.contact.needs}: ${needs.map((i) => t.contact.needOptions[i]).join(', ')}`,
-          '',
-          message,
-        ].join('\n');
-        window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(`Exedria · ${name || 'proiect nou'}`)}&body=${encodeURIComponent(body)}`;
+        setName('');
+        setReach('');
+        setMessage('');
+      } else {
+        setPhase('error');
+        setError(r && r.error && lang === 'ro' ? r.error : t.contact.failed);
       }
     };
     requestAnimationFrame(tick);
@@ -96,8 +134,32 @@ export function Contact() {
               </div>
             </Field>
 
+            <Field label={t.contact.timeline} className="mt-5">
+              <div role="radiogroup" className="inline-flex rounded-[3px] border border-line-strong p-0.5">
+                {t.contact.timelineOptions.map((o, i) => {
+                  const on = timeline === i;
+                  return (
+                    <button
+                      type="button"
+                      role="radio"
+                      key={o}
+                      onClick={() => setTimeline(i)}
+                      aria-checked={on}
+                      className={cx(
+                        'rounded-[2px] px-3.5 py-1.5 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
+                        on ? 'bg-fg text-paper' : 'text-dim hover:text-fg',
+                      )}
+                    >
+                      {o}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+
             <Field label={t.contact.message} className="mt-5">
               <textarea
+                required
                 rows={4}
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
@@ -109,22 +171,31 @@ export function Contact() {
             <div className="mt-6 flex flex-wrap items-center gap-4">
               <button
                 type="submit"
+                disabled={phase === 'rendering'}
                 className="group relative h-12 min-w-[240px] overflow-hidden rounded-[3px] bg-magenta px-5 text-left text-[15px] font-medium text-paper transition-transform duration-300 ease-[var(--ease-spring)] hover:-translate-y-0.5 active:translate-y-px active:scale-[0.97]"
               >
                 <span
                   className="absolute inset-0 origin-left bg-fg transition-transform duration-100"
-                  style={{ transform: `scaleX(${phase === 'idle' ? 0 : frame / RENDER_FRAMES})` }}
+                  style={{ transform: `scaleX(${phase === 'rendering' || phase === 'done' ? frame / RENDER_FRAMES : 0})` }}
                 />
                 <span className="relative flex items-center justify-between gap-6">
                   <span>{phase === 'rendering' ? `${t.contact.sending}…` : t.contact.submit}</span>
                   <span className="font-mono text-[11.5px] tabular-nums">
-                    {phase === 'idle' ? '→' : `${Math.round((frame / RENDER_FRAMES) * 100)}%`}
+                    {phase === 'rendering' || phase === 'done' ? `${Math.round((frame / RENDER_FRAMES) * 100)}%` : '→'}
                   </span>
                 </span>
               </button>
               {phase === 'done' && (
-                <span className="fade-up font-mono text-[11.5px] text-phosphor">
-                  ✓ <span className="text-dim">{t.contact.done}</span> <span className="select-all text-fg">{EMAIL}</span>
+                <span role="status" className="fade-up font-mono text-[11.5px] text-phosphor">
+                  ✓ <span className="text-dim">{t.contact.done}</span>
+                </span>
+              )}
+              {phase === 'error' && (
+                <span role="alert" className="fade-up font-mono text-[11.5px] text-magenta">
+                  × <span className="text-dim">{error}</span>{' '}
+                  <a href={`mailto:${EMAIL}`} className="text-fg underline decoration-line-strong underline-offset-2">
+                    {EMAIL}
+                  </a>
                 </span>
               )}
             </div>
