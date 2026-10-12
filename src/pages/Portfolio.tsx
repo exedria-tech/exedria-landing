@@ -1,5 +1,5 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Corners, PageHeader, Segmented, cx, timecode, usePageTitle } from '../components/ui';
 import { CATEGORIES, OPEN_SLOTS, PROJECTS, type Category, type Project } from '../data/projects';
 import { useT } from '../i18n';
@@ -9,10 +9,14 @@ type Filter = 'all' | Category;
 export function Portfolio() {
   const { t } = useT();
   usePageTitle(t.portfolio.label);
-  const [filter, setFilter] = useState<Filter>('all');
+  // ?categorie=web arrives from the service pages.
+  const [params, setParams] = useSearchParams();
+  const fromUrl = CATEGORIES.find((c) => c === params.get('categorie'));
+  const filter: Filter = fromUrl ?? 'all';
+  const setFilter = (f: Filter) => setParams(f === 'all' ? {} : { categorie: f }, { replace: true });
 
-  // The filter only appears once there is real work in more than one category.
-  const used = CATEGORIES.filter((c) => PROJECTS.some((p) => p.category === c));
+  // The filter shows once there is real work in more than one category, or when a link picked one.
+  const used = CATEGORIES.filter((c) => PROJECTS.some((p) => p.category === c) || c === fromUrl);
   const showFilter = used.length > 1;
   const match = (c: Category) => filter === 'all' || filter === c;
 

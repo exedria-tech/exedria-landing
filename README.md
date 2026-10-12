@@ -22,7 +22,9 @@ Node 20 or newer is required (`engines` in `package.json`).
 
 | Route | File | What it is |
 | --- | --- | --- |
-| `/` | `src/pages/Home.tsx` | Hero, featured work, services, lab, process, call to action |
+| `/` | `src/pages/Home.tsx` | Hero, featured work, services summary, studio teaser, call to action |
+| `/servicii` | `src/pages/ServicesPage.tsx` | The four services, each linking to its work (`/lucrari?categorie=`) and a pre-filled brief (`/contact?serviciu=`) |
+| `/studio` | `src/pages/Studio.tsx` | Process and the motion lab |
 | `/lucrari` | `src/pages/Portfolio.tsx` | Portfolio grid with hover-scrub cards; empty "slot" cards link to /contact |
 | `/lucrari/:slug` | `src/pages/CaseStudy.tsx` | One project: facts, short write-up, player |
 | `/contact` | `src/pages/ContactPage.tsx` | Brief form + direct email |

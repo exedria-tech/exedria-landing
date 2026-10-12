@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
+import { SERVICES } from './Services';
 import { EMAIL } from '../data/company';
 import { ro, useT } from '../i18n';
 import { cx } from './ui';
@@ -26,7 +27,10 @@ export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  const [needs, setNeeds] = useState<number[]>([0]);
+  // ?serviciu=site-uri (from the service pages) pre-ticks that need; the four services map 1:1 onto the first four options.
+  const [params] = useSearchParams();
+  const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
+  const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);
   const [timeline, setTimeline] = useState(2);
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');

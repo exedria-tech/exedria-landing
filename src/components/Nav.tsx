@@ -3,16 +3,13 @@ import { Link, useLocation } from 'react-router';
 import { useT, type Lang } from '../i18n';
 import { Segmented, cx } from './ui';
 
-/** Top-level destinations. Home sections are reached with a hash, the rest are their own pages. */
+/** Top-level pages, in menu order. */
 export const NAV = [
+  { id: 'services', to: '/servicii' },
   { id: 'work', to: '/lucrari' },
-  { id: 'services', to: '/#services' },
-  { id: 'lab', to: '/#lab' },
-  { id: 'process', to: '/#process' },
+  { id: 'studio', to: '/studio' },
   { id: 'contact', to: '/contact' },
 ] as const;
-type Section = (typeof NAV)[number]['id'];
-const HOME_SECTIONS: Section[] = ['work', 'services', 'lab', 'process'];
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -32,32 +29,20 @@ export function Logo({ className }: { className?: string }) {
 export function Nav() {
   const { t, lang, setLang } = useT();
   const { pathname, key } = useLocation();
-  const [spy, setSpy] = useState<Section | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
   useEffect(() => setOpen(false), [key]);
 
-  // On the home page the lit channel follows the scroll; elsewhere it follows the route.
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 24);
-      if (pathname !== '/') return setSpy(null);
-      const mid = window.innerHeight * 0.4;
-      let cur: Section | null = null;
-      for (const id of HOME_SECTIONS) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= mid) cur = id;
-      }
-      setSpy(cur);
-    };
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, [pathname]);
+  }, []);
 
-  const active: Section | null = pathname.startsWith('/lucrari') ? 'work' : pathname === '/contact' ? 'contact' : spy;
-  const idx = active ? NAV.findIndex((n) => n.id === active) : -1;
+  // The lit channel follows the route, including sub-pages like /lucrari/marina-park.
+  const idx = NAV.findIndex((n) => pathname === n.to || pathname.startsWith(`${n.to}/`));
 
   return (
     <header
@@ -75,10 +60,10 @@ export function Nav() {
         <nav className="relative hidden rounded-[3px] border border-line bg-panel/80 p-[3px] lg:block">
           <span
             aria-hidden
-            className="absolute bottom-[3px] left-[3px] top-[3px] w-[calc((100%-6px)/5)] rounded-[2px] bg-raised ring-1 ring-line-strong transition-[transform,opacity] duration-500 ease-[var(--ease-spring)]"
+            className="absolute bottom-[3px] left-[3px] top-[3px] w-[calc((100%-6px)/4)] rounded-[2px] bg-raised ring-1 ring-line-strong transition-[transform,opacity] duration-500 ease-[var(--ease-spring)]"
             style={{ transform: `translateX(${Math.max(0, idx) * 100}%)`, opacity: idx < 0 ? 0 : 1 }}
           />
-          <ul className="relative grid grid-cols-5">
+          <ul className="relative grid grid-cols-4">
             {NAV.map(({ id, to }, i) => (
               <li key={id}>
                 <Link

@@ -1,29 +1,49 @@
 import { useRef, useState } from 'react';
+import { Link } from 'react-router';
 import { MARINA } from '../data/marina';
+import type { Category } from '../data/projects';
 import { useT } from '../i18n';
 import { Corners, Label, Reveal, cx } from './ui';
 
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
+/**
+ * The four services, in the order of t.services.items. `slug` is the anchor on /servicii and the
+ * ?serviciu= value the contact form understands; `category` filters /lucrari.
+ */
+export const SERVICES: { slug: string; category: Category }[] = [
+  { slug: 'video', category: 'video' },
+  { slug: 'site-uri', category: 'web' },
+  { slug: 'rezervari', category: 'web' },
+  { slug: 'software', category: 'software' },
+];
+
+const PREVIEWS = [VideoPreview, WebPreview, BookingPreview, OpsPreview];
+
+/** Home page summary: the 2x2 grid of live cards, each opening its block on /servicii. */
 export function Services() {
   const { t } = useT();
-  const previews = [VideoPreview, WebPreview, BookingPreview, OpsPreview];
   return (
     <section id="services" className="relative border-t border-line py-24 md:py-32">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
-        <Reveal>
-          <Label>{t.services.label}</Label>
-          <h2 className="mt-6 max-w-[18ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
-            {t.services.title}
-          </h2>
+        <Reveal className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <Label>{t.services.label}</Label>
+            <h2 className="mt-6 max-w-[18ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
+              {t.services.title}
+            </h2>
+          </div>
+          <MoreLink to="/servicii">{t.services.all}</MoreLink>
         </Reveal>
 
         <div className="mt-14 grid border-l border-t border-line md:grid-cols-2">
           {t.services.items.map((s, i) => {
-            const Preview = previews[i];
+            const Preview = PREVIEWS[i];
             return (
               <Reveal key={i} delay={(i % 2) * 100} className="border-b border-r border-line">
-                <Card>{(state) => <Preview {...state} title={s.title} body={s.body} />}</Card>
+                <Link to={`/servicii#${SERVICES[i].slug}`} className="block h-full">
+                  <Card>{(state) => <Preview {...state} title={s.title} body={s.body} />}</Card>
+                </Link>
               </Reveal>
             );
           })}
@@ -33,8 +53,54 @@ export function Services() {
   );
 }
 
+/** /servicii: one row per service with its live preview, the detail and where to go next. */
+export function ServiceRows() {
+  const { t } = useT();
+  return (
+    <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
+      {t.services.items.map((s, i) => {
+        const Preview = PREVIEWS[i];
+        const { slug, category } = SERVICES[i];
+        return (
+          <section key={slug} id={slug} className="grid scroll-mt-20 gap-8 border-b border-line py-14 last:border-b-0 md:grid-cols-2 md:gap-14 md:py-20">
+            <Reveal className="border border-line">
+              <Card>{(state) => <Preview {...state} title={s.title} body={s.body} bare />}</Card>
+            </Reveal>
+            <Reveal delay={100} className="flex flex-col justify-center">
+              <h2 className="text-[clamp(28px,3.2vw,44px)] font-semibold leading-[1.02] tracking-[-0.04em]">{s.title}</h2>
+              <p className="mt-4 max-w-[46ch] text-[16.5px] leading-[1.6] text-dim">{s.more}</p>
+              <p className="mt-5 font-mono text-[12px] text-faint">{s.tags.join(' · ')}</p>
+              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
+                <MoreLink to={`/contact?serviciu=${slug}`} accent>
+                  {t.services.quote}
+                </MoreLink>
+                <MoreLink to={`/lucrari?categorie=${category}`}>{t.services.work}</MoreLink>
+              </div>
+            </Reveal>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+export function MoreLink({ to, children, accent }: { to: string; children: React.ReactNode; accent?: boolean }) {
+  return (
+    <Link
+      to={to}
+      className={cx(
+        'group inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.14em] transition-colors',
+        accent ? 'text-magenta hover:text-fg' : 'text-dim hover:text-fg',
+      )}
+    >
+      {children}
+      <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
+    </Link>
+  );
+}
+
 type PreviewState = { active: boolean; px: number };
-type CardContent = { title: string; body: string };
+type CardContent = { title: string; body: string; bare?: boolean };
 
 function Card({ children }: { children: (s: PreviewState) => React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -111,7 +177,7 @@ function VideoPreview({ active, px, ...c }: PreviewState & CardContent) {
           })}
         </div>
       </Stage>
-      <CardBody {...c} />
+      {!c.bare && <CardBody {...c} />}
     </>
   );
 }
@@ -163,7 +229,7 @@ function WebPreview({ active, ...c }: PreviewState & CardContent) {
           </div>
         </div>
       </Stage>
-      <CardBody {...c} />
+      {!c.bare && <CardBody {...c} />}
     </>
   );
 }
@@ -228,7 +294,7 @@ function BookingPreview({ active, ...c }: PreviewState & CardContent) {
           ✓ 14:30 · OK
         </div>
       </Stage>
-      <CardBody {...c} />
+      {!c.bare && <CardBody {...c} />}
     </>
   );
 }
@@ -261,7 +327,7 @@ function OpsPreview({ active, ...c }: PreviewState & CardContent) {
           {!active && <span className="inline-block h-3.5 w-[7px] translate-y-0.5 bg-fg [animation:caret_1s_steps(1)_infinite]" />}
         </div>
       </Stage>
-      <CardBody {...c} />
+      {!c.bare && <CardBody {...c} />}
     </>
   );
 }
