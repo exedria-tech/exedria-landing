@@ -1,7 +1,17 @@
 import { useEffect, useRef } from 'react';
+import { Link } from 'react-router';
+import { COMPANY, EMAIL } from '../data/company';
 import { useT } from '../i18n';
-import { EMAIL } from './Contact';
-import { Logo, SECTIONS } from './Nav';
+import { Logo, NAV } from './Nav';
+import { Fill } from './ui';
+
+const LEGAL = [
+  { key: 'terms', to: '/termeni' },
+  { key: 'privacy', to: '/confidentialitate' },
+] as const;
+
+const linkCls = 'group relative inline-flex items-center text-[15px] text-dim transition-colors hover:text-fg';
+const tick = <span className="absolute -left-5 top-1/2 h-px w-3 origin-left scale-x-0 bg-sky transition-transform duration-300 ease-[var(--ease-spring)] group-hover:scale-x-100" />;
 
 export function Footer() {
   const { t } = useT();
@@ -11,24 +21,36 @@ export function Footer() {
         <div className="md:col-span-5">
           <Logo className="text-fg" />
           <p className="mt-4 max-w-[36ch] text-[15px] leading-[1.6] text-dim">{t.hero.lead.split('.')[0]}.</p>
+          <a href={`mailto:${EMAIL}`} className="mt-6 inline-block text-[15px] text-fg hover:text-sky-ink">
+            {EMAIL}
+          </a>
         </div>
-        <nav className="md:col-span-3">
+        <nav className="md:col-span-3" aria-label={t.footer.pages}>
+          <div className="mb-4 font-mono text-[10.5px] uppercase tracking-[0.18em] text-faint">{t.footer.pages}</div>
           <ul className="space-y-2.5">
-            {SECTIONS.map((id) => (
+            {NAV.map(({ id, to }) => (
               <li key={id}>
-                <a href={`#${id}`} className="group inline-flex items-center gap-2 text-[15px] text-dim transition-colors hover:text-fg">
-                  <span className="h-px w-3 origin-left scale-x-0 bg-sky transition-transform duration-300 ease-[var(--ease-spring)] group-hover:scale-x-100" />
+                <Link to={to} className={linkCls}>
+                  {tick}
                   {t.nav[id]}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </nav>
-        <div className="md:col-span-4">
-          <a href={`mailto:${EMAIL}`} className="text-[15px] text-fg hover:text-sky-ink">
-            {EMAIL}
-          </a>
-        </div>
+        <nav className="md:col-span-4" aria-label={t.footer.legal}>
+          <div className="mb-4 font-mono text-[10.5px] uppercase tracking-[0.18em] text-faint">{t.footer.legal}</div>
+          <ul className="space-y-2.5">
+            {LEGAL.map(({ key, to }) => (
+              <li key={key}>
+                <Link to={to} className={linkCls}>
+                  {tick}
+                  {t.legal[key]}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       <div className="mx-auto mt-12 max-w-[1440px] px-4 sm:px-8">
@@ -36,11 +58,16 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-4 flex max-w-[1440px] flex-wrap items-center justify-between gap-4 border-t border-line px-4 py-5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint sm:px-8">
-        <span>© 2026 {t.footer.rights}</span>
-        <a href="#top" className="group inline-flex items-center gap-2 text-dim transition-colors hover:text-fg">
+        <span>
+          © 2026 <Fill>{COMPANY.legalName}</Fill> · CUI <Fill>{COMPANY.cui}</Fill>
+        </span>
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="group inline-flex items-center gap-2 uppercase text-dim transition-colors hover:text-fg"
+        >
           <span className="inline-block transition-transform duration-500 ease-[var(--ease-spring)] group-hover:-translate-x-1">⏮</span>
           {t.footer.top}
-        </a>
+        </button>
       </div>
     </footer>
   );
@@ -75,6 +102,7 @@ function DotWordmark({ text }: { text: string }) {
       }
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       W = el.clientWidth;
+      if (!W) return;
       step = W < 640 ? 6 : W < 1100 ? 8 : 10;
       // size the type so it spans the full width
       const probe = document.createElement('canvas').getContext('2d')!;

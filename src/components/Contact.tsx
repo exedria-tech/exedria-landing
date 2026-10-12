@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
+import { EMAIL } from '../data/company';
 import { ro, useT } from '../i18n';
-import { Label, Reveal, cx } from './ui';
+import { cx } from './ui';
 
-export const EMAIL = 'hello@exedria.tech';
 const RENDER_FRAMES = 48;
 
 type ContactResult = { success: true; id: string } | { success: false; error: string };
@@ -20,7 +21,8 @@ async function postBrief(payload: Record<string, unknown>): Promise<ContactResul
   }
 }
 
-export function Contact() {
+/** The brief form. Posts to api/contact.ts, which emails it through Resend. */
+export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
@@ -83,126 +85,112 @@ export function Contact() {
     'w-full rounded-[3px] border border-line bg-paper px-3.5 py-3 text-[15px] text-fg outline-none transition-colors placeholder:text-faint focus:border-sky/60';
 
   return (
-    <section id="contact" className="subgrid relative border-t border-line py-24 md:py-32">
-      <div className="mx-auto grid max-w-[1440px] gap-14 px-4 sm:px-8 lg:grid-cols-12">
-        <Reveal className="lg:col-span-5">
-          <Label tone="magenta">{t.contact.label}</Label>
-          <h2 className="mt-6 text-[clamp(44px,6.4vw,104px)] font-semibold leading-[0.9] tracking-[-0.055em]">{t.contact.title}</h2>
-          <p className="mt-6 max-w-[40ch] text-[16.5px] leading-[1.6] text-dim">{t.contact.body}</p>
-          <div className="mt-10 border-t border-line pt-5">
-            <div className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-faint">{t.contact.direct}</div>
-            <a href={`mailto:${EMAIL}`} className="group mt-2 inline-flex items-center gap-2 text-[22px] tracking-[-0.02em] text-fg">
-              <span className="relative">
-                {EMAIL}
-                <span className="absolute -bottom-0.5 left-0 h-px w-full origin-left scale-x-0 bg-sky transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-x-100" />
-              </span>
-            </a>
-          </div>
-        </Reveal>
-
-        <Reveal delay={120} className="lg:col-span-7">
-          <form onSubmit={submit} className="relative rounded-[3px] border border-line bg-panel p-5 sm:p-7">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Field label={t.contact.name}>
-                <input required value={name} onChange={(e) => setName(e.target.value)} className={field} autoComplete="name" />
-              </Field>
-              <Field label={t.contact.email}>
-                <input required value={reach} onChange={(e) => setReach(e.target.value)} className={field} autoComplete="email" />
-              </Field>
-            </div>
-
-            <Field label={t.contact.needs} className="mt-5">
-              <div className="flex flex-wrap gap-2">
-                {t.contact.needOptions.map((o, i) => {
-                  const on = needs.includes(i);
-                  return (
-                    <button
-                      type="button"
-                      key={o}
-                      onClick={() => toggleNeed(i)}
-                      aria-pressed={on}
-                      className={cx(
-                        'flex items-center gap-2 rounded-[3px] border px-3 py-2 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
-                        on ? 'border-sky/60 bg-sky/10 text-fg' : 'border-line-strong text-dim hover:text-fg',
-                      )}
-                    >
-                      <span className={cx('size-2 border', on ? 'border-sky bg-sky' : 'border-line-strong')} />
-                      {o}
-                    </button>
-                  );
-                })}
-              </div>
-            </Field>
-
-            <Field label={t.contact.timeline} className="mt-5">
-              <div role="radiogroup" className="inline-flex rounded-[3px] border border-line-strong p-0.5">
-                {t.contact.timelineOptions.map((o, i) => {
-                  const on = timeline === i;
-                  return (
-                    <button
-                      type="button"
-                      role="radio"
-                      key={o}
-                      onClick={() => setTimeline(i)}
-                      aria-checked={on}
-                      className={cx(
-                        'rounded-[2px] px-3.5 py-1.5 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
-                        on ? 'bg-fg text-paper' : 'text-dim hover:text-fg',
-                      )}
-                    >
-                      {o}
-                    </button>
-                  );
-                })}
-              </div>
-            </Field>
-
-            <Field label={t.contact.message} className="mt-5">
-              <textarea
-                required
-                rows={4}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder={t.contact.messagePh}
-                className={cx(field, 'resize-none')}
-              />
-            </Field>
-
-            <div className="mt-6 flex flex-wrap items-center gap-4">
-              <button
-                type="submit"
-                disabled={phase === 'rendering'}
-                className="group relative h-12 min-w-[240px] overflow-hidden rounded-[3px] bg-magenta px-5 text-left text-[15px] font-medium text-paper transition-transform duration-300 ease-[var(--ease-spring)] hover:-translate-y-0.5 active:translate-y-px active:scale-[0.97]"
-              >
-                <span
-                  className="absolute inset-0 origin-left bg-fg transition-transform duration-100"
-                  style={{ transform: `scaleX(${phase === 'rendering' || phase === 'done' ? frame / RENDER_FRAMES : 0})` }}
-                />
-                <span className="relative flex items-center justify-between gap-6">
-                  <span>{phase === 'rendering' ? `${t.contact.sending}…` : t.contact.submit}</span>
-                  <span className="font-mono text-[11.5px] tabular-nums">
-                    {phase === 'rendering' || phase === 'done' ? `${Math.round((frame / RENDER_FRAMES) * 100)}%` : '→'}
-                  </span>
-                </span>
-              </button>
-              {phase === 'done' && (
-                <span role="status" className="fade-up font-mono text-[11.5px] text-phosphor">
-                  ✓ <span className="text-dim">{t.contact.done}</span>
-                </span>
-              )}
-              {phase === 'error' && (
-                <span role="alert" className="fade-up font-mono text-[11.5px] text-magenta">
-                  × <span className="text-dim">{error}</span>{' '}
-                  <a href={`mailto:${EMAIL}`} className="text-fg underline decoration-line-strong underline-offset-2">
-                    {EMAIL}
-                  </a>
-                </span>
-              )}
-            </div>
-          </form>
-        </Reveal>
+    <form onSubmit={submit} className="relative rounded-[3px] border border-line bg-panel p-5 sm:p-7">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Field label={t.contact.name}>
+          <input required value={name} onChange={(e) => setName(e.target.value)} className={field} autoComplete="name" />
+        </Field>
+        <Field label={t.contact.email}>
+          <input required value={reach} onChange={(e) => setReach(e.target.value)} className={field} autoComplete="email" />
+        </Field>
       </div>
-    </section>
+
+      <Field label={t.contact.needs} className="mt-5">
+        <div className="flex flex-wrap gap-2">
+          {t.contact.needOptions.map((o, i) => {
+            const on = needs.includes(i);
+            return (
+              <button
+                type="button"
+                key={o}
+                onClick={() => toggleNeed(i)}
+                aria-pressed={on}
+                className={cx(
+                  'flex items-center gap-2 rounded-[3px] border px-3 py-2 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
+                  on ? 'border-sky/60 bg-sky/10 text-fg' : 'border-line-strong text-dim hover:text-fg',
+                )}
+              >
+                <span className={cx('size-2 border', on ? 'border-sky bg-sky' : 'border-line-strong')} />
+                {o}
+              </button>
+            );
+          })}
+        </div>
+      </Field>
+
+      <Field label={t.contact.timeline} className="mt-5">
+        <div role="radiogroup" className="inline-flex rounded-[3px] border border-line-strong p-0.5">
+          {t.contact.timelineOptions.map((o, i) => {
+            const on = timeline === i;
+            return (
+              <button
+                type="button"
+                role="radio"
+                key={o}
+                onClick={() => setTimeline(i)}
+                aria-checked={on}
+                className={cx(
+                  'rounded-[2px] px-3.5 py-1.5 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
+                  on ? 'bg-fg text-paper' : 'text-dim hover:text-fg',
+                )}
+              >
+                {o}
+              </button>
+            );
+          })}
+        </div>
+      </Field>
+
+      <Field label={t.contact.message} className="mt-5">
+        <textarea
+          required
+          rows={4}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder={t.contact.messagePh}
+          className={cx(field, 'resize-none')}
+        />
+      </Field>
+
+      <div className="mt-6 flex flex-wrap items-center gap-4">
+        <button
+          type="submit"
+          disabled={phase === 'rendering'}
+          className="group relative h-12 min-w-[240px] overflow-hidden rounded-[3px] bg-magenta px-5 text-left text-[15px] font-medium text-paper transition-transform duration-300 ease-[var(--ease-spring)] hover:-translate-y-0.5 active:translate-y-px active:scale-[0.97]"
+        >
+          <span
+            className="absolute inset-0 origin-left bg-fg transition-transform duration-100"
+            style={{ transform: `scaleX(${phase === 'rendering' || phase === 'done' ? frame / RENDER_FRAMES : 0})` }}
+          />
+          <span className="relative flex items-center justify-between gap-6">
+            <span>{phase === 'rendering' ? `${t.contact.sending}…` : t.contact.submit}</span>
+            <span className="font-mono text-[11.5px] tabular-nums">
+              {phase === 'rendering' || phase === 'done' ? `${Math.round((frame / RENDER_FRAMES) * 100)}%` : '→'}
+            </span>
+          </span>
+        </button>
+        {phase === 'done' && (
+          <span role="status" className="fade-up font-mono text-[11.5px] text-phosphor">
+            ✓ <span className="text-dim">{t.contact.done}</span>
+          </span>
+        )}
+        {phase === 'error' && (
+          <span role="alert" className="fade-up font-mono text-[11.5px] text-magenta">
+            × <span className="text-dim">{error}</span>{' '}
+            <a href={`mailto:${EMAIL}`} className="text-fg underline decoration-line-strong underline-offset-2">
+              {EMAIL}
+            </a>
+          </span>
+        )}
+      </div>
+      <p className="mt-5 text-[13px] leading-[1.55] text-faint">
+        {t.contactPage.privacy}{' '}
+        <Link to="/confidentialitate" className="text-dim underline decoration-line-strong underline-offset-2 hover:text-fg">
+          {t.contactPage.privacyLink}
+        </Link>
+        .
+      </p>
+    </form>
   );
 }
 

@@ -196,6 +196,42 @@
   }
 }
 
+/* Running text on the legal pages */
+.legal p,
+.legal ul {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--color-dim);
+}
+.legal p + p,
+.legal p + ul,
+.legal ul + p {
+  margin-top: 0.9em;
+}
+.legal ul {
+  padding-left: 1.1em;
+  list-style: square;
+}
+.legal li + li {
+  margin-top: 0.35em;
+}
+.legal li::marker {
+  color: var(--color-sky);
+}
+.legal strong {
+  font-weight: 500;
+  color: var(--color-fg);
+}
+.legal a {
+  color: var(--color-sky-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--color-line-strong);
+  text-underline-offset: 2px;
+}
+.legal a:hover {
+  text-decoration-color: currentColor;
+}
+
 /*
  * Unlayered guards. Hosts that inject their own reset (unlayered CSS beats
  * @layer base) must not turn the page light or shrink the sprite strips.
