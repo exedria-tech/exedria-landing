@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 
-const ro = {
+export const ro = {
   nav: {
     work: 'Lucrări',
     services: 'Servicii',
@@ -135,7 +135,9 @@ const ro = {
     messagePh: 'Ex: pensiune în Bran, vrem un clip pentru Instagram și rezervări direct pe site.',
     submit: 'Trimite în coadă',
     sending: 'Se randează',
-    done: 'Mesajul e pregătit în aplicația de email. Dacă nu s-a deschis, scrie-ne direct la',
+    done: 'Brief primit. Îți răspundem în curând.',
+    failed: 'Nu s-a trimis. Încearcă din nou sau scrie-ne la',
+    pickNeed: 'Alege cel puțin un serviciu.',
     direct: 'Direct',
   },
   footer: {
@@ -283,7 +285,9 @@ const en: Copy = {
     messagePh: 'E.g. a guesthouse in Bran, we want an Instagram clip and direct bookings on our site.',
     submit: 'Send to queue',
     sending: 'Rendering',
-    done: 'Your message is ready in your email app. If it did not open, write to us at',
+    done: 'Brief received. We will get back to you soon.',
+    failed: 'It did not send. Try again or write to us at',
+    pickNeed: 'Pick at least one service.',
     direct: 'Direct',
   },
   footer: {

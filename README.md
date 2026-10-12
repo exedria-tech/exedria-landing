@@ -27,17 +27,17 @@ Node 20 or newer is required (`engines` in `package.json`).
 | Services | 2x2 grid with animated dot illustrations, mono tags | 2x2 grid with hover micro-renders: video scrub tied to cursor X, wireframe fill, booking grid, deploy log |
 | Lab | (new) | Spring physics lab: damping / mass / stiffness faders, 16:9 · 9:16 · 1:1, 24/30/60 fps, editable business + offer text, all driving a Remotion composition (`src/compositions/SpringCard.tsx`) |
 | Process | 4 steps with a progress line | NLE-style track view, scroll-linked playhead, clickable clips with deliverables |
-| Contact | Contact form | "Render settings" form with a render-progress submit (opens a prefilled email) |
+| Contact | Contact form | Brief form (services, timeline, message) with a render-progress submit, sent through `api/contact.ts` + Resend |
 | Footer | Giant dot-matrix "onda" reacting to cursor | Dot-matrix "exedria" wordmark reacting to cursor; scroll timecode HUD |
 
 RO is the default language; the RO/EN toggle sits in the nav (`src/i18n.tsx` holds all copy).
 
 ## Placeholders to confirm
 
-- Contact email `hello@exedria.ro` (`src/components/Contact.tsx`).
+- Contact email `hello@exedria.tech` (`src/components/Contact.tsx`).
 - Process claims: fixed-price proposals, week ranges, preview link per iteration (`src/i18n.tsx`).
 - Marina Park copy describes it as Exedria work; scene timings were read off the video.
-- The form has no backend; it opens the visitor's email app with the message filled in.
+- The contact form posts to `api/contact.ts` (Vercel Function), which emails the brief to hello@exedria.tech via Resend. Needs `RESEND_API_KEY` in Vercel and a verified exedria.tech sender (see `.env.example`). `npm run dev` does not serve `/api`; use `vercel dev` to test it locally.
 
 ## Media
 
