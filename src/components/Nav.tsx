@@ -1,9 +1,18 @@
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router';
 import { useT, type Lang } from '../i18n';
 import { Segmented, cx } from './ui';
 
-export const SECTIONS = ['work', 'services', 'lab', 'process', 'contact'] as const;
-type Section = (typeof SECTIONS)[number];
+/** Top-level destinations. Home sections are reached with a hash, the rest are their own pages. */
+export const NAV = [
+  { id: 'work', to: '/lucrari' },
+  { id: 'services', to: '/#services' },
+  { id: 'lab', to: '/#lab' },
+  { id: 'process', to: '/#process' },
+  { id: 'contact', to: '/contact' },
+] as const;
+type Section = (typeof NAV)[number]['id'];
+const HOME_SECTIONS: Section[] = ['work', 'services', 'lab', 'process'];
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -22,40 +31,47 @@ export function Logo({ className }: { className?: string }) {
 
 export function Nav() {
   const { t, lang, setLang } = useT();
-  const [active, setActive] = useState<Section | null>(null);
+  const { pathname, key } = useLocation();
+  const [spy, setSpy] = useState<Section | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
+  useEffect(() => setOpen(false), [key]);
+
+  // On the home page the lit channel follows the scroll; elsewhere it follows the route.
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 24);
+      if (pathname !== '/') return setSpy(null);
       const mid = window.innerHeight * 0.4;
       let cur: Section | null = null;
-      for (const id of SECTIONS) {
+      for (const id of HOME_SECTIONS) {
         const el = document.getElementById(id);
         if (el && el.getBoundingClientRect().top <= mid) cur = id;
       }
-      setActive(cur);
+      setSpy(cur);
     };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  }, [pathname]);
 
-  const idx = active ? SECTIONS.indexOf(active) : -1;
+  const active: Section | null = pathname.startsWith('/lucrari') ? 'work' : pathname === '/contact' ? 'contact' : spy;
+  const idx = active ? NAV.findIndex((n) => n.id === active) : -1;
 
   return (
     <header
       className={cx(
         'fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top,0px)] transition-colors duration-300',
-        scrolled ? 'border-line bg-paper/95' : 'border-transparent bg-transparent',
+        scrolled || open ? 'border-line bg-paper/95' : 'border-transparent bg-transparent',
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-8">
-        <a href="#top" className="text-fg transition-transform duration-300 ease-[var(--ease-spring)] active:scale-95" aria-label="Exedria">
+        <Link to="/" className="text-fg transition-transform duration-300 ease-[var(--ease-spring)] active:scale-95" aria-label="Exedria">
           <Logo />
-        </a>
+        </Link>
 
-        {/* Switchboard: one channel per section, the lit one follows the scroll */}
+        {/* Switchboard: one channel per destination */}
         <nav className="relative hidden rounded-[3px] border border-line bg-panel/80 p-[3px] lg:block">
           <span
             aria-hidden
@@ -63,10 +79,11 @@ export function Nav() {
             style={{ transform: `translateX(${Math.max(0, idx) * 100}%)`, opacity: idx < 0 ? 0 : 1 }}
           />
           <ul className="relative grid grid-cols-5">
-            {SECTIONS.map((id, i) => (
+            {NAV.map(({ id, to }, i) => (
               <li key={id}>
-                <a
-                  href={`#${id}`}
+                <Link
+                  to={to}
+                  aria-current={i === idx ? 'page' : undefined}
                   className={cx(
                     'flex w-[118px] items-center justify-center gap-2 py-1.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 active:scale-95',
                     i === idx ? 'text-fg' : 'text-faint hover:text-dim',
@@ -74,7 +91,7 @@ export function Nav() {
                 >
                   <span className={cx('size-[5px] transition-colors', i === idx ? 'bg-sky' : 'bg-line-strong')} />
                   {t.nav[id]}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -82,15 +99,51 @@ export function Nav() {
 
         <div className="flex items-center gap-3">
           <Segmented<Lang> size="sm" options={['ro', 'en']} value={lang} onChange={setLang} ariaLabel="Language" />
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             className="hidden items-center gap-2 rounded-[3px] bg-fg px-3.5 py-2 text-[13.5px] font-medium text-paper transition-transform duration-300 ease-[var(--ease-spring)] hover:-translate-y-0.5 active:translate-y-px active:scale-[0.97] sm:inline-flex"
           >
             {t.nav.cta}
             <span className="size-1.5 bg-magenta" />
-          </a>
+          </Link>
+          <button
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={t.menu}
+            className="grid size-9 place-items-center rounded-[3px] border border-line-strong transition-transform duration-300 ease-[var(--ease-spring)] active:scale-90 lg:hidden"
+          >
+            <span className="relative block h-[9px] w-4">
+              <span className={cx('absolute left-0 top-0 h-[1.5px] w-full bg-fg transition-transform duration-300 ease-[var(--ease-spring)]', open && 'translate-y-[3.75px] rotate-45')} />
+              <span className={cx('absolute bottom-0 left-0 h-[1.5px] w-full bg-fg transition-transform duration-300 ease-[var(--ease-spring)]', open && '-translate-y-[3.75px] -rotate-45')} />
+            </span>
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu */}
+      <nav
+        id="mobile-nav"
+        className={cx(
+          'overflow-hidden border-line transition-[opacity,transform] duration-300 ease-[var(--ease-out-expo)] lg:hidden',
+          open ? 'translate-y-0 border-t opacity-100' : 'pointer-events-none h-0 -translate-y-2 opacity-0',
+        )}
+      >
+        <ul className="mx-auto max-w-[1440px] px-4 py-3 sm:px-8">
+          {NAV.map(({ id, to }, i) => (
+            <li key={id} className="border-b border-line last:border-b-0">
+              <Link
+                to={to}
+                tabIndex={open ? 0 : -1}
+                className={cx('flex items-center justify-between py-3.5 text-[22px] tracking-[-0.02em]', i === idx ? 'text-fg' : 'text-dim')}
+              >
+                {t.nav[id]}
+                <span className={cx('size-[7px] rotate-45', i === idx ? 'bg-sky' : 'bg-line-strong')} />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </header>
   );
 }

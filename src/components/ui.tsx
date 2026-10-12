@@ -6,6 +6,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from 'react';
+import { Link } from 'react-router';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 
@@ -89,6 +90,12 @@ export function Button({ variant = 'primary', href, children, className, ...rest
       </span>
     </>
   );
+  if (href?.startsWith('/'))
+    return (
+      <Link to={href} className={cls}>
+        {inner}
+      </Link>
+    );
   if (href)
     return (
       <a href={href} className={cls}>
@@ -194,4 +201,54 @@ export function Reveal({
       {children}
     </Tag>
   );
+}
+
+/** Header block for the inner pages: label, one big title, one line of lead. */
+export function PageHeader({
+  label,
+  title,
+  lead,
+  tone = 'sky',
+  children,
+}: {
+  label: ReactNode;
+  title: ReactNode;
+  lead?: ReactNode;
+  tone?: 'sky' | 'magenta';
+  children?: ReactNode;
+}) {
+  return (
+    <header className="subgrid relative pb-14 pt-32 md:pb-20 md:pt-40">
+      <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
+        <div className="fade-up">
+          <Label tone={tone}>{label}</Label>
+        </div>
+        <h1
+          className="fade-up mt-6 max-w-[18ch] text-[clamp(44px,6.4vw,104px)] font-semibold leading-[0.92] tracking-[-0.055em]"
+          style={{ '--d': '80ms' } as CSSProperties}
+        >
+          {title}
+        </h1>
+        {lead && (
+          <p className="fade-up mt-6 max-w-[48ch] text-[16.5px] leading-[1.6] text-dim" style={{ '--d': '160ms' } as CSSProperties}>
+            {lead}
+          </p>
+        )}
+        {children}
+      </div>
+    </header>
+  );
+}
+
+/** A company detail; placeholders in [brackets] get a dashed marker so they are easy to spot. */
+export function Fill({ children }: { children: string }) {
+  if (!children.startsWith('[')) return <>{children}</>;
+  return <span className="border-b border-dashed border-magenta text-magenta">{children}</span>;
+}
+
+/** Sets the tab title for the current page. */
+export function usePageTitle(title: string) {
+  useEffect(() => {
+    document.title = title ? `${title} · Exedria` : 'Exedria · Video programatic și software';
+  }, [title]);
 }

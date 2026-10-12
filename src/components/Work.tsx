@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Link } from 'react-router';
 import { MARINA, SCENES } from '../data/marina';
 import { useT } from '../i18n';
 import { Label, Reveal, cx } from './ui';
@@ -43,7 +44,11 @@ function useVideoClock(ref: React.RefObject<HTMLVideoElement | null>) {
   return { time, playing };
 }
 
-export function Work() {
+/**
+ * The Marina Park reel: player with scene scrub bar plus the scene thumbnails.
+ * On the home page it carries its own heading; the case study page passes `intro` instead.
+ */
+export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string }) {
   const { t } = useT();
   const videoRef = useRef<HTMLVideoElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -90,7 +95,7 @@ export function Work() {
   };
 
   return (
-    <section id="work" className="relative border-t border-line py-24 md:py-32">
+    <section id={id} className="relative border-t border-line py-24 md:py-32">
       <div ref={wrapRef} className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-8 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:gap-16">
           {/* Viewer */}
           <Reveal>
@@ -204,12 +209,26 @@ export function Work() {
           </Reveal>
 
           <Reveal delay={120} className="flex min-w-0 flex-col justify-center">
-            <Label>{t.work.label}</Label>
-            <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.16em] text-sky-ink">{t.work.client}</p>
-            <h2 className="mt-3 max-w-[16ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
-              {t.work.title}
-            </h2>
-            <p className="mt-5 max-w-[44ch] text-[16.5px] leading-[1.6] text-dim">{t.work.body}</p>
+            {intro ?? (
+              <>
+                <Label>{t.work.label}</Label>
+                <p className="mt-6 font-mono text-[12px] uppercase tracking-[0.16em] text-sky-ink">{t.work.client}</p>
+                <h2 className="mt-3 max-w-[16ch] text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">
+                  {t.work.title}
+                </h2>
+                <p className="mt-5 max-w-[44ch] text-[16.5px] leading-[1.6] text-dim">{t.work.body}</p>
+                <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[12px] uppercase tracking-[0.14em]">
+                  <Link to="/lucrari/marina-park" className="group inline-flex items-center gap-2 text-fg hover:text-sky-ink">
+                    {t.portfolio.open}
+                    <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
+                  </Link>
+                  <Link to="/lucrari" className="group inline-flex items-center gap-2 text-dim hover:text-fg">
+                    {t.portfolio.all}
+                    <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
+                  </Link>
+                </div>
+              </>
+            )}
 
             {/* Scenes: one thumbnail each, the playing one lifts */}
             <div className="mt-10 grid grid-cols-8 gap-1.5 sm:gap-2.5">
