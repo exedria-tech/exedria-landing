@@ -25,7 +25,7 @@ Node 20 or newer is required (`engines` in `package.json`).
 | `/` | `src/pages/Home.tsx` | Hero, featured work, services, lab, process, call to action |
 | `/lucrari` | `src/pages/Portfolio.tsx` | Portfolio grid with hover-scrub cards; empty "slot" cards link to /contact |
 | `/lucrari/:slug` | `src/pages/CaseStudy.tsx` | One project: facts, short write-up, player |
-| `/contact` | `src/pages/ContactPage.tsx` | Brief form + direct email + company details |
+| `/contact` | `src/pages/ContactPage.tsx` | Brief form + direct email |
 | `/termeni`, `/confidentialitate` | `src/pages/Terms.tsx`, `src/pages/Privacy.tsx` | Legal pages (Romanian) |
 
 Routing is `react-router`; `vercel.json` rewrites every non-`/api` path to `index.html`.
@@ -48,8 +48,7 @@ RO is the default language; the RO/EN toggle sits in the nav (`src/i18n.tsx` hol
 
 ## Placeholders to confirm
 
-- Company details (name, CUI, Reg. Com., address) in `src/data/company.ts`. Until filled in they show up in magenta with a dashed underline in the footer, on /contact and in the legal pages.
-- The legal pages are templates: have them reviewed before launch, and confirm the retention period for unanswered enquiries (`[12 luni]` in `src/pages/Privacy.tsx`). Update the privacy policy before adding analytics or cookies.
+- The legal pages are templates: have them reviewed before launch,. Update the privacy policy before adding analytics or cookies.
 
 - Contact email `hello@exedria.tech` (`src/components/Contact.tsx`).
 - Process claims: fixed-price proposals, week ranges, preview link per iteration (`src/i18n.tsx`).

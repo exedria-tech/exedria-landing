@@ -169,7 +169,6 @@ export const ro = {
     button: 'Scrie un brief',
   },
   contactPage: {
-    company: 'Date firmă',
     privacy: 'Folosim datele din formular doar ca să-ți răspundem. Detalii în',
     privacyLink: 'Politica de confidențialitate',
   },
@@ -360,7 +359,6 @@ const en: Copy = {
     button: 'Write a brief',
   },
   contactPage: {
-    company: 'Company details',
     privacy: 'We only use what you send to reply to you. Details in the',
     privacyLink: 'Privacy policy',
   },

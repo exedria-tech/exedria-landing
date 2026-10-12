@@ -1,9 +1,8 @@
 import { LegalPage, type LegalSection } from '../components/Legal';
-import { Fill } from '../components/ui';
 import { COMPANY, EMAIL } from '../data/company';
 import { useT } from '../i18n';
 
-// Template, to be reviewed by a lawyer before launch. Company details come from src/data/company.ts.
+// Template, to be reviewed by a lawyer. Add the company's legal details here once it is registered.
 // If analytics, cookies or new processors are added to the site, update this page first.
 const SECTIONS: LegalSection[] = [
   {
@@ -12,8 +11,8 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Operatorul datelor tale este <Fill>{COMPANY.legalName}</Fill>, CUI <Fill>{COMPANY.cui}</Fill>, cu sediul în{' '}
-          <Fill>{COMPANY.address}</Fill>. Pentru orice întrebare despre datele tale ne poți scrie la <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+          Datele tale sunt prelucrate de echipa Exedria, care administrează acest site. Pentru orice întrebare despre datele tale ne poți
+          scrie la <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
         </p>
         <p>
           Această politică respectă Regulamentul (UE) 2016/679 („GDPR”) și Legea nr. 190/2018 și explică ce date colectăm prin{' '}
@@ -102,7 +101,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <ul>
         <li>
-          Cererile care nu devin proiect: cel mult <Fill>[12 luni]</Fill> de la ultimul mesaj.
+          Cererile care nu devin proiect: cel mult 12 luni de la ultimul mesaj.
         </li>
         <li>Datele din contracte și facturi: pe durata contractului și apoi cât cere legislația financiar-contabilă.</li>
         <li>Jurnalele tehnice: o perioadă scurtă, stabilită de furnizorul de găzduire.</li>

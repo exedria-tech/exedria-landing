@@ -240,12 +240,6 @@ export function PageHeader({
   );
 }
 
-/** A company detail; placeholders in [brackets] get a dashed marker so they are easy to spot. */
-export function Fill({ children }: { children: string }) {
-  if (!children.startsWith('[')) return <>{children}</>;
-  return <span className="border-b border-dashed border-magenta text-magenta">{children}</span>;
-}
-
 /** Sets the tab title for the current page. */
 export function usePageTitle(title: string) {
   useEffect(() => {

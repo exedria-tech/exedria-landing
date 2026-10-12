@@ -1,20 +1,17 @@
 import { Link } from 'react-router';
 import { LegalPage, type LegalSection } from '../components/Legal';
-import { Fill } from '../components/ui';
 import { COMPANY, EMAIL } from '../data/company';
 import { useT } from '../i18n';
 
-// Template, to be reviewed by a lawyer before launch. Company details come from src/data/company.ts.
+// Template, to be reviewed by a lawyer. Add the company's legal details here once it is registered.
 const SECTIONS: LegalSection[] = [
   {
     id: 'cine-suntem',
     title: 'Cine suntem',
     body: (
       <p>
-        Site-ul {COMPANY.domain} este administrat de <Fill>{COMPANY.legalName}</Fill>, CUI <Fill>{COMPANY.cui}</Fill>, înregistrată la
-        Registrul Comerțului cu nr. <Fill>{COMPANY.regCom}</Fill>, cu sediul în <Fill>{COMPANY.address}</Fill>, email{' '}
-        <a href={`mailto:${EMAIL}`}>{EMAIL}</a>. În acest document, „noi” sau „Exedria” înseamnă această firmă, iar „tu” înseamnă orice
-        persoană care folosește site-ul.
+        Site-ul {COMPANY.domain} este administrat de echipa Exedria, pe care o poți contacta la <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.
+        În acest document, „noi” sau „Exedria” înseamnă această echipă, iar „tu” înseamnă orice persoană care folosește site-ul.
       </p>
     ),
   },

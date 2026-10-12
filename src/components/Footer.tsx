@@ -1,9 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router';
-import { COMPANY, EMAIL } from '../data/company';
+import { EMAIL } from '../data/company';
 import { useT } from '../i18n';
 import { Logo, NAV } from './Nav';
-import { Fill } from './ui';
 
 const LEGAL = [
   { key: 'terms', to: '/termeni' },
@@ -59,7 +58,7 @@ export function Footer() {
 
       <div className="mx-auto mt-4 flex max-w-[1440px] flex-wrap items-center justify-between gap-4 border-t border-line px-4 py-5 font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint sm:px-8">
         <span>
-          © 2026 <Fill>{COMPANY.legalName}</Fill> · CUI <Fill>{COMPANY.cui}</Fill>
+          © 2026 Exedria
         </span>
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
