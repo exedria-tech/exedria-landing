@@ -28,7 +28,7 @@ const SECTIONS: LegalSection[] = [
       <>
         <ul>
           <li>
-            <strong>Formularul de contact:</strong> numele, emailul sau telefonul, serviciile care te interesează, termenul dorit și
+            <strong>Formularul de contact:</strong> numele, emailul sau telefonul, modulele și produsul care te interesează și
             mesajul tău.
           </li>
           <li>
@@ -101,7 +101,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <ul>
         <li>
-          Cererile care nu devin proiect: cel mult 12 luni de la ultimul mesaj.
+          Cererile care nu devin colaborare: cel mult 12 luni de la ultimul mesaj.
         </li>
         <li>Datele din contracte și facturi: pe durata contractului și apoi cât cere legislația financiar-contabilă.</li>
         <li>Jurnalele tehnice: o perioadă scurtă, stabilită de furnizorul de găzduire.</li>

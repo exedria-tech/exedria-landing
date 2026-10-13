@@ -19,7 +19,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-8 md:grid-cols-12">
         <div className="md:col-span-5">
           <Logo className="text-fg" />
-          <p className="mt-4 max-w-[36ch] text-[15px] leading-[1.6] text-dim">{t.hero.lead.split('.')[0]}.</p>
+          <p className="mt-4 max-w-[36ch] text-[15px] leading-[1.6] text-dim">{t.footer.tagline}</p>
           <a href={`mailto:${EMAIL}`} className="mt-6 inline-block text-[15px] text-fg hover:text-sky-ink">
             {EMAIL}
           </a>

@@ -243,6 +243,6 @@ export function PageHeader({
 /** Sets the tab title for the current page. */
 export function usePageTitle(title: string) {
   useEffect(() => {
-    document.title = title ? `${title} · Exedria` : 'Exedria · Video programatic și software';
+    document.title = title ? `${title} · Exedria` : 'Exedria · Infrastructură video programatică';
   }, [title]);
 }

@@ -26,11 +26,11 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Site-ul prezintă serviciile Exedria (clipuri promo realizate programatic, site-uri, sisteme de rezervări, software la comandă și
-          suport) și îți permite să ne trimiți o cerere de ofertă.
+          Site-ul prezintă platforma Exedria (randare video programatică, frontend-uri web, intake automat de lead-uri, API și
+          integrări) și îți permite să soliciți acces.
         </p>
         <p>
-          Informațiile de pe site au caracter general și nu sunt o ofertă fermă. Prețul, termenele și livrabilele fiecărui proiect se
+          Informațiile de pe site au caracter general și nu sunt o ofertă fermă. Prețul, accesul și condițiile de utilizare se
           stabilesc printr-o propunere scrisă și un contract separat, care au prioritate față de acești termeni.
         </p>
       </>
@@ -58,7 +58,7 @@ const SECTIONS: LegalSection[] = [
           acordul nostru scris.
         </p>
         <p>
-          Lucrările din portofoliu sunt prezentate cu acordul clienților, iar mărcile și materialele lor rămân proprietatea acestora.
+          Proiectele din showcase sunt prezentate cu acordul clienților, iar mărcile și materialele lor rămân proprietatea acestora.
           Drepturile asupra livrabilelor unui proiect se stabilesc prin contractul acelui proiect.
         </p>
       </>
