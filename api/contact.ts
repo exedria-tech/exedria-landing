@@ -1,6 +1,7 @@
 // Vercel Function: POST /api/contact
 // Validates the access request from the contact form and sends it to CONTACT_TO (default hello@exedria.tech) via Resend.
 // Needs RESEND_API_KEY (and optionally RESEND_FROM, CONTACT_TO) in the Vercel project env.
+// Spam guards: same-origin check, honeypot field, minimum fill time, and Cloudflare Turnstile once TURNSTILE_SECRET_KEY is set.
 import { Resend } from 'resend';
 import { z } from 'zod';
 
@@ -9,6 +10,9 @@ const PRODUSE = ['Programmatic Video', 'Speed-to-Lead', 'API Access', 'Enterpris
 
 const TO = process.env.CONTACT_TO ?? 'hello@exedria.tech';
 const FROM = process.env.RESEND_FROM ?? 'Exedria Brief <brief@exedria.tech>';
+
+// A human needs at least this long to fill the form; faster submissions are bots.
+const MIN_FILL_MS = 3000;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9\s().-]{7,20}$/;
@@ -31,7 +35,22 @@ type ContactResult = { success: true; id: string } | { success: false; error: st
 export async function POST(request: Request): Promise<Response> {
   const reply = (result: ContactResult, status: number) => Response.json(result, { status });
 
-  const input: unknown = await request.json().catch(() => null);
+  if (!isSameOrigin(request)) {
+    return reply({ success: false, error: 'Cerere respinsă.' }, 403);
+  }
+
+  const input = (await request.json().catch(() => null)) as Record<string, unknown> | null;
+  // Bots that fill the hidden field or submit instantly get a fake success, so they don't retry.
+  const elapsed = Number(input?.elapsed);
+  if (input?.website || !Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) {
+    return reply({ success: true, id: 'ok' }, 200);
+  }
+
+  const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
+  if (turnstileSecret && !(await verifyTurnstile(turnstileSecret, input?.turnstile, request))) {
+    return reply({ success: false, error: 'Verificarea anti-spam a eșuat. Reîncarcă pagina și încearcă din nou.' }, 403);
+  }
+
   const parsed = ContactSchema.safeParse(input);
   if (!parsed.success) {
     return reply({ success: false, error: parsed.error.issues[0]?.message ?? 'Date invalide.' }, 400);
@@ -65,6 +84,33 @@ export async function POST(request: Request): Promise<Response> {
   } catch (err) {
     console.error('[contact] send failed', err);
     return reply({ success: false, error: 'Mesajul nu a putut fi trimis. Încearcă din nou.' }, 502);
+  }
+}
+
+/** Browsers always send Origin on a fetch POST; it must match the host the request reached (production or a preview). */
+function isSameOrigin(request: Request) {
+  const origin = request.headers.get('origin');
+  const host = request.headers.get('x-forwarded-host') ?? request.headers.get('host');
+  if (!origin || !host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
+async function verifyTurnstile(secret: string, token: unknown, request: Request) {
+  if (typeof token !== 'string' || !token) return false;
+  const body = new URLSearchParams({ secret, response: token });
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
+  if (ip) body.set('remoteip', ip);
+  try {
+    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', { method: 'POST', body });
+    const result = (await res.json()) as { success?: boolean };
+    return result.success === true;
+  } catch (err) {
+    console.error('[contact] Turnstile verify failed', err);
+    return false;
   }
 }
 

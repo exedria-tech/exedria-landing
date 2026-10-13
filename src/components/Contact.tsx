@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { SERVICES } from './Services';
 import { EMAIL } from '../data/company';
 import { ro, useT } from '../i18n';
 import { cx } from './ui';
+import { useTurnstile } from '../turnstile';
 
 const RENDER_FRAMES = 48;
 
@@ -37,6 +38,10 @@ export function ContactForm() {
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');
   const [frame, setFrame] = useState(0);
   const [error, setError] = useState('');
+  // Spam guards checked by api/contact.ts: a honeypot only bots fill, time since the form appeared, and Turnstile.
+  const [website, setWebsite] = useState('');
+  const openedAt = useRef(Date.now());
+  const turnstile = useTurnstile(lang);
 
   const toggleNeed = (i: number) => setNeeds((n) => (n.includes(i) ? n.filter((x) => x !== i) : [...n, i]));
 
@@ -60,7 +65,13 @@ export function ContactForm() {
       module: needs.map((i) => ro.contact.needOptions[i]),
       produs: ro.contact.timelineOptions[product],
       mesaj: message,
-    }).then((r) => (result = r));
+      website,
+      elapsed: Date.now() - openedAt.current,
+      turnstile: turnstile.token,
+    }).then((r) => {
+      result = r;
+      turnstile.reset();
+    });
 
     // Progress runs on its own clock but holds just short of 100% until the server answers.
     const start = performance.now();
@@ -146,6 +157,14 @@ export function ContactForm() {
         </div>
       </Field>
 
+      {/* Honeypot: hidden from people and screen readers, tempting to bots. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Website
+          <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} name="website" />
+        </label>
+      </div>
+
       <Field label={t.contact.message} className="mt-5">
         <textarea
           required
@@ -156,6 +175,8 @@ export function ContactForm() {
           className={cx(field, 'resize-none')}
         />
       </Field>
+
+      {turnstile.enabled && <div ref={turnstile.ref} className="mt-5 empty:hidden" />}
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
         <button
