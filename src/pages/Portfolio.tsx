@@ -15,10 +15,14 @@ export function Portfolio() {
   const filter: Filter = fromUrl ?? 'all';
   const setFilter = (f: Filter) => setParams(f === 'all' ? {} : { categorie: f }, { replace: true });
 
-  // The filter shows once there is real work in more than one category, or when a link picked one.
-  const used = CATEGORIES.filter((c) => PROJECTS.some((p) => p.category === c) || c === fromUrl);
+  // The filter shows once there is real work in more than one category, or when a link picked one,
+  // so a filtered list always has a visible way back to all work.
+  const hasWork = (c: Category) => PROJECTS.some((p) => p.category === c);
+  const used = fromUrl ? CATEGORIES : CATEGORIES.filter(hasWork);
   const showFilter = used.length > 1;
   const match = (c: Category) => filter === 'all' || filter === c;
+  // A filtered view keeps an open slot in its own category, so it never ends on a lone card.
+  const slots = filter === 'all' ? OPEN_SLOTS : [filter];
 
   return (
     <>
@@ -43,7 +47,7 @@ export function Portfolio() {
               <ProjectCard p={p} />
             </div>
           ))}
-          {OPEN_SLOTS.filter(match).map((c, i) => (
+          {slots.map((c, i) => (
             <div key={c} className="fade-up" style={{ '--d': `${(PROJECTS.length + i) * 80}ms` } as CSSProperties}>
               <SlotCard category={c} />
             </div>
