@@ -62,14 +62,14 @@ export const PROJECTS: Project[] = [
     ],
     sections: [
       {
-        title: { ro: 'Brief', en: 'Brief' },
+        title: { ro: 'Input', en: 'Input' },
         body: {
           ro: 'Casa în stil dobrogean, căsuțele din lemn, foișorul, locurile de rulote și corturi și marea la 400 m. Totul trebuia să încapă în 40 de secunde, pe vertical.',
           en: 'The Dobrogean-style house, the wooden cabins, the gazebo, the camper and tent pitches and the sea 400 m away. All of it had to fit into 40 seconds, vertically.',
         },
       },
       {
-        title: { ro: 'Ce am făcut', en: 'What we built' },
+        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
         body: {
           ro: 'Opt scene, fiecare un component Remotion: text animat cadru cu cadru, tranziții calculate și un cadru de final cu adresa. Textul și ordinea scenelor vin din date, deci clipul se poate re-randa oricând.',
           en: 'Eight scenes, each a Remotion component: type animated frame by frame, computed transitions and an end card with the address. Copy and scene order come from data, so the clip can be re-rendered any time.',

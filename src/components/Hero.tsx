@@ -64,7 +64,7 @@ export function Hero() {
         <span />
         <div>
           <div className="grid items-end gap-10 md:px-6 lg:grid-cols-12">
-            <h1 className="font-semibold leading-[0.86] tracking-[-0.055em] text-fg lg:col-span-8" style={{ fontSize: 'clamp(56px, 10.4vw, 172px)' }}>
+            <h1 className="font-semibold leading-[0.86] tracking-[-0.055em] text-fg lg:col-span-8" style={{ fontSize: 'clamp(56px, 9.2vw, 140px)' }}>
               <span className="line-mask">
                 <span style={{ '--d': '80ms' } as CSSProperties}>{t.hero.line1}</span>
               </span>

@@ -22,16 +22,17 @@ async function postBrief(payload: Record<string, unknown>): Promise<ContactResul
   }
 }
 
-/** The brief form. Posts to api/contact.ts, which emails it through Resend. */
+/** The access request form. Posts to api/contact.ts, which emails it through Resend. */
 export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  // ?serviciu=site-uri (from the service pages) pre-ticks that need; the four services map 1:1 onto the first four options.
+  // ?serviciu=site-uri (from the platform pages) pre-ticks that module; the four modules map 1:1 onto the options,
+  // and pick the closest product (video, leads and API have their own; the web module defaults to the first).
   const [params] = useSearchParams();
   const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
   const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);
-  const [timeline, setTimeline] = useState(2);
+  const [product, setProduct] = useState([0, 0, 1, 2][Math.max(0, preset)]);
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');
   const [frame, setFrame] = useState(0);
@@ -56,8 +57,8 @@ export function ContactForm() {
     postBrief({
       nume: name,
       contact: reach,
-      servicii: needs.map((i) => ro.contact.needOptions[i]),
-      termen: ro.contact.timelineOptions[timeline],
+      module: needs.map((i) => ro.contact.needOptions[i]),
+      produs: ro.contact.timelineOptions[product],
       mesaj: message,
     }).then((r) => (result = r));
 
@@ -123,18 +124,18 @@ export function ContactForm() {
       </Field>
 
       <Field label={t.contact.timeline} className="mt-5">
-        <div role="radiogroup" className="inline-flex rounded-[3px] border border-line-strong p-0.5">
+        <div role="radiogroup" className="grid grid-cols-2 rounded-[3px] border border-line-strong p-0.5 sm:inline-flex">
           {t.contact.timelineOptions.map((o, i) => {
-            const on = timeline === i;
+            const on = product === i;
             return (
               <button
                 type="button"
                 role="radio"
                 key={o}
-                onClick={() => setTimeline(i)}
+                onClick={() => setProduct(i)}
                 aria-checked={on}
                 className={cx(
-                  'rounded-[2px] px-3.5 py-1.5 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
+                  'whitespace-nowrap rounded-[2px] px-3.5 py-1.5 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
                   on ? 'bg-fg text-paper' : 'text-dim hover:text-fg',
                 )}
               >

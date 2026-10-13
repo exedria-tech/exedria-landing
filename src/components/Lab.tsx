@@ -30,6 +30,14 @@ export function Lab() {
     playerRef.current?.play();
   };
 
+  // Back to the default knobs, then play from frame 0.
+  const reset = () => {
+    setBounce(7);
+    setSpeed(3);
+    setFormat('16:9');
+    replay();
+  };
+
   const sectionRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const el = sectionRef.current;
@@ -96,7 +104,7 @@ export function Lab() {
                 />
               </div>
               <button
-                onClick={replay}
+                onClick={reset}
                 className="mt-auto self-start rounded-[3px] border border-line-strong px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.12em] text-fg transition-transform duration-300 ease-[var(--ease-spring)] hover:border-sky/60 active:scale-90"
               >
                 ↺ {t.lab.replay}
