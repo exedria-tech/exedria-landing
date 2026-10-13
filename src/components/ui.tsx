@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from 'react';
 import { Link } from 'react-router';
+import { useT } from '../i18n';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 
@@ -242,7 +243,9 @@ export function PageHeader({
 
 /** Sets the tab title for the current page. */
 export function usePageTitle(title: string) {
+  const { lang } = useT();
   useEffect(() => {
-    document.title = title ? `${title} · Exedria` : 'Exedria · Infrastructură video programatică';
-  }, [title]);
+    const home = lang === 'en' ? 'Exedria · Programmatic Video Infrastructure' : 'Exedria · Infrastructură video programatică';
+    document.title = title ? `${title} · Exedria` : home;
+  }, [title, lang]);
 }
