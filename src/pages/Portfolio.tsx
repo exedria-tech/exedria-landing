@@ -96,7 +96,10 @@ function ProjectCard({ p }: { p: Project }) {
     >
       <Canvas playhead={x} className="transition-colors duration-300 group-hover:border-sky/60">
         <div
-          className="relative h-full overflow-hidden rounded-[2px] shadow-[0_18px_40px_rgb(11_18_32/0.16)] transition-transform duration-500 ease-[var(--ease-spring)] group-hover:scale-[1.03] group-active:scale-[0.99]"
+          className={cx(
+            'relative overflow-hidden rounded-[2px] shadow-[0_18px_40px_rgb(11_18_32/0.16)] transition-transform duration-500 ease-[var(--ease-spring)] group-hover:scale-[1.03] group-active:scale-[0.99]',
+            p.aspect < 1 ? 'h-full' : 'w-full',
+          )}
           style={{ aspectRatio: p.aspect }}
         >
           <img src={p.poster} alt="" className="h-full w-full object-cover" loading="lazy" />

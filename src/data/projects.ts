@@ -77,6 +77,49 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
+  {
+    slug: 'exedria-showreel',
+    category: 'video',
+    client: 'Exedria',
+    place: { ro: 'Showreel', en: 'Showreel' },
+    title: {
+      ro: 'De la un link de produs la zeci de reclame, în câteva minute.',
+      en: 'From one product link to dozens of ads, in minutes.',
+    },
+    summary: {
+      ro: 'Pipeline-ul complet în 15 secunde: citire, script, compilare, variante, optimizare.',
+      en: 'The full pipeline in 15 seconds: read, script, compile, multiply, learn.',
+    },
+    format: '16:9 · 00:15',
+    duration: 15,
+    fps: 30,
+    aspect: 16 / 9,
+    poster: '/media/exedria-showreel-poster.jpg',
+    strip: { src: '/media/exedria-showreel-strip.jpg', frames: 15 },
+    video: '/media/exedria-showreel.mp4',
+    facts: [
+      { k: { ro: 'Input', en: 'Input' }, v: { ro: 'Un URL de produs', en: 'One product URL' } },
+      { k: { ro: 'Format', en: 'Format' }, v: { ro: '16:9 · 1920×1080', en: '16:9 · 1920×1080' } },
+      { k: { ro: 'Durată', en: 'Length' }, v: { ro: '00:15', en: '00:15' } },
+      { k: { ro: 'Output', en: 'Output' }, v: { ro: '40 de variante · 9:16 și 1:1', en: '40 variants · 9:16 and 1:1' } },
+    ],
+    sections: [
+      {
+        title: { ro: 'Read → Script', en: 'Read → Script' },
+        body: {
+          ro: 'Claude Haiku extrage din pagina produsului propunerea de valoare, publicul și unghiurile. Claude Sonnet scrie apoi reclama cadru cu cadru, ca JSON strict: hook, problemă, soluție, CTA, formate.',
+          en: 'Claude Haiku pulls the value proposition, audience and angles out of the product page. Claude Sonnet then writes the ad frame by frame as strict JSON: hook, problem, solution, CTA, formats.',
+        },
+      },
+      {
+        title: { ro: 'Compile → Multiply → Learn', en: 'Compile → Multiply → Learn' },
+        body: {
+          ro: 'Remotion și Hyperframes compilează JSON-ul direct în MP4. Din același script ies 40 de variante în 9:16 și 1:1, publicate pe Meta și TikTok; cele obosite se reîmprospătează, cele câștigătoare primesc buget.',
+          en: 'Remotion and Hyperframes compile the JSON straight to MP4. The same script yields 40 variants in 9:16 and 1:1, pushed to Meta and TikTok; fatigued ads refresh, winners get the budget.',
+        },
+      },
+    ],
+  },
 ];
 
 /** Empty frames shown after the real projects, one per category not covered yet. Remove one when you add a project. */
