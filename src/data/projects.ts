@@ -78,56 +78,6 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
-    slug: 'exedria-showreel',
-    category: 'video',
-    client: 'Exedria',
-    place: { ro: 'Showreel', en: 'Showreel' },
-    title: {
-      ro: 'Din datele tale, un video pentru fiecare business.',
-      en: 'From your own data, one video for every business.',
-    },
-    summary: {
-      ro: 'Un link de site intră, un video gata de postat iese. Citim, scriem, randăm.',
-      en: 'A website link goes in, a ready-to-post video comes out. Read, write, render.',
-    },
-    format: '16:9 · 00:15',
-    duration: 15,
-    fps: 30,
-    aspect: 16 / 9,
-    poster: '/media/exedria-showreel-v3-poster.jpg',
-    strip: { src: '/media/exedria-showreel-v3-strip.jpg', frames: 15 },
-    video: '/media/exedria-showreel-v3.mp4',
-    facts: [
-      { k: { ro: 'Input', en: 'Input' }, v: { ro: 'Link-ul site-ului', en: 'The website link' } },
-      { k: { ro: 'Pași', en: 'Steps' }, v: { ro: 'Citim · Scriem · Randăm', en: 'Read · Write · Render' } },
-      { k: { ro: 'Output', en: 'Output' }, v: { ro: 'MP4 9:16 · Reels, TikTok, Facebook', en: '9:16 MP4 · Reels, TikTok, Facebook' } },
-      { k: { ro: 'Scară', en: 'Scale' }, v: { ro: 'Un video per business', en: 'One video per business' } },
-    ],
-    sections: [
-      {
-        title: { ro: 'Citim → Scriem', en: 'Read → Write' },
-        body: {
-          ro: 'Pornim de la link-ul site-ului: paginile, produsele și recenziile. Extragem ce face business-ul diferit, cui se adresează și ce spun clienții. Din asta construim scriptul cadru cu cadru: hook, problemă, soluție, fiecare cu sursa lui.',
-          en: 'We start from the website link: its pages, products and reviews. We pull out what makes the business different, who it serves and what customers say. From that we build the script frame by frame: hook, problem, solution, each tied to its source.',
-        },
-      },
-      {
-        title: { ro: 'Randăm → Date reale', en: 'Render → Real data' },
-        body: {
-          ro: 'Scriptul devine un MP4 vertical, gata de postat pe Reels, TikTok sau Facebook. Fiecare cuvânt din video vine dintr-o frază de pe site, iar ratingul din recenziile reale.',
-          en: 'The script becomes a vertical MP4, ready to post on Reels, TikTok or Facebook. Every word in the video comes from a line on the site, and the rating from real reviews.',
-        },
-      },
-      {
-        title: { ro: 'Fără șablon', en: 'No template' },
-        body: {
-          ro: 'Nu un șablon generic cu logo-ul tău pus peste. O brutărie, o clinică, o sală și o cafenea primesc fiecare alt video, construit din datele lor. Schimbi link-ul și pipeline-ul randează următorul business.',
-          en: 'Not a generic template with your logo dropped on top. A bakery, a clinic, a gym and a café each get a different video, built from their own data. Swap the link and the pipeline renders the next business.',
-        },
-      },
-    ],
-  },
-  {
     slug: 'flip-finder',
     category: 'video',
     client: 'Flip Finder',
@@ -173,6 +123,6 @@ export const PROJECTS: Project[] = [
 ];
 
 /** Empty frames shown after the real projects, one per category not covered yet. Remove one when you add a project. */
-export const OPEN_SLOTS: Category[] = ['web', 'software'];
+export const OPEN_SLOTS: Category[] = ['web'];
 
 export const findProject = (slug: string | undefined) => PROJECTS.find((p) => p.slug === slug);
