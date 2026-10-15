@@ -29,9 +29,12 @@ export function Lab({ embedded }: { embedded?: boolean } = {}) {
     if (!edited.current) setOffer(t.lab.defaultOffer);
   }, [lang, t.lab.defaultOffer]);
 
+  // Only play while the lab is on screen, so it never competes with the rest of the page.
+  const [inView, setInView] = useState(false);
+  const visible = useRef(false);
   const replay = () => {
     playerRef.current?.seekTo(0);
-    playerRef.current?.play();
+    if (visible.current) playerRef.current?.play();
   };
 
   // Back to the default knobs, then play from frame 0.
@@ -47,6 +50,8 @@ export function Lab({ embedded }: { embedded?: boolean } = {}) {
     const el = sectionRef.current;
     if (!el) return;
     const io = new IntersectionObserver(([e]) => {
+      visible.current = e.isIntersecting;
+      setInView(e.isIntersecting);
       if (e.isIntersecting) playerRef.current?.play();
       else playerRef.current?.pause();
     });
@@ -73,6 +78,7 @@ export function Lab({ embedded }: { embedded?: boolean } = {}) {
                       width={width}
                       height={height}
                       fps={fps}
+                      autoPlay={inView}
                     />
                   </Suspense>
                 </ClientOnly>

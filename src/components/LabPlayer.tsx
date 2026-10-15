@@ -10,6 +10,7 @@ export default function LabPlayer({
   width,
   height,
   fps,
+  autoPlay,
 }: {
   playerRef: RefObject<PlayerRef | null>;
   inputProps: SpringCardProps;
@@ -17,6 +18,7 @@ export default function LabPlayer({
   width: number;
   height: number;
   fps: number;
+  autoPlay: boolean;
 }) {
   return (
     <Player
@@ -27,7 +29,7 @@ export default function LabPlayer({
       compositionWidth={width}
       compositionHeight={height}
       fps={fps}
-      autoPlay
+      autoPlay={autoPlay}
       loop
       controls={false}
       clickToPlay={false}
