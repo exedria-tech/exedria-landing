@@ -53,7 +53,7 @@ export const ro = {
     body: 'Video, web și integrări rulează pe același cod, așa că o schimbare în date ajunge peste tot.',
     items: [
       {
-        title: 'Randare Programatică în Remotion',
+        title: 'Randare Programatică',
         body: 'Prețul, data sau oferta vin din date: modifici un payload JSON și clipul se re-randează instant în toate formatele.',
         more: 'Prețul, data sau oferta vin din date: modifici un payload JSON și clipul se re-randează instant în toate formatele.',
         tags: ['9:16 · 1:1 · 16:9', 'Payload JSON', 'Variante A/B', 'HyperFrames'],
