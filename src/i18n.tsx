@@ -17,7 +17,7 @@ export const ro = {
     line1: 'Infrastructură video',
     line2: 'scrisă în cod.',
     lead: 'Generare automată de reclame video randate din cod prin Remotion și AI. Dinamice, scalabile și legate direct la datele afacerii.',
-    ctaPrimary: 'Activează Motorul',
+    ctaPrimary: 'Cere Acces Beta',
     ctaSecondary: 'Vezi Demo Interactiv',
     scrubHint: 'Trage de riglă. Fiecare punct e o funcție de cadru.',
   },
