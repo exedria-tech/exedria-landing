@@ -166,7 +166,7 @@ export const ro = {
     title: 'Motorul din spatele fiecărui clip.',
     body: 'Pipeline-ul care transformă datele brute în video randat și laboratorul în care mișcarea devine parametru.',
     teaserTitle: 'Pipeline-ul și laboratorul de mișcare.',
-    teaserLink: 'Deschide motorul',
+    teaserLink: 'Vezi tehnologia',
   },
   caseStudy: {
     next: 'Template-ul următor',
@@ -368,7 +368,7 @@ const en: Copy = {
     title: 'The engine behind every render.',
     body: 'The pipeline that turns raw data into rendered video, and the lab where motion becomes a parameter.',
     teaserTitle: 'The pipeline and the motion lab.',
-    teaserLink: 'Open the engine',
+    teaserLink: 'Explore the tech',
   },
   caseStudy: {
     next: 'Next template',
