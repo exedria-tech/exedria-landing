@@ -127,6 +127,49 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
+  {
+    slug: 'flip-finder',
+    category: 'video',
+    client: 'Flip Finder',
+    place: { ro: 'Imobiliare', en: 'Real estate' },
+    title: {
+      ro: 'Oferta de sub piață, găsită înaintea tuturor.',
+      en: 'The below-market deal, found before anyone else.',
+    },
+    summary: {
+      ro: 'Ad vertical pentru o aplicație care găsește apartamente sub prețul pieței. Fiecare cifră din video vine din date.',
+      en: 'A vertical ad for an app that finds apartments priced below market. Every number in the video comes from data.',
+    },
+    format: '9:16 · 00:20',
+    duration: 20,
+    fps: 30,
+    aspect: 9 / 16,
+    poster: '/media/flip-finder-v1-poster.jpg',
+    strip: { src: '/media/flip-finder-v1-strip.jpg', frames: 20 },
+    video: '/media/flip-finder-v1.mp4',
+    facts: [
+      { k: { ro: 'Client', en: 'Client' }, v: { ro: 'Flip Finder', en: 'Flip Finder' } },
+      { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },
+      { k: { ro: 'Durată', en: 'Length' }, v: { ro: '00:20 · 60 fps', en: '00:20 · 60 fps' } },
+      { k: { ro: 'Livrare', en: 'Delivered' }, v: { ro: 'Reels, TikTok, Stories', en: 'Reels, TikTok, Stories' } },
+    ],
+    sections: [
+      {
+        title: { ro: 'Input', en: 'Input' },
+        body: {
+          ro: 'Flip Finder urmărește anunțurile de apartamente din România și semnalează zilnic ce a scăzut sub valoarea de piață. Video-ul trebuia să arate asta pe un singur caz real: un 2 camere în Militari, de la 95.500 € la 89.000 €.',
+          en: 'Flip Finder tracks apartment listings across Romania and flags, every day, what has dropped below market value. The video had to show that through one real case: a two-room flat in Militari, from €95,500 down to €89,000.',
+        },
+      },
+      {
+        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
+        body: {
+          ro: 'Eticheta de preț, graficul de scădere față de valoarea de piață, harta cu ofertele noi, lista din dashboard și notificarea de dimineață. Toate se desenează din aceleași date, deci schimbi anunțul și video-ul se re-randează cu noile cifre.',
+          en: 'The price tag, the drop chart against market value, the map of new deals, the dashboard list and the morning notification. All of it is drawn from the same data, so swap the listing and the video re-renders with the new numbers.',
+        },
+      },
+    ],
+  },
 ];
 
 /** Empty frames shown after the real projects, one per category not covered yet. Remove one when you add a project. */
