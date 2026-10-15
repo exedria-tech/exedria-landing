@@ -1,7 +1,7 @@
 export const MARINA = {
-  src: '/media/marina-park.mp4',
-  poster: '/media/marina-park-poster.jpg',
-  strip: '/media/marina-park-strip.jpg',
+  src: '/media/marina-park-v2.mp4',
+  poster: '/media/marina-park-v2-poster.jpg',
+  strip: '/media/marina-park-v2-strip.jpg',
   stripFrames: 40, // one thumbnail per second
   duration: 40,
   fps: 30,
