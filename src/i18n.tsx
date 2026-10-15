@@ -402,9 +402,9 @@ export type Lang = 'ro' | 'en';
 const dict: Record<Lang, Copy> = { ro, en };
 
 const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: Copy }>({
-  lang: 'en',
+  lang: 'ro',
   setLang: () => {},
-  t: en,
+  t: ro,
 });
 
 function readLang(): Lang {
@@ -414,7 +414,7 @@ function readLang(): Lang {
   } catch {
     /* storage unavailable */
   }
-  return 'en';
+  return 'ro';
 }
 
 export function LangProvider({ children }: { children: ReactNode }) {
