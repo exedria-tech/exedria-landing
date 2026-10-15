@@ -131,7 +131,7 @@ export const ro = {
   },
   contact: {
     label: 'Acces',
-    title: 'Hai să lansăm motorul.',
+    title: 'Conectează datele. Noi randăm restul.',
     body: 'Spune-ne despre volumul de reclame sau cazul tău de utilizare. Configurăm un preview dedicat.',
     name: 'Nume',
     email: 'Email sau telefon',
@@ -182,7 +182,7 @@ export const ro = {
     cta: 'Generează un Preview',
   },
   homeCta: {
-    title: 'Hai să lansăm motorul.',
+    title: 'Conectează datele. Noi randăm restul.',
     body: 'Spune-ne despre volumul de reclame sau cazul tău de utilizare. Configurăm un preview dedicat.',
     button: 'Cere Acces Beta',
   },
@@ -339,7 +339,7 @@ const en: Copy = {
   },
   contact: {
     label: 'Access',
-    title: 'Deploy the creative engine.',
+    title: 'Plug in your data. We render the rest.',
     body: "Tell us about your ad volume or specific use case. We'll set up a live preview instance.",
     name: 'Name',
     email: 'Email or phone',
@@ -390,7 +390,7 @@ const en: Copy = {
     cta: 'Generate Preview',
   },
   homeCta: {
-    title: 'Deploy the creative engine.',
+    title: 'Plug in your data. We render the rest.',
     body: "Tell us about your ad volume or specific use case. We'll set up a live preview instance.",
     button: 'Request Beta Access',
   },
