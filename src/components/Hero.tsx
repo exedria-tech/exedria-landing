@@ -1,32 +1,14 @@
-import { useEffect, useRef, type CSSProperties } from 'react';
-import { Player, type PlayerRef } from '@remotion/player';
-import { HERO, HeroField } from '../compositions/HeroField';
+import { Suspense, lazy, type CSSProperties } from 'react';
 import { useT } from '../i18n';
 import { Button } from './ui';
 
-const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Remotion loads after first paint, outside the critical path.
+const HeroPlayer = lazy(() => import('./HeroPlayer'));
 
 export function Hero() {
   const { t } = useT();
-  const playerRef = useRef<PlayerRef>(null);
-  const sectionRef = useRef<HTMLElement>(null);
-
-  // Pause the composition while the hero is off screen.
-  useEffect(() => {
-    const el = sectionRef.current;
-    if (!el || reducedMotion) return;
-    const io = new IntersectionObserver(([e]) => {
-      const p = playerRef.current;
-      if (!p) return;
-      if (e.isIntersecting) p.play();
-      else p.pause();
-    });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
   return (
-    <section id="top" ref={sectionRef} className="subgrid relative min-h-[100svh] overflow-hidden pt-16">
+    <section id="top" className="subgrid relative min-h-[100svh] overflow-hidden pt-16">
       {/* Composition layer, cover-scaled */}
       <div className="absolute inset-x-0 bottom-0 top-16 overflow-hidden opacity-75 md:opacity-100" aria-hidden>
         <div
@@ -37,24 +19,9 @@ export function Hero() {
             transform: 'translate(-50%, -50%)',
           }}
         >
-          <Player
-            ref={playerRef}
-            component={HeroField}
-            durationInFrames={HERO.durationInFrames}
-            compositionWidth={HERO.width}
-            compositionHeight={HERO.height}
-            fps={HERO.fps}
-            autoPlay={!reducedMotion}
-            loop
-            controls={false}
-            clickToPlay={false}
-            doubleClickToFullscreen={false}
-            spaceKeyToPlayOrPause={false}
-            initiallyMuted
-            numberOfSharedAudioTags={0}
-            acknowledgeRemotionLicense
-            style={{ width: '100%', height: '100%' }}
-          />
+          <Suspense fallback={null}>
+            <HeroPlayer />
+          </Suspense>
         </div>
         {/* readability falloff under the headline */}
         <div className="absolute inset-0 bg-[linear-gradient(to_top,var(--color-paper)_30%,transparent_75%)] md:bg-[linear-gradient(to_top,var(--color-paper)_0%,transparent_38%)]" />

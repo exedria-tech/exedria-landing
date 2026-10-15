@@ -19,71 +19,25 @@ function readTimings(): Timings | null {
   };
 }
 
-const FPS_SAMPLES = 40;
-
-/** Frames counted per 500 ms window, while the panel is on screen. */
-function useLiveFps(target: React.RefObject<HTMLElement | null>) {
-  const [samples, setSamples] = useState<number[]>([]);
+/** Reads Navigation Timing once the page has loaded: no polling, nothing on the main thread meanwhile. */
+function useTimings() {
+  const [timings, setTimings] = useState<Timings | null>(null);
   useEffect(() => {
-    const el = target.current;
-    if (!el) return;
     let raf = 0;
-    let frames = 0;
-    let since = 0;
-    const tick = (now: number) => {
-      if (!since) since = now;
-      frames++;
-      if (now - since >= 500) {
-        const fps = Math.round((frames * 1000) / (now - since));
-        setSamples((s) => [...s.slice(-(FPS_SAMPLES - 1)), fps]);
-        frames = 0;
-        since = now;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    const io = new IntersectionObserver(([e]) => {
-      cancelAnimationFrame(raf);
-      if (e.isIntersecting) {
-        frames = 0;
-        since = 0;
-        raf = requestAnimationFrame(tick);
-      }
-    });
-    io.observe(el);
+    const read = () => (raf = requestAnimationFrame(() => setTimings(readTimings())));
+    if (document.readyState === 'complete') read();
+    else window.addEventListener('load', read, { once: true });
     return () => {
-      io.disconnect();
+      window.removeEventListener('load', read);
       cancelAnimationFrame(raf);
     };
-  }, [target]);
-  return samples;
+  }, []);
+  return timings;
 }
 
 export function WebSpeed() {
   const { t } = useT();
   const w = t.webDemo;
-  const panel = useRef<HTMLDivElement>(null);
-  const [timings, setTimings] = useState<Timings | null>(() => readTimings());
-  const fps = useLiveFps(panel);
-
-  // DOMContentLoaded can land before React's first commit, so poll until both are known.
-  useEffect(() => {
-    if (timings && timings.mount != null) return;
-    const id = setInterval(() => {
-      const v = readTimings();
-      if (v) setTimings(v);
-    }, 200);
-    return () => clearInterval(id);
-  }, [timings]);
-
-  const ms = (v: number | null | undefined) => (v == null ? null : Math.round(v));
-  const current = fps.at(-1);
-  const tiles: { key: keyof typeof w.metrics; value: number | null | undefined; unit: string }[] = [
-    { key: 'ttfb', value: ms(timings?.ttfb), unit: 'ms' },
-    { key: 'dcl', value: ms(timings?.dcl), unit: 'ms' },
-    { key: 'mount', value: ms(timings?.mount), unit: 'ms' },
-    { key: 'fps', value: current, unit: 'FPS' },
-  ];
-
   return (
     <>
       <Reveal>
@@ -93,44 +47,8 @@ export function WebSpeed() {
       </Reveal>
 
       <Reveal delay={100} className="mt-12">
-        <div ref={panel} className="grid border border-line bg-panel lg:grid-cols-2">
-          {/* Left: what this browser measured for this page */}
-          <div className="flex min-w-0 flex-col border-b border-line lg:border-b-0 lg:border-r">
-            <PanelHead>
-              <span className="size-1.5 bg-phosphor blink" />
-              {w.telemetry}
-            </PanelHead>
-            <div className="grid flex-1 grid-cols-2">
-              {tiles.map(({ key, value, unit }, i) => {
-                const [name, source] = w.metrics[key];
-                return (
-                  <div key={key} className={cx('flex min-w-0 flex-col justify-between gap-6 p-5 sm:p-6', i % 2 === 0 && 'border-r border-line', i < 2 && 'border-b border-line')}>
-                    <div>
-                      <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-dim">{name}</div>
-                      <div className="mt-1 font-mono text-[10.5px] text-faint">{source}</div>
-                    </div>
-                    <div>
-                      {value == null ? (
-                        <div className="font-mono text-[13px] text-faint">{w.pending}…</div>
-                      ) : (
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-[clamp(34px,4vw,48px)] font-semibold leading-none tracking-[-0.04em] tabular-nums">{value}</span>
-                          <span className="font-mono text-[12px] text-dim">{unit}</span>
-                        </div>
-                      )}
-                      {key === 'fps' && <Spark values={fps} />}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <p className="flex items-center gap-2 border-t border-line px-5 py-3.5 font-mono text-[11px] text-dim sm:px-6">
-              <span className="size-1.5 shrink-0 rounded-full bg-phosphor" />
-              {w.note}
-            </p>
-          </div>
-
-          {/* Right: the three layers we ship */}
+        <div className="grid border border-line bg-panel lg:grid-cols-2">
+          <Telemetry />
           <Layers />
         </div>
       </Reveal>
@@ -138,29 +56,150 @@ export function WebSpeed() {
   );
 }
 
-function PanelHead({ children }: { children: React.ReactNode }) {
+/* Instrument cluster: dark, mono readouts, neon status. Only the FPS readout changes after load, via refs. */
+function Telemetry() {
+  const { t } = useT();
+  const w = t.webDemo;
+  const timings = useTimings();
+  const ms = (v: number | null | undefined) => (v == null ? null : Math.round(v));
+  const ttfb = ms(timings?.ttfb);
+  const tiles = [
+    { key: 'ttfb', value: ttfb, badge: ttfb != null && ttfb < 100 },
+    { key: 'dcl', value: ms(timings?.dcl) },
+    { key: 'mount', value: ms(timings?.mount) },
+  ] as const;
+
   return (
-    <div className="flex items-center gap-2.5 border-b border-line px-5 py-3.5 font-mono text-[11px] uppercase tracking-[0.16em] text-fg sm:px-6">
-      {children}
+    <div className="flex min-w-0 flex-col bg-fg text-paper">
+      <div className="flex items-center gap-3 border-b border-white/10 px-5 py-4 font-mono text-[11px] uppercase tracking-[0.18em] sm:px-7">
+        <span className="relative flex size-2">
+          <span className="absolute inset-0 rounded-full bg-neon opacity-75 motion-safe:animate-ping" />
+          <span className="relative size-2 rounded-full bg-neon shadow-[0_0_10px_var(--color-neon)]" />
+        </span>
+        <span>{w.telemetry}</span>
+      </div>
+
+      <div className="grid flex-1 grid-cols-2">
+        {tiles.map(({ key, value, ...rest }, i) => (
+          <Readout key={key} name={w.metrics[key][0]} source={w.metrics[key][1]} className={cx(i % 2 === 0 && 'border-r', 'border-b')}>
+            {value == null ? (
+              <span className="text-[13px] text-white/40">{w.pending}…</span>
+            ) : (
+              <>
+                <Num>{value}</Num>
+                <Unit>ms</Unit>
+                {'badge' in rest && rest.badge && (
+                  <span className="ml-auto self-center rounded-[2px] border border-neon/40 bg-neon/10 px-1.5 py-[3px] text-[9.5px] uppercase leading-none tracking-[0.14em] text-neon">
+                    {w.excellent}
+                  </span>
+                )}
+              </>
+            )}
+          </Readout>
+        ))}
+        <FpsReadout name={w.metrics.fps[0]} source={w.metrics.fps[1]} />
+      </div>
+
+      <p className="px-5 py-4 font-mono text-[11px] leading-[1.6] text-white/55 sm:px-7">{w.note}</p>
     </div>
   );
 }
 
-/** Frame-rate history, one bar per 500 ms window. */
-function Spark({ values }: { values: number[] }) {
-  const max = Math.max(60, ...values);
+function Readout({ name, source, className, children }: { name: string; source: string; className?: string; children: React.ReactNode }) {
   return (
-    <div className="mt-3 flex h-5 items-end gap-[2px]" aria-hidden>
-      {Array.from({ length: FPS_SAMPLES }, (_, i) => {
-        const v = values[i - (FPS_SAMPLES - values.length)];
-        return (
-          <span
-            key={i}
-            className={cx('flex-1', v == null ? 'bg-line' : v < 50 ? 'bg-magenta' : 'bg-sky')}
-            style={{ height: v == null ? 2 : `${Math.max(8, (v / max) * 100)}%` }}
+    <div className={cx('flex min-w-0 flex-col justify-between gap-7 border-white/10 px-5 py-6 sm:px-7', className)}>
+      <div className="font-mono">
+        <div className="text-[11px] uppercase tracking-[0.16em] text-white/70">{name}</div>
+        <div className="mt-1 text-[10.5px] text-white/35">{source}</div>
+      </div>
+      <div className="flex min-w-0 items-baseline gap-1.5 font-mono">{children}</div>
+    </div>
+  );
+}
+
+const Num = ({ children }: { children: React.ReactNode }) => (
+  <span className="text-[clamp(36px,4.2vw,54px)] font-medium leading-none tracking-[-0.05em] tabular-nums">{children}</span>
+);
+const Unit = ({ children }: { children: React.ReactNode }) => <span className="text-[12px] text-white/50">{children}</span>;
+
+/**
+ * Frames counted per 500 ms with requestAnimationFrame. Results are written straight to the DOM
+ * (textContent and a transform on a composited bar), so the counter never re-renders React or
+ * triggers layout. Paused while off screen or in a background tab.
+ */
+function FpsReadout({ name, source }: { name: string; source: string }) {
+  const root = useRef<HTMLDivElement>(null);
+  const num = useRef<HTMLSpanElement>(null);
+  const bar = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = root.current;
+    if (!el) return;
+    let raf = 0;
+    let frames = 0;
+    let since = 0;
+    let visible = false;
+    const tick = (now: number) => {
+      if (!since) since = now;
+      frames++;
+      const span = now - since;
+      if (span >= 500) {
+        const fps = Math.round((frames * 1000) / span);
+        if (num.current) num.current.textContent = String(fps);
+        if (bar.current) bar.current.style.transform = `scaleX(${Math.min(1, fps / 60)})`;
+        frames = 0;
+        since = now;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    const sync = () => {
+      cancelAnimationFrame(raf);
+      frames = 0;
+      since = 0;
+      if (visible && !document.hidden) raf = requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      sync();
+    });
+    io.observe(el);
+    document.addEventListener('visibilitychange', sync);
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', sync);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return (
+    <div ref={root} className="flex min-w-0 flex-col justify-between gap-7 border-b border-white/10 px-5 py-6 sm:px-7">
+      <div className="font-mono">
+        <div className="text-[11px] uppercase tracking-[0.16em] text-white/70">{name}</div>
+        <div className="mt-1 text-[10.5px] text-white/35">{source}</div>
+      </div>
+      <div>
+        <div className="flex items-baseline gap-1.5 font-mono">
+          <Num>
+            <span ref={num}>--</span>
+          </Num>
+          <Unit>FPS</Unit>
+        </div>
+        <div className="mt-3 h-[3px] overflow-hidden bg-white/10">
+          <div
+            ref={bar}
+            className="h-full origin-left bg-neon shadow-[0_0_8px_var(--color-neon)] transition-transform duration-500 ease-out will-change-transform"
+            style={{ transform: 'scaleX(0)' }}
           />
-        );
-      })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PanelHead({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5 border-b border-line px-5 py-4 font-mono text-[11px] uppercase tracking-[0.16em] text-fg sm:px-6">
+      {children}
     </div>
   );
 }
