@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router';
 import { MoreLink, SERVICES } from '../components/Services';
 import { Work } from '../components/Work';
 import { Button, Label, PageHeader, Reveal, usePageTitle } from '../components/ui';
-import { PROJECTS, findProject, type Project } from '../data/projects';
+import { LISTED, findProject, type Project } from '../data/projects';
 import { useT } from '../i18n';
 import { NotFound } from './NotFound';
 
@@ -19,8 +19,8 @@ function CaseStudyPage({ p }: { p: Project }) {
 
   const details = <Details p={p} />;
   const serviceIdx = SERVICES.findIndex((s) => s.category === p.category);
-  const i = PROJECTS.indexOf(p);
-  const next = PROJECTS.length > 1 ? PROJECTS[(i + 1) % PROJECTS.length] : null;
+  const i = LISTED.indexOf(p);
+  const next = LISTED.length > 1 && i >= 0 ? LISTED[(i + 1) % LISTED.length] : null;
 
   return (
     <>

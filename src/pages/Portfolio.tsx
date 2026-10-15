@@ -1,7 +1,7 @@
 import { useState, type CSSProperties, type ReactNode } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { Corners, PageHeader, Segmented, cx, timecode, usePageTitle } from '../components/ui';
-import { CATEGORIES, OPEN_SLOTS, PROJECTS, type Category, type Project } from '../data/projects';
+import { CATEGORIES, LISTED, OPEN_SLOTS, type Category, type Project } from '../data/projects';
 import { useT } from '../i18n';
 
 type Filter = 'all' | Category;
@@ -17,7 +17,7 @@ export function Portfolio() {
 
   // The filter shows once there is real work in more than one category, or when a link picked one,
   // so a filtered list always has a visible way back to all work.
-  const hasWork = (c: Category) => PROJECTS.some((p) => p.category === c);
+  const hasWork = (c: Category) => LISTED.some((p) => p.category === c);
   const used = fromUrl ? CATEGORIES : CATEGORIES.filter(hasWork);
   const showFilter = used.length > 1;
   const match = (c: Category) => filter === 'all' || filter === c;
@@ -42,13 +42,13 @@ export function Portfolio() {
 
       <section className="border-t border-line py-16 md:py-24">
         <div key={filter} className="mx-auto grid max-w-[1440px] gap-x-6 gap-y-14 px-4 sm:grid-cols-2 sm:px-8 lg:grid-cols-3">
-          {PROJECTS.filter((p) => match(p.category)).map((p, i) => (
+          {LISTED.filter((p) => match(p.category)).map((p, i) => (
             <div key={p.slug} className="fade-up" style={{ '--d': `${i * 80}ms` } as CSSProperties}>
               <ProjectCard p={p} />
             </div>
           ))}
           {slots.map((c, i) => (
-            <div key={c} className="fade-up" style={{ '--d': `${(PROJECTS.length + i) * 80}ms` } as CSSProperties}>
+            <div key={c} className="fade-up" style={{ '--d': `${(LISTED.length + i) * 80}ms` } as CSSProperties}>
               <SlotCard category={c} />
             </div>
           ))}
