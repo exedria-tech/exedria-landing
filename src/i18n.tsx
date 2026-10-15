@@ -7,8 +7,8 @@ export const ro = {
     lab: 'Laborator',
     process: 'Pipeline',
     studio: 'Motor Grafic',
-    contact: 'Acces',
-    cta: 'Cere Acces Beta',
+    contact: 'Contact',
+    cta: 'Cere o ofertă',
   },
   hero: {
     metaA: 'Creative Automation și video programatic',
@@ -17,7 +17,7 @@ export const ro = {
     line1: 'Infrastructură video',
     line2: 'scrisă în cod.',
     lead: 'Generare automată de reclame video randate din cod. Dinamice, scalabile și legate direct la datele afacerii.',
-    ctaPrimary: 'Cere Acces Beta',
+    ctaPrimary: 'Cere o ofertă',
     ctaSecondary: 'Vezi Demo Interactiv',
     scrubHint: 'Trage de riglă. Fiecare punct e o funcție de cadru.',
   },
@@ -126,7 +126,7 @@ export const ro = {
     ],
   },
   contact: {
-    label: 'Acces',
+    label: 'Contact',
     title: 'Conectează datele. Noi randăm restul.',
     body: 'Spune-ne despre volumul de reclame sau cazul tău de utilizare. Configurăm un preview dedicat.',
     name: 'Nume',
@@ -135,7 +135,7 @@ export const ro = {
     needOptions: ['Video programatic', 'Frontend web', 'API & integrări'],
     message: 'Mesaj',
     messagePh: 'Ex: avem 300 de clinici partenere și vrem câte un video pentru fiecare, cu rating-ul și recenziile trase automat.',
-    submit: 'Solicită Acces la Platformă',
+    submit: 'Trimite cererea',
     sending: 'Se randează',
     done: 'Cerere primită. Revenim cu un preview.',
     failed: 'Nu s-a trimis. Încearcă din nou sau scrie-ne la',
@@ -178,7 +178,7 @@ export const ro = {
   homeCta: {
     title: 'Conectează datele. Noi randăm restul.',
     body: 'Spune-ne despre volumul de reclame sau cazul tău de utilizare. Configurăm un preview dedicat.',
-    button: 'Cere Acces Beta',
+    button: 'Cere o ofertă',
   },
   contactPage: {
     privacy: 'Folosim datele din formular doar ca să-ți răspundem. Detalii în',
@@ -256,8 +256,8 @@ const en: Copy = {
     lab: 'Lab',
     process: 'Pipeline',
     studio: 'Motion Lab',
-    contact: 'Access',
-    cta: 'Request Beta Access',
+    contact: 'Contact',
+    cta: 'Get a quote',
   },
   hero: {
     metaA: 'Creative automation and programmatic video',
@@ -266,7 +266,7 @@ const en: Copy = {
     line1: 'Programmatic video',
     line2: 'infrastructure.',
     lead: 'Automated video ads rendered from code. Dynamic, scalable and wired straight to your business data.',
-    ctaPrimary: 'Request Beta Access',
+    ctaPrimary: 'Get a quote',
     ctaSecondary: 'Interactive Demo',
     scrubHint: 'Drag the ruler. Every dot is a function of the frame.',
   },
@@ -375,7 +375,7 @@ const en: Copy = {
     ],
   },
   contact: {
-    label: 'Access',
+    label: 'Contact',
     title: 'Plug in your data. We render the rest.',
     body: "Tell us about your ad volume or specific use case. We'll set up a live preview instance.",
     name: 'Name',
@@ -384,7 +384,7 @@ const en: Copy = {
     needOptions: ['Programmatic video', 'Web frontend', 'API & pipelines'],
     message: 'Message',
     messagePh: 'E.g. we have 300 partner clinics and want one video for each, with ratings and reviews pulled in automatically.',
-    submit: 'Request Platform Access',
+    submit: 'Send request',
     sending: 'Rendering',
     done: "Request received. We'll follow up with a preview.",
     failed: 'It did not send. Try again or write to us at',
@@ -427,7 +427,7 @@ const en: Copy = {
   homeCta: {
     title: 'Plug in your data. We render the rest.',
     body: "Tell us about your ad volume or specific use case. We'll set up a live preview instance.",
-    button: 'Request Beta Access',
+    button: 'Get a quote',
   },
   contactPage: {
     privacy: 'We only use what you send to reply to you. Details in the',
