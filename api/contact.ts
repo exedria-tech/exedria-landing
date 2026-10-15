@@ -6,7 +6,6 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 
 const MODULE = ['Video programatic', 'Frontend web', 'Intake lead-uri', 'API & integrări'] as const;
-const PRODUSE = ['Programmatic Video', 'Speed-to-Lead', 'API Access', 'Enterprise'] as const;
 
 const TO = process.env.CONTACT_TO ?? 'hello@exedria.tech';
 const FROM = process.env.RESEND_FROM ?? 'Exedria Brief <brief@exedria.tech>';
@@ -26,7 +25,6 @@ const ContactSchema = z.object({
     .max(160)
     .refine((v) => EMAIL_RE.test(v) || PHONE_RE.test(v), 'Contactul trebuie să fie un email sau un număr de telefon valid.'),
   module: z.array(z.enum(MODULE, { message: 'Modul necunoscut.' })).min(1, 'Alege cel puțin un modul.'),
-  produs: z.enum(PRODUSE, { message: 'Alege un produs.' }),
   mesaj: z.string().trim().min(1, 'Mesajul este obligatoriu.').max(5000),
 });
 
@@ -71,7 +69,7 @@ export async function POST(request: Request): Promise<Response> {
       from: FROM,
       to: [TO],
       replyTo: isEmail ? data.contact : undefined,
-      subject: `[acces] ${data.nume} · ${data.produs} · ${data.module.join(' + ')}`,
+      subject: `[acces] ${data.nume} · ${data.module.join(' + ')}`,
       html: renderHtml(data),
       text: renderText(data),
     });
@@ -128,7 +126,6 @@ function renderText(d: AccessRequest) {
   return [
     `nume:     ${d.nume}`,
     `contact:  ${d.contact}`,
-    `produs:   ${d.produs}`,
     `module:   ${d.module.join(', ')}`,
     '',
     d.mesaj,
@@ -163,7 +160,6 @@ function renderHtml(d: AccessRequest) {
     </tr>
     ${row('nume', esc(d.nume))}
     ${row('contact', contactCell)}
-    ${row('produs', `{ produs: "<span style="color:#e0179e;">${esc(d.produs)}</span>" }`)}
     ${row('module', chips)}
     <tr>
       <td colspan="2" style="padding:10px 14px 4px;border-top:1px solid #e3e8ef;color:#64748b;font:12px ${mono};text-transform:uppercase;letter-spacing:.12em;">mesaj</td>

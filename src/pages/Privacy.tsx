@@ -28,7 +28,7 @@ const SECTIONS: LegalSection[] = [
       <>
         <ul>
           <li>
-            <strong>Formularul de contact:</strong> numele, emailul sau telefonul, modulele și produsul care te interesează și
+            <strong>Formularul de contact:</strong> numele, emailul sau telefonul, modulele care te interesează și
             mesajul tău.
           </li>
           <li>

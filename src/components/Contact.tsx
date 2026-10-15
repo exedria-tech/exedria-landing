@@ -28,12 +28,10 @@ export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  // ?serviciu=site-uri (from the platform pages) pre-ticks that module; the modules map 1:1 onto the options,
-  // and pick the closest product (video and API have their own; the web module defaults to the first).
+  // ?serviciu=site-uri (from the platform pages) pre-ticks that module; the modules map 1:1 onto the options.
   const [params] = useSearchParams();
   const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
   const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);
-  const [product, setProduct] = useState([0, 0, 1][Math.max(0, preset)]);
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');
   const [frame, setFrame] = useState(0);
@@ -63,7 +61,6 @@ export function ContactForm() {
       nume: name,
       contact: reach,
       module: needs.map((i) => ro.contact.needOptions[i]),
-      produs: ro.contact.timelineOptions[product],
       mesaj: message,
       website,
       elapsed: Date.now() - openedAt.current,
@@ -134,28 +131,6 @@ export function ContactForm() {
         </div>
       </Field>
 
-      <Field label={t.contact.timeline} className="mt-5">
-        <div role="radiogroup" className="grid grid-cols-2 rounded-[3px] border border-line-strong p-0.5 sm:inline-flex">
-          {t.contact.timelineOptions.map((o, i) => {
-            const on = product === i;
-            return (
-              <button
-                type="button"
-                role="radio"
-                key={o}
-                onClick={() => setProduct(i)}
-                aria-checked={on}
-                className={cx(
-                  'whitespace-nowrap rounded-[2px] px-3.5 py-1.5 font-mono text-[12px] transition-[transform,colors] duration-300 ease-[var(--ease-spring)] active:scale-95',
-                  on ? 'bg-fg text-paper' : 'text-dim hover:text-fg',
-                )}
-              >
-                {o}
-              </button>
-            );
-          })}
-        </div>
-      </Field>
 
       {/* Honeypot: hidden from people and screen readers, tempting to bots. */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
