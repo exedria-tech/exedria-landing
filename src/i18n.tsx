@@ -223,7 +223,7 @@ export const ro = {
     presets: [
       {
         tab: 'E-commerce Drop',
-        data: { product: 'Ultraboost Light V3', price: '540 RON', badge: '-25% FLASH SALE', stock: 6, cta: 'Cumpără Acum' },
+        data: { product: 'Exedria Runner X1', price: '540 RON', badge: '-25% FLASH SALE', stock: 6, cta: 'Cumpără Acum' },
       },
       {
         tab: 'Evenimente & Tickets',
@@ -470,7 +470,7 @@ const en: Copy = {
     presets: [
       {
         tab: 'E-commerce Drop',
-        data: { product: 'Ultraboost Light V3', price: '540 RON', badge: '-25% FLASH SALE', stock: 6, cta: 'Buy Now' },
+        data: { product: 'Exedria Runner X1', price: '540 RON', badge: '-25% FLASH SALE', stock: 6, cta: 'Buy Now' },
       },
       {
         tab: 'Events & Tickets',

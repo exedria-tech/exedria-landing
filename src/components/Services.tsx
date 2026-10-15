@@ -211,7 +211,7 @@ function WebPreview({ active, ...c }: PreviewState & CardContent) {
             <span className="size-1.5 bg-line-strong" />
             <span className="size-1.5 bg-line-strong" />
             <span className="size-1.5 bg-line-strong" />
-            <span className="ml-3 font-mono text-[9.5px] text-faint">pensiunea-dor.ro</span>
+            <span className="ml-3 font-mono text-[9.5px] text-faint">demo.exedria.tech</span>
           </div>
           <div className="space-y-3 p-4">
             <div className="flex justify-between gap-3">
