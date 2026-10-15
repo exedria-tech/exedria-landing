@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useLayoutEffect, useRef } from 'react';
+import { Suspense, lazy, useEffect, useLayoutEffect, useRef, type ComponentType } from 'react';
 import { Navigate, Route, Routes, useLocation, useNavigationType } from 'react-router';
 import { Footer } from './components/Footer';
 import { Nav } from './components/Nav';
@@ -7,25 +7,43 @@ import { LangProvider } from './i18n';
 import { Home } from './pages/Home';
 import { MOUNT_MARK } from './perf';
 
+/**
+ * A code-split page that renders synchronously once its chunk has loaded. React.lazy alone would
+ * suspend on first render even when the module is already there, which delays hydration.
+ */
+function page<P extends object>(load: () => Promise<ComponentType<P>>) {
+  let Loaded: ComponentType<P> | null = null;
+  let pending: Promise<void> | null = null;
+  const preload = () => (pending ??= load().then((c) => void (Loaded = c)));
+  const Lazy = lazy(() => preload().then(() => ({ default: Loaded! })));
+  const Page = (props: P) => (Loaded ? <Loaded {...props} /> : <Lazy {...props} />);
+  return Object.assign(Page, { preload });
+}
+
 // Inner pages are split out of the main bundle; they are prefetched once the browser is idle.
-const pages = {
-  platform: () => import('./pages/ServicesPage').then((m) => ({ default: m.ServicesPage })),
-  portfolio: () => import('./pages/Portfolio').then((m) => ({ default: m.Portfolio })),
-  caseStudy: () => import('./pages/CaseStudy').then((m) => ({ default: m.CaseStudy })),
-  studio: () => import('./pages/Studio').then((m) => ({ default: m.Studio })),
-  contact: () => import('./pages/ContactPage').then((m) => ({ default: m.ContactPage })),
-  terms: () => import('./pages/Terms').then((m) => ({ default: m.Terms })),
-  privacy: () => import('./pages/Privacy').then((m) => ({ default: m.Privacy })),
-  notFound: () => import('./pages/NotFound').then((m) => ({ default: m.NotFound })),
-};
-const ServicesPage = lazy(pages.platform);
-const Portfolio = lazy(pages.portfolio);
-const CaseStudy = lazy(pages.caseStudy);
-const Studio = lazy(pages.studio);
-const ContactPage = lazy(pages.contact);
-const Terms = lazy(pages.terms);
-const Privacy = lazy(pages.privacy);
-const NotFound = lazy(pages.notFound);
+const ServicesPage = page(() => import('./pages/ServicesPage').then((m) => m.ServicesPage));
+const Portfolio = page(() => import('./pages/Portfolio').then((m) => m.Portfolio));
+const CaseStudy = page(() => import('./pages/CaseStudy').then((m) => m.CaseStudy));
+const Studio = page(() => import('./pages/Studio').then((m) => m.Studio));
+const ContactPage = page(() => import('./pages/ContactPage').then((m) => m.ContactPage));
+const Terms = page(() => import('./pages/Terms').then((m) => m.Terms));
+const Privacy = page(() => import('./pages/Privacy').then((m) => m.Privacy));
+const NotFound = page(() => import('./pages/NotFound').then((m) => m.NotFound));
+const PAGES = [ServicesPage, Portfolio, CaseStudy, Studio, ContactPage, Terms, Privacy, NotFound];
+
+/** Loads the page chunk for a prerendered path, so hydration can run without suspending. */
+export function preloadPage(pathname: string): Promise<void> {
+  const byPath: Record<string, { preload: () => Promise<void> }> = {
+    '/platforma': ServicesPage,
+    '/lucrari': Portfolio,
+    '/studio': Studio,
+    '/contact': ContactPage,
+    '/termeni': Terms,
+    '/confidentialitate': Privacy,
+  };
+  const p = byPath[pathname] ?? (pathname.startsWith('/lucrari/') ? CaseStudy : null);
+  return p ? p.preload() : Promise.resolve();
+}
 
 /**
  * New pages start at the top; links with a hash scroll to that section once it is rendered.
@@ -57,6 +75,14 @@ function ScrollManager() {
   return null;
 }
 
+/** Commits together with the routed page (same Suspense boundary), so it marks when the page is live. */
+function MountMark() {
+  useLayoutEffect(() => {
+    if (!performance.getEntriesByName(MOUNT_MARK).length) performance.mark(MOUNT_MARK);
+  }, []);
+  return null;
+}
+
 /** /servicii moved to /platforma; old anchors map onto the new chapter ids. */
 function LegacyServices() {
   const { hash } = useLocation();
@@ -65,11 +91,8 @@ function LegacyServices() {
 }
 
 export default function App() {
-  useLayoutEffect(() => {
-    if (!performance.getEntriesByName(MOUNT_MARK).length) performance.mark(MOUNT_MARK);
-  }, []);
   useEffect(() => {
-    const prefetch = () => Object.values(pages).forEach((load) => load().catch(() => {}));
+    const prefetch = () => PAGES.forEach((p) => p.preload().catch(() => {}));
     if ('requestIdleCallback' in window) {
       const id = requestIdleCallback(prefetch, { timeout: 4000 });
       return () => cancelIdleCallback(id);
@@ -97,6 +120,7 @@ export default function App() {
           <Route path="/confidentialitate" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <MountMark />
         </Suspense>
       </main>
       <div className="relative z-[2]">

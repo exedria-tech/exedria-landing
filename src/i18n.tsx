@@ -204,7 +204,8 @@ export const ro = {
     metrics: {
       ttfb: ['TTFB', 'Time to First Byte'],
       dcl: ['DOM Ready', 'DOMContentLoaded'],
-      mount: ['Client Render', 'primul commit React'],
+      mount: ['Client Hydration', 'hydrateRoot'],
+      render: ['Client Render', 'createRoot'],
       fps: ['Live FPS', 'requestAnimationFrame'],
     },
     excellent: 'Excelent',
@@ -452,7 +453,8 @@ const en: Copy = {
     metrics: {
       ttfb: ['TTFB', 'Time to First Byte'],
       dcl: ['DOM Ready', 'DOMContentLoaded'],
-      mount: ['Client Render', 'first React commit'],
+      mount: ['Client Hydration', 'hydrateRoot'],
+      render: ['Client Render', 'createRoot'],
       fps: ['Live FPS', 'requestAnimationFrame'],
     },
     excellent: 'Excellent',
@@ -503,7 +505,7 @@ const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: Copy }>({
   t: ro,
 });
 
-function readLang(): Lang {
+export function readLang(): Lang {
   try {
     const v = localStorage.getItem('exedria-lang');
     if (v === 'ro' || v === 'en') return v;

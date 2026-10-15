@@ -56,6 +56,12 @@
   }
 }
 
+/* Off-screen sections skip style, layout and paint until they approach the viewport. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+
 /* Faint 8px subgrid + 64px major grid used behind sections */
 .subgrid {
   background-image:
@@ -73,12 +79,14 @@
 
 /* Reveal on scroll, driven by [data-in] */
 .reveal {
-  opacity: 0;
-  transform: translate3d(0, 28px, 0);
   transition:
     opacity 0.7s var(--ease-out-expo),
     transform 0.9s var(--ease-out-expo);
   transition-delay: var(--d, 0ms);
+}
+.reveal[data-armed] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
 }
 .reveal[data-in="true"] {
   opacity: 1;

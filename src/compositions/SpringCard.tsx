@@ -9,14 +9,7 @@ export type SpringCardProps = {
   kicker: string;
 };
 
-export const FORMATS = {
-  '16:9': { width: 1280, height: 720 },
-  '9:16': { width: 720, height: 1280 },
-  '1:1': { width: 1000, height: 1000 },
-} as const;
-export type Format = keyof typeof FORMATS;
-
-export const LAB_SECONDS = 3;
+export { FORMATS, LAB_SECONDS, type Format } from './labFormats';
 
 /** One composition, any aspect ratio: layout derives from width/height. */
 export function SpringCard({ damping, mass, stiffness, business, offer, kicker }: SpringCardProps) {

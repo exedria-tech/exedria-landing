@@ -1,8 +1,11 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { Player, type PlayerRef } from '@remotion/player';
-import { FORMATS, LAB_SECONDS, SpringCard, type Format } from '../compositions/SpringCard';
+import { Suspense, lazy, useEffect, useRef, useState, type CSSProperties } from 'react';
+import type { PlayerRef } from '@remotion/player';
+import { FORMATS, LAB_SECONDS, type Format } from '../compositions/labFormats';
 import { useT } from '../i18n';
+import { ClientOnly } from './ClientOnly';
 import { Label, Reveal, Segmented } from './ui';
+
+const LabPlayer = lazy(() => import('./LabPlayer'));
 
 /** The motion lab. `embedded` drops the section chrome and heading (used inside a Platform chapter). */
 export function Lab({ embedded }: { embedded?: boolean } = {}) {
@@ -61,23 +64,18 @@ export function Lab({ embedded }: { embedded?: boolean } = {}) {
           <div className="grid grid-cols-[minmax(0,1fr)] border border-line bg-panel lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="min-w-0 border-b border-line p-3 sm:p-5 lg:border-b-0 lg:border-r">
               <div className="relative h-[clamp(320px,48vw,520px)] bg-paper">
-                <Player
-                  ref={playerRef}
-                  component={SpringCard}
-                  inputProps={{ damping, mass: 0.8, stiffness, business, offer, kicker: t.lab.cardKicker }}
-                  durationInFrames={dur}
-                  compositionWidth={width}
-                  compositionHeight={height}
-                  fps={fps}
-                  autoPlay
-                  loop
-                  controls={false}
-                  clickToPlay={false}
-                  initiallyMuted
-                  numberOfSharedAudioTags={0}
-                  acknowledgeRemotionLicense
-                  style={{ width: '100%', height: '100%' }}
-                />
+                <ClientOnly>
+                  <Suspense fallback={null}>
+                    <LabPlayer
+                      playerRef={playerRef}
+                      inputProps={{ damping, mass: 0.8, stiffness, business, offer, kicker: t.lab.cardKicker }}
+                      durationInFrames={dur}
+                      width={width}
+                      height={height}
+                      fps={fps}
+                    />
+                  </Suspense>
+                </ClientOnly>
               </div>
             </div>
 

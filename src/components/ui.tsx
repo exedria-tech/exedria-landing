@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { Link } from 'react-router';
 import { useT } from '../i18n';
+import { useHydrated } from './ClientOnly';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 
@@ -161,9 +162,16 @@ export function Segmented<T extends string>({
   );
 }
 
+/**
+ * `armed` hides the element until it scrolls into view. Prerendered HTML arrives unarmed (visible
+ * without JS); after hydration the observer's first report arms only what is off screen, so nothing
+ * visible flickers and no layout is forced during hydration.
+ */
 export function useInView<T extends Element>(opts: IntersectionObserverInit = { threshold: 0.15 }) {
   const ref = useRef<T>(null);
+  const hydrated = useHydrated();
   const [inView, setInView] = useState(false);
+  const [armed, setArmed] = useState(hydrated);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -171,13 +179,13 @@ export function useInView<T extends Element>(opts: IntersectionObserverInit = { 
       if (e.isIntersecting) {
         setInView(true);
         io.disconnect();
-      }
+      } else setArmed(true);
     }, opts);
     io.observe(el);
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return [ref, inView] as const;
+  return [ref, inView, armed] as const;
 }
 
 export function Reveal({
@@ -191,11 +199,12 @@ export function Reveal({
   className?: string;
   as?: 'div' | 'section' | 'li' | 'p';
 }) {
-  const [ref, inView] = useInView<HTMLDivElement>();
+  const [ref, inView, armed] = useInView<HTMLDivElement>();
   return (
     <Tag
       ref={ref as never}
       data-in={inView}
+      data-armed={armed || undefined}
       className={cx('reveal', className)}
       style={{ '--d': `${delay}ms` } as CSSProperties}
     >
@@ -241,11 +250,16 @@ export function PageHeader({
   );
 }
 
+/** Title collected while prerendering, written into each page's <title>. */
+export const ssrHead = { title: '' };
+
 /** Sets the tab title for the current page. */
 export function usePageTitle(title: string) {
   const { lang } = useT();
+  const home = lang === 'en' ? 'Exedria · Programmatic Video Infrastructure' : 'Exedria · Infrastructură video programatică';
+  const full = title ? `${title} · Exedria` : home;
+  if (typeof document === 'undefined') ssrHead.title = full;
   useEffect(() => {
-    const home = lang === 'en' ? 'Exedria · Programmatic Video Infrastructure' : 'Exedria · Infrastructură video programatică';
-    document.title = title ? `${title} · Exedria` : home;
-  }, [title, lang]);
+    document.title = full;
+  }, [full]);
 }

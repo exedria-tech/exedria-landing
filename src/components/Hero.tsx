@@ -1,5 +1,6 @@
 import { Suspense, lazy, type CSSProperties } from 'react';
 import { useT } from '../i18n';
+import { ClientOnly } from './ClientOnly';
 import { Button } from './ui';
 
 // Remotion loads after first paint, outside the critical path.
@@ -19,9 +20,11 @@ export function Hero() {
             transform: 'translate(-50%, -50%)',
           }}
         >
-          <Suspense fallback={null}>
-            <HeroPlayer />
-          </Suspense>
+          <ClientOnly>
+            <Suspense fallback={null}>
+              <HeroPlayer />
+            </Suspense>
+          </ClientOnly>
         </div>
         {/* readability falloff under the headline */}
         <div className="absolute inset-0 bg-[linear-gradient(to_top,var(--color-paper)_30%,transparent_75%)] md:bg-[linear-gradient(to_top,var(--color-paper)_0%,transparent_38%)]" />

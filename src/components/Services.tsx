@@ -2,6 +2,7 @@ import { Suspense, lazy, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import type { Category } from '../data/projects';
 import { useT } from '../i18n';
+import { ClientOnly } from './ClientOnly';
 import { Corners, Label, Reveal, cx } from './ui';
 
 const FormatTrio = lazy(() => import('./FormatTrio'));
@@ -24,7 +25,7 @@ const PREVIEWS = [VideoPreview, WebPreview, OpsPreview];
 export function Services() {
   const { t } = useT();
   return (
-    <section id="services" className="relative border-t border-line py-24 md:py-32">
+    <section id="services" className="cv-auto relative border-t border-line py-24 md:py-32">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
         <Reveal className="flex flex-wrap items-end justify-between gap-6">
           <div>
@@ -127,9 +128,11 @@ function VideoPreview({ active, ...c }: PreviewState & CardContent) {
   return (
     <>
       <Stage>
-        <Suspense fallback={null}>
-          <FormatTrio active={active} />
-        </Suspense>
+        <ClientOnly>
+          <Suspense fallback={null}>
+            <FormatTrio active={active} />
+          </Suspense>
+        </ClientOnly>
       </Stage>
       {!c.bare && <CardBody {...c} />}
     </>

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../i18n';
-import { MOUNT_MARK } from '../perf';
+import { MOUNT_MARK, boot } from '../perf';
 import { Label, Reveal, cx } from './ui';
 
-type Timings = { ttfb: number; dcl: number; mount: number | null };
+type Timings = { ttfb: number; dcl: number; mount: number | null; hydrated: boolean };
 
 /** Navigation Timing for the document this visitor actually loaded; null until DOMContentLoaded has fired. */
 function readTimings(): Timings | null {
@@ -16,6 +16,7 @@ function readTimings(): Timings | null {
     ttfb: Math.max(0, nav.responseStart - start),
     dcl: Math.max(0, nav.domContentLoadedEventStart - start),
     mount: mount == null ? null : Math.max(0, mount - start),
+    hydrated: boot.hydrated,
   };
 }
 
@@ -66,7 +67,8 @@ function Telemetry() {
   const tiles = [
     { key: 'ttfb', value: ttfb, badge: ttfb != null && ttfb < 100 },
     { key: 'dcl', value: ms(timings?.dcl) },
-    { key: 'mount', value: ms(timings?.mount) },
+    // Hydration when main.tsx hydrated prerendered HTML, a plain client render otherwise.
+    { key: timings && !timings.hydrated ? 'render' : 'mount', value: ms(timings?.mount) },
   ] as const;
 
   return (
@@ -83,7 +85,7 @@ function Telemetry() {
         {tiles.map(({ key, value, ...rest }, i) => (
           <Readout key={key} name={w.metrics[key][0]} source={w.metrics[key][1]} className={cx(i % 2 === 0 && 'border-r', 'border-b')}>
             {value == null ? (
-              <span className="text-[13px] text-white/40">{w.pending}…</span>
+              <span className="self-end text-[13px] text-white/40">{w.pending}…</span>
             ) : (
               <>
                 <Num>{value}</Num>
@@ -112,7 +114,7 @@ function Readout({ name, source, className, children }: { name: string; source: 
         <div className="text-[11px] uppercase tracking-[0.16em] text-white/70">{name}</div>
         <div className="mt-1 text-[10.5px] text-white/35">{source}</div>
       </div>
-      <div className="flex min-w-0 items-baseline gap-1.5 font-mono">{children}</div>
+      <div className="flex min-h-[clamp(36px,4.2vw,54px)] min-w-0 items-baseline gap-1.5 font-mono">{children}</div>
     </div>
   );
 }
