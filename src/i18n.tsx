@@ -107,12 +107,12 @@ export const ro = {
         out: ['Recenzii', 'Brand', 'Date'],
       },
       {
-        name: 'AI Scripting',
-        body: 'Generare de scenarii dinamice și structurate de 15 secunde.',
+        name: 'Scripting',
+        body: 'Generare de scenarii dinamice și structurate, de orice durată.',
         out: ['Storyboard', 'Scenariu', 'Variante'],
       },
       {
-        name: 'Compilare Remotion',
+        name: 'Compilare',
         body: 'Randare instantanee în formatele 9:16 și 1:1.',
         out: ['9:16', '1:1', 'QA'],
       },
@@ -307,12 +307,12 @@ const en: Copy = {
         out: ['Reviews', 'Brand', 'Data'],
       },
       {
-        name: 'AI Scripting',
-        body: 'Structured 15-second storyboards generated via LLM.',
+        name: 'Scripting',
+        body: 'Structured storyboards of any length, generated via LLM.',
         out: ['Storyboard', 'Script', 'Variants'],
       },
       {
-        name: 'Remotion Compile',
+        name: 'Compile',
         body: 'Instant programmatic rendering across 9:16 and 1:1.',
         out: ['9:16', '1:1', 'QA'],
       },
