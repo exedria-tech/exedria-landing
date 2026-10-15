@@ -25,8 +25,6 @@ export type Project = {
   /** Horizontal thumbnail strip used for hover-scrubbing the card. */
   strip?: { src: string; frames: number };
   video?: string;
-  /** Kept reachable at /lucrari/:slug (the home reel links to it) but not listed on Showcase. */
-  unlisted?: boolean;
   facts: { k: L; v: L }[];
   sections: { title: L; body: L }[];
 };
@@ -36,6 +34,49 @@ export type Project = {
  * put its media in public/media/ and remove one of the OPEN_SLOTS below.
  */
 export const PROJECTS: Project[] = [
+  {
+    slug: 'marina-park',
+    category: 'video',
+    client: 'Marina Park',
+    place: { ro: 'Vama Veche', en: 'Vama Veche' },
+    title: {
+      ro: 'Un camping din Vama Veche, spus în 40 de secunde.',
+      en: 'A campsite in Vama Veche, told in 40 seconds.',
+    },
+    summary: {
+      ro: 'Promo vertical pentru Reels și TikTok. Fiecare scenă e un component.',
+      en: 'A vertical promo for Reels and TikTok. Every scene is a component.',
+    },
+    format: '9:16 · 00:40',
+    duration: MARINA.duration,
+    fps: MARINA.fps,
+    aspect: 9 / 16,
+    poster: MARINA.poster,
+    strip: { src: MARINA.strip, frames: MARINA.stripFrames },
+    video: MARINA.src,
+    facts: [
+      { k: { ro: 'Client', en: 'Client' }, v: { ro: 'Marina Park, Vama Veche', en: 'Marina Park, Vama Veche' } },
+      { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },
+      { k: { ro: 'Durată', en: 'Length' }, v: { ro: '00:40 · 1200 cadre', en: '00:40 · 1200 frames' } },
+      { k: { ro: 'Livrare', en: 'Delivered' }, v: { ro: 'Reels, TikTok, Stories', en: 'Reels, TikTok, Stories' } },
+    ],
+    sections: [
+      {
+        title: { ro: 'Input', en: 'Input' },
+        body: {
+          ro: 'Casa în stil dobrogean, căsuțele din lemn, foișorul, locul de camping cu hamace și marea la 400 m. Totul trebuia să încapă în 40 de secunde, pe vertical.',
+          en: 'The Dobrogean-style house, the wooden cabins, the gazebo, the camping ground with hammocks and the sea 400 m away. All of it had to fit into 40 seconds, vertically.',
+        },
+      },
+      {
+        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
+        body: {
+          ro: 'Opt scene, fiecare un component Remotion: text animat cadru cu cadru, tranziții calculate și un cadru de final cu adresa. Textul și ordinea scenelor vin din date, deci clipul se poate re-randa oricând.',
+          en: 'Eight scenes, each a Remotion component: type animated frame by frame, computed transitions and an end card with the address. Copy and scene order come from data, so the clip can be re-rendered any time.',
+        },
+      },
+    ],
+  },
   {
     slug: 'exedria-showreel',
     category: 'video',
@@ -79,56 +120,9 @@ export const PROJECTS: Project[] = [
       },
     ],
   },
-  {
-    slug: 'marina-park',
-    unlisted: true,
-    category: 'video',
-    client: 'Marina Park',
-    place: { ro: 'Vama Veche', en: 'Vama Veche' },
-    title: {
-      ro: 'Un camping din Vama Veche, spus în 40 de secunde.',
-      en: 'A campsite in Vama Veche, told in 40 seconds.',
-    },
-    summary: {
-      ro: 'Promo vertical pentru Reels și TikTok. Fiecare scenă e un component.',
-      en: 'A vertical promo for Reels and TikTok. Every scene is a component.',
-    },
-    format: '9:16 · 00:40',
-    duration: MARINA.duration,
-    fps: MARINA.fps,
-    aspect: 9 / 16,
-    poster: MARINA.poster,
-    strip: { src: MARINA.strip, frames: MARINA.stripFrames },
-    video: MARINA.src,
-    facts: [
-      { k: { ro: 'Client', en: 'Client' }, v: { ro: 'Marina Park, Vama Veche', en: 'Marina Park, Vama Veche' } },
-      { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },
-      { k: { ro: 'Durată', en: 'Length' }, v: { ro: '00:40 · 1200 cadre', en: '00:40 · 1200 frames' } },
-      { k: { ro: 'Livrare', en: 'Delivered' }, v: { ro: 'Reels, TikTok, Stories', en: 'Reels, TikTok, Stories' } },
-    ],
-    sections: [
-      {
-        title: { ro: 'Input', en: 'Input' },
-        body: {
-          ro: 'Casa în stil dobrogean, căsuțele din lemn, foișorul, locul de camping cu hamace și marea la 400 m. Totul trebuia să încapă în 40 de secunde, pe vertical.',
-          en: 'The Dobrogean-style house, the wooden cabins, the gazebo, the camping ground with hammocks and the sea 400 m away. All of it had to fit into 40 seconds, vertically.',
-        },
-      },
-      {
-        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
-        body: {
-          ro: 'Opt scene, fiecare un component Remotion: text animat cadru cu cadru, tranziții calculate și un cadru de final cu adresa. Textul și ordinea scenelor vin din date, deci clipul se poate re-randa oricând.',
-          en: 'Eight scenes, each a Remotion component: type animated frame by frame, computed transitions and an end card with the address. Copy and scene order come from data, so the clip can be re-rendered any time.',
-        },
-      },
-    ],
-  },
 ];
 
 /** Empty frames shown after the real projects, one per category not covered yet. Remove one when you add a project. */
 export const OPEN_SLOTS: Category[] = ['web', 'software'];
-
-/** What the Showcase page lists. */
-export const LISTED = PROJECTS.filter((p) => !p.unlisted);
 
 export const findProject = (slug: string | undefined) => PROJECTS.find((p) => p.slug === slug);
