@@ -35,6 +35,49 @@ export type Project = {
  */
 export const PROJECTS: Project[] = [
   {
+    slug: 'diagram-ai',
+    category: 'video',
+    client: 'DiagramAI',
+    place: { ro: 'Software', en: 'Software' },
+    title: {
+      ro: 'O propoziție devine cod, apoi diagramă.',
+      en: 'A sentence becomes code, then a diagram.',
+    },
+    summary: {
+      ro: 'Ad vertical pentru o aplicație care transformă textul în diagrame. Video-ul arată tot drumul: text, cod, diagramă.',
+      en: 'A vertical ad for an app that turns text into diagrams. The video shows the whole path: text, code, diagram.',
+    },
+    format: '9:16 · 00:15',
+    duration: 15,
+    fps: 30,
+    aspect: 9 / 16,
+    poster: '/media/diagram-ai-v1-poster.jpg',
+    strip: { src: '/media/diagram-ai-v1-strip.jpg', frames: 15 },
+    video: '/media/diagram-ai-v1.mp4',
+    facts: [
+      { k: { ro: 'Client', en: 'Client' }, v: { ro: 'DiagramAI', en: 'DiagramAI' } },
+      { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },
+      { k: { ro: 'Durată', en: 'Length' }, v: { ro: '00:15 · 60 fps', en: '00:15 · 60 fps' } },
+      { k: { ro: 'Livrare', en: 'Delivered' }, v: { ro: 'Reels, TikTok, Stories', en: 'Reels, TikTok, Stories' } },
+    ],
+    sections: [
+      {
+        title: { ro: 'Input', en: 'Input' },
+        body: {
+          ro: 'DiagramAI ia o descriere scrisă a unui proces și o transformă în diagramă. Video-ul trebuia să arate asta pe un singur exemplu: „Când un user se înscrie, verifică-i emailul, apoi creează-i workspace-ul.”',
+          en: 'DiagramAI takes a written description of a process and turns it into a diagram. The video had to show that through one example: "When a user signs up, verify their email, then create their workspace."',
+        },
+      },
+      {
+        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
+        body: {
+          ro: 'Propoziția scrisă cuvânt cu cuvânt, aceeași frază rescrisă ca cod, nodurile care se așază în diagramă, un pas nou („Resend link”) adăugat din prompt și cadrul de final cu logo-ul. Textul, codul și nodurile vin din aceleași date, deci schimbi fluxul și video-ul se re-randează.',
+          en: 'The sentence typed word by word, the same sentence rewritten as code, the nodes settling into a diagram, a new step ("Resend link") added from a prompt, and the logo end card. Text, code and nodes come from the same data, so change the flow and the video re-renders.',
+        },
+      },
+    ],
+  },
+  {
     slug: 'marina-park',
     category: 'video',
     client: 'Marina Park',
@@ -123,6 +166,6 @@ export const PROJECTS: Project[] = [
 ];
 
 /** Empty frames shown after the real projects, one per category not covered yet. Remove one when you add a project. */
-export const OPEN_SLOTS: Category[] = ['web'];
+export const OPEN_SLOTS: Category[] = [];
 
 export const findProject = (slug: string | undefined) => PROJECTS.find((p) => p.slug === slug);
