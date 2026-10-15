@@ -8,19 +8,18 @@ import { Corners, Label, Reveal, cx } from './ui';
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
 /**
- * The four services, in the order of t.services.items. `slug` is the anchor on /servicii and the
+ * The services, in the order of t.services.items. `slug` is the anchor on /servicii and the
  * ?serviciu= value the contact form understands; `category` filters /lucrari.
  */
 export const SERVICES: { slug: string; category: Category }[] = [
   { slug: 'video', category: 'video' },
   { slug: 'site-uri', category: 'web' },
-  { slug: 'rezervari', category: 'web' },
   { slug: 'software', category: 'software' },
 ];
 
-const PREVIEWS = [VideoPreview, WebPreview, BookingPreview, OpsPreview];
+const PREVIEWS = [VideoPreview, WebPreview, OpsPreview];
 
-/** Home page summary: the 2x2 grid of live cards, each opening its block on /servicii. */
+/** Home page summary: the grid of live cards, each opening its block on /servicii. */
 export function Services() {
   const { t } = useT();
   return (
@@ -36,11 +35,11 @@ export function Services() {
           <MoreLink to="/servicii">{t.services.all}</MoreLink>
         </Reveal>
 
-        <div className="mt-14 grid border-l border-t border-line md:grid-cols-2">
+        <div className="mt-14 grid border-l border-t border-line md:grid-cols-2 lg:grid-cols-3">
           {t.services.items.map((s, i) => {
             const Preview = PREVIEWS[i];
             return (
-              <Reveal key={i} delay={(i % 2) * 100} className="border-b border-r border-line">
+              <Reveal key={i} delay={i * 100} className="border-b border-r border-line md:last:col-span-2 lg:last:col-span-1">
                 <Link to={`/servicii#${SERVICES[i].slug}`} className="block h-full">
                   <Card>{(state) => <Preview {...state} title={s.title} body={s.body} />}</Card>
                 </Link>
@@ -235,69 +234,6 @@ function WebPreview({ active, ...c }: PreviewState & CardContent) {
 }
 
 /* Booking grid: slots spring in, one gets picked, confirmation lands. */
-function BookingPreview({ active, ...c }: PreviewState & CardContent) {
-  const { lang } = useT();
-  const days = lang === 'ro' ? ['L', 'M', 'M', 'J', 'V', 'S', 'D'] : ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  const booked = new Set([1, 3, 8, 9, 12, 16, 17, 22, 26]);
-  const pick = 19;
-  return (
-    <>
-      <Stage>
-        <div className="absolute inset-x-6 top-6 sm:inset-x-12">
-          <div className="grid grid-cols-7 gap-1.5 font-mono text-[9.5px] text-faint">
-            {days.map((d, i) => (
-              <span key={i} className="text-center">
-                {d}
-              </span>
-            ))}
-          </div>
-          <div className="mt-2 grid grid-cols-7 gap-1.5">
-            {Array.from({ length: 28 }, (_, i) => {
-              const isPick = i === pick;
-              const isBooked = booked.has(i);
-              return (
-                <div key={i} className="relative h-7 rounded-[2px] border border-line">
-                  <div
-                    className={cx(
-                      'absolute inset-0 rounded-[1px] transition-[transform,opacity] duration-500',
-                      isPick ? 'bg-magenta' : isBooked ? 'bg-fg/15' : 'bg-sky/15',
-                    )}
-                    style={{
-                      transform: active ? 'scale(1)' : 'scale(0.2)',
-                      opacity: active ? 1 : 0,
-                      transitionDelay: `${active ? (isPick ? 520 : ((i % 7) + Math.floor(i / 7)) * 28) : 0}ms`,
-                      transitionTimingFunction: spring,
-                    }}
-                  />
-                  {isPick && (
-                    <span
-                      className="absolute inset-0 grid place-items-center font-mono text-[9px] font-medium text-paper transition-opacity duration-300"
-                      style={{ opacity: active ? 1 : 0, transitionDelay: active ? '640ms' : '0ms' }}
-                    >
-                      14:30
-                    </span>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div
-          className="absolute bottom-4 left-1/2 flex items-center gap-2 rounded-[2px] border border-phosphor/40 bg-paper px-3 py-1.5 font-mono text-[10.5px] text-phosphor transition-[transform,opacity] duration-500"
-          style={{
-            transform: `translate(-50%, ${active ? 0 : 16}px)`,
-            opacity: active ? 1 : 0,
-            transitionDelay: active ? '780ms' : '0ms',
-            transitionTimingFunction: spring,
-          }}
-        >
-          ✓ 14:30 · OK
-        </div>
-      </Stage>
-      {!c.bare && <CardBody {...c} />}
-    </>
-  );
-}
 
 /* Deploy log and a support ticket closing. */
 function OpsPreview({ active, ...c }: PreviewState & CardContent) {

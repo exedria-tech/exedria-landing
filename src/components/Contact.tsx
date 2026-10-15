@@ -28,12 +28,12 @@ export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  // ?serviciu=site-uri (from the platform pages) pre-ticks that module; the four modules map 1:1 onto the options,
-  // and pick the closest product (video, leads and API have their own; the web module defaults to the first).
+  // ?serviciu=site-uri (from the platform pages) pre-ticks that module; the modules map 1:1 onto the options,
+  // and pick the closest product (video and API have their own; the web module defaults to the first).
   const [params] = useSearchParams();
   const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
   const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);
-  const [product, setProduct] = useState([0, 0, 1, 2][Math.max(0, preset)]);
+  const [product, setProduct] = useState([0, 0, 1][Math.max(0, preset)]);
   const [message, setMessage] = useState('');
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');
   const [frame, setFrame] = useState(0);

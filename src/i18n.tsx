@@ -49,8 +49,8 @@ export const ro = {
   ],
   services: {
     label: 'Platformă',
-    title: 'Patru module, un singur pipeline.',
-    body: 'Video, web, lead-uri și integrări rulează pe același cod, așa că o schimbare în date ajunge peste tot.',
+    title: 'Trei module, un singur pipeline.',
+    body: 'Video, web și integrări rulează pe același cod, așa că o schimbare în date ajunge peste tot.',
     items: [
       {
         title: 'Randare Programatică în Remotion',
@@ -63,12 +63,6 @@ export const ro = {
         body: 'Aplicații web Next.js construite pentru timpi de încărcare sub o secundă și conversie maximă pe mobil.',
         more: 'Aplicații web Next.js construite pentru timpi de încărcare sub o secundă și conversie maximă pe mobil.',
         tags: ['Next.js', 'Core Web Vitals', 'SEO', 'RO / EN'],
-      },
-      {
-        title: 'Intake Automat de Lead-uri',
-        body: 'Fluxuri automate care trimit cererile de pe site pe WhatsApp și SMS în sub 60 de secunde.',
-        more: 'Fluxuri automate care trimit cererile de pe site pe WhatsApp și SMS în sub 60 de secunde.',
-        tags: ['WhatsApp', 'SMS', 'Webhooks', '< 60 s'],
       },
       {
         title: 'API & Integrări Custom',
@@ -136,9 +130,9 @@ export const ro = {
     name: 'Nume',
     email: 'Email sau telefon',
     needs: 'Module',
-    needOptions: ['Video programatic', 'Frontend web', 'Intake lead-uri', 'API & integrări'],
+    needOptions: ['Video programatic', 'Frontend web', 'API & integrări'],
     timeline: 'Produs',
-    timelineOptions: ['Programmatic Video', 'Speed-to-Lead', 'API Access', 'Enterprise'],
+    timelineOptions: ['Programmatic Video', 'API Access', 'Enterprise'],
     message: 'Mesaj',
     messagePh: 'Ex: 40 de reclame pe lună pentru 3 locații, cu prețul și recenziile trase automat din feed.',
     submit: 'Solicită Acces la Platformă',
@@ -149,7 +143,7 @@ export const ro = {
     direct: 'Direct',
   },
   footer: {
-    tagline: 'Infrastructură video programatică scrisă în cod, instrumente de lead capture și software integrat.',
+    tagline: 'Infrastructură video programatică scrisă în cod și software integrat.',
     built: 'Construit cu React și Remotion',
     top: 'Înapoi la cadrul 0',
     rights: 'Exedria',
@@ -257,8 +251,8 @@ const en: Copy = {
   ],
   services: {
     label: 'Platform',
-    title: 'Four modules, one pipeline.',
-    body: 'Video, web, lead intake and integrations run on the same codebase, so a change in your data propagates everywhere.',
+    title: 'Three modules, one pipeline.',
+    body: 'Video, web and integrations run on the same codebase, so a change in your data propagates everywhere.',
     items: [
       {
         title: 'Programmatic Video Rendering',
@@ -271,12 +265,6 @@ const en: Copy = {
         body: 'Next.js applications built for sub-second mobile load speeds and maximum conversion.',
         more: 'Next.js applications built for sub-second mobile load speeds and maximum conversion.',
         tags: ['Next.js', 'Core Web Vitals', 'SEO', 'RO / EN'],
-      },
-      {
-        title: 'Instant Lead Intake Engine',
-        body: 'Automated routing delivering site inquiries to WhatsApp and SMS in under 60 seconds.',
-        more: 'Automated routing delivering site inquiries to WhatsApp and SMS in under 60 seconds.',
-        tags: ['WhatsApp', 'SMS', 'Webhooks', '< 60 s'],
       },
       {
         title: 'API & Custom Pipelines',
@@ -344,9 +332,9 @@ const en: Copy = {
     name: 'Name',
     email: 'Email or phone',
     needs: 'Modules',
-    needOptions: ['Programmatic video', 'Web frontend', 'Lead intake', 'API & pipelines'],
+    needOptions: ['Programmatic video', 'Web frontend', 'API & pipelines'],
     timeline: 'Product',
-    timelineOptions: ['Programmatic Video', 'Speed-to-Lead', 'API Access', 'Enterprise'],
+    timelineOptions: ['Programmatic Video', 'API Access', 'Enterprise'],
     message: 'Message',
     messagePh: 'E.g. 40 ads a month across 3 locations, with prices and reviews pulled automatically from our feed.',
     submit: 'Request Platform Access',
@@ -357,7 +345,7 @@ const en: Copy = {
     direct: 'Direct',
   },
   footer: {
-    tagline: 'Programmatic video infrastructure, instant lead capture pipelines, and automated creative software.',
+    tagline: 'Programmatic video infrastructure and automated creative software.',
     built: 'Built with React and Remotion',
     top: 'Back to frame 0',
     rights: 'Exedria',

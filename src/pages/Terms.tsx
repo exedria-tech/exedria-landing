@@ -26,7 +26,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Site-ul prezintă platforma Exedria (randare video programatică, frontend-uri web, intake automat de lead-uri, API și
+          Site-ul prezintă platforma Exedria (randare video programatică, frontend-uri web, API și
           integrări) și îți permite să soliciți acces.
         </p>
         <p>
