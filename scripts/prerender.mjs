@@ -1,6 +1,7 @@
 // Writes one static HTML file per route (dist/<route>.html) from the SSR build, so every page
-// arrives with its content and the client hydrates it. Also: async entry script, inlined CSS,
+// arrives with its content and the client hydrates it. Also: a non-blocking entry loader, inlined CSS,
 // preloaded fonts. Vercel serves /platforma from platforma.html (cleanUrls).
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,8 +12,18 @@ const { render, ROUTES } = await import(join(root, 'dist-ssr/entry-server.js'));
 
 let template = await readFile(join(dist, 'index.html'), 'utf8');
 
-// Async entry: DOMContentLoaded no longer waits for the app bundle (the HTML already holds the page).
-template = template.replace(/<script type="module" crossorigin src="([^"]+)"><\/script>/, '<script type="module" async crossorigin src="$1"></script>');
+// The entry script is replaced by a tiny loader that import()s the app bundle. A dynamic import never
+// holds back DOMContentLoaded in any browser (Safari waits for async scripts); the modulepreload starts
+// the bundle download right away. The HTML already holds the page, so nothing waits on the bundle.
+const entryMatch = template.match(/<script type="module" crossorigin src="([^"]+)"><\/script>/);
+if (!entryMatch) throw new Error('entry script not found in index.html');
+const loader = `import(${JSON.stringify(entryMatch[1])});\n`;
+const loaderFile = `assets/boot-${createHash('sha256').update(loader).digest('hex').slice(0, 8)}.js`;
+await writeFile(join(dist, loaderFile), loader);
+template = template.replace(
+  entryMatch[0],
+  () => `<link rel="modulepreload" crossorigin href="${entryMatch[1]}"><script type="module" crossorigin src="/${loaderFile}"></script>`,
+);
 
 // Inline the stylesheet: one less render-blocking request.
 const cssMatch = template.match(/<link rel="stylesheet" crossorigin href="([^"]+)">/);

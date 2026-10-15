@@ -34,6 +34,6 @@ function start() {
   }
 }
 
-// The entry script loads async, so it can run before the document has finished parsing.
+// Loaded through import() from a small loader, so it can run before the document has finished parsing.
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
 else start();
