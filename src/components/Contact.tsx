@@ -28,7 +28,7 @@ export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  // ?serviciu=site-uri (from the platform pages) pre-ticks that module; the modules map 1:1 onto the options.
+  // ?serviciu=web (from the platform chapters) pre-ticks that module; the modules map 1:1 onto the options.
   const [params] = useSearchParams();
   const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
   const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);

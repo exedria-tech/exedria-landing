@@ -1,6 +1,7 @@
-import { Fragment, useRef, useState, type ReactNode } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { MARINA } from '../data/marina';
+import { Thumbnail } from '@remotion/player';
+import { AD_FPS, AD_FRAMES, OfferAd } from '../compositions/OfferAd';
 import type { Category } from '../data/projects';
 import { useT } from '../i18n';
 import { Corners, Label, Reveal, cx } from './ui';
@@ -8,18 +9,18 @@ import { Corners, Label, Reveal, cx } from './ui';
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
 /**
- * The services, in the order of t.services.items. `slug` is the anchor on /servicii and the
+ * The services, in the order of t.services.items. `slug` is the chapter anchor on /platforma and the
  * ?serviciu= value the contact form understands; `category` filters /lucrari.
  */
 export const SERVICES: { slug: string; category: Category }[] = [
   { slug: 'video', category: 'video' },
-  { slug: 'site-uri', category: 'web' },
-  { slug: 'software', category: 'software' },
+  { slug: 'web', category: 'web' },
+  { slug: 'api', category: 'software' },
 ];
 
 const PREVIEWS = [VideoPreview, WebPreview, OpsPreview];
 
-/** Home page summary: the grid of live cards, each opening its block on /servicii. */
+/** Home page summary: the grid of live cards, each opening its chapter on /platforma. */
 export function Services() {
   const { t } = useT();
   return (
@@ -32,7 +33,7 @@ export function Services() {
               {t.services.title}
             </h2>
           </div>
-          <MoreLink to="/servicii">{t.services.all}</MoreLink>
+          <MoreLink to="/platforma">{t.services.all}</MoreLink>
         </Reveal>
 
         <div className="mt-14 grid border-l border-t border-line md:grid-cols-2 lg:grid-cols-3">
@@ -40,8 +41,8 @@ export function Services() {
             const Preview = PREVIEWS[i];
             return (
               <Reveal key={i} delay={i * 100} className="border-b border-r border-line md:last:col-span-2 lg:last:col-span-1">
-                <Link to={`/servicii#${SERVICES[i].slug}`} className="block h-full">
-                  <Card>{(state) => <Preview {...state} title={s.title} body={s.body} />}</Card>
+                <Link to={`/platforma#${SERVICES[i].slug}`} className="block h-full">
+                  <Card>{(state) => <Preview {...state} title={s.title} body={s.body} cta={t.services.quote} />}</Card>
                 </Link>
               </Reveal>
             );
@@ -49,40 +50,6 @@ export function Services() {
         </div>
       </div>
     </section>
-  );
-}
-
-/** /servicii: one row per service with its live preview, the detail and where to go next; `extras` follow a row by slug. */
-export function ServiceRows({ extras }: { extras?: Partial<Record<string, ReactNode>> }) {
-  const { t } = useT();
-  return (
-    <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
-      {t.services.items.map((s, i) => {
-        const Preview = PREVIEWS[i];
-        const { slug, category } = SERVICES[i];
-        return (
-          <Fragment key={slug}>
-          <section id={slug} className="grid scroll-mt-20 gap-8 border-b border-line py-14 last:border-b-0 md:grid-cols-2 md:gap-14 md:py-20">
-            <Reveal className="border border-line">
-              <Card>{(state) => <Preview {...state} title={s.title} body={s.body} bare />}</Card>
-            </Reveal>
-            <Reveal delay={100} className="flex flex-col justify-center">
-              <h2 className="text-[clamp(28px,3.2vw,44px)] font-semibold leading-[1.02] tracking-[-0.04em]">{s.title}</h2>
-              <p className="mt-4 max-w-[46ch] text-[16.5px] leading-[1.6] text-dim">{s.more}</p>
-              <p className="mt-5 font-mono text-[12px] text-faint">{s.tags.join(' · ')}</p>
-              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3">
-                <MoreLink to={`/contact?serviciu=${slug}`} accent>
-                  {t.services.quote}
-                </MoreLink>
-                <MoreLink to={`/lucrari?categorie=${category}`}>{t.services.work}</MoreLink>
-              </div>
-            </Reveal>
-          </section>
-          {extras?.[slug]}
-          </Fragment>
-        );
-      })}
-    </div>
   );
 }
 
@@ -102,7 +69,7 @@ export function MoreLink({ to, children, accent }: { to: string; children: React
 }
 
 type PreviewState = { active: boolean; px: number };
-type CardContent = { title: string; body: string; bare?: boolean };
+type CardContent = { title: string; body: string; cta?: string; bare?: boolean };
 
 function Card({ children }: { children: (s: PreviewState) => React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -133,11 +100,17 @@ function Card({ children }: { children: (s: PreviewState) => React.ReactNode }) 
   );
 }
 
-function CardBody({ title, body }: CardContent) {
+function CardBody({ title, body, cta }: CardContent) {
   return (
     <div className="relative px-6 pb-7 pt-6 sm:px-8">
       <h3 className="text-[24px] font-medium tracking-[-0.025em] text-fg">{title}</h3>
       <p className="mt-2 text-[15.5px] leading-[1.6] text-dim">{body}</p>
+      {cta && (
+        <span className="mt-5 inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.14em] text-magenta transition-colors group-hover:text-fg">
+          {cta}
+          <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
+        </span>
+      )}
     </div>
   );
 }
@@ -146,37 +119,39 @@ function Stage({ children }: { children: React.ReactNode }) {
   return <div className="subgrid relative h-[260px] overflow-hidden border-b border-line">{children}</div>;
 }
 
-/* Hover-scrub through the Marina Park cut, tied to cursor X. */
+/* Hover-scrub through the offer ad from the API demo, tied to cursor X: real Remotion frames. */
 function VideoPreview({ active, px, ...c }: PreviewState & CardContent) {
-  const N = MARINA.stripFrames;
-  const idx = active ? Math.min(N - 1, Math.floor(px * N)) : 29;
+  const { t } = useT();
+  const data = t.apiDemo.presets[0].data;
+  const props = { ...data, stockLabel: t.apiDemo.left(data.stock) };
+  const frame = active ? Math.round(80 + px * (AD_FRAMES - 120)) : 150;
   const W = 117; // 9:16 at 208px tall
   return (
     <>
       <Stage>
         <div className="absolute inset-0 flex items-center justify-center gap-6">
           {/* neighbour frames, dimmed, like an onion-skin */}
-          {[-1, 0, 1].map((o) => {
-            const k = Math.min(N - 1, Math.max(0, idx + o));
-            return (
-              <div
-                key={o}
-                className={cx(
-                  'relative h-[208px] overflow-hidden rounded-[2px] border transition-[opacity,transform] duration-500',
-                  o === 0 ? 'border-fg/40' : 'hidden border-line opacity-30 sm:block',
-                )}
-                style={{ width: W, transform: o === 0 && active ? 'scale(1.04)' : 'none', transitionTimingFunction: spring }}
-              >
-                <img
-                  src={MARINA.strip}
-                  alt=""
-                  draggable={false}
-                  className="absolute left-0 top-0 h-[208px] max-w-none select-none"
-                  style={{ width: W * N, transform: `translateX(${-k * W}px)` }}
-                />
-              </div>
-            );
-          })}
+          {[-1, 0, 1].map((o) => (
+            <div
+              key={o}
+              className={cx(
+                'relative h-[208px] overflow-hidden rounded-[2px] border transition-[opacity,transform] duration-500',
+                o === 0 ? 'border-fg/40' : 'hidden border-line opacity-30 sm:block',
+              )}
+              style={{ width: W, transform: o === 0 && active ? 'scale(1.04)' : 'none', transitionTimingFunction: spring }}
+            >
+              <Thumbnail
+                component={OfferAd}
+                inputProps={props}
+                compositionWidth={1080}
+                compositionHeight={1920}
+                durationInFrames={AD_FRAMES}
+                fps={AD_FPS}
+                frameToDisplay={Math.min(AD_FRAMES - 30, Math.max(0, frame + o * 40))}
+                style={{ width: W, height: 208 }}
+              />
+            </div>
+          ))}
         </div>
       </Stage>
       {!c.bare && <CardBody {...c} />}

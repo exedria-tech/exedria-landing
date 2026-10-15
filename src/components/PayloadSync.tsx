@@ -24,7 +24,7 @@ export function PayloadSync() {
     setData((d) => ({ ...d, [k]: k === 'stock' ? Math.min(9999, Math.max(0, parseInt(v.replace(/\D/g, '') || '0', 10))) : v }));
 
   return (
-    <section id="sincronizare" className="scroll-mt-20 border-b border-line py-14 last:border-b-0 md:py-20">
+    <>
       <Reveal>
         <Label tone="magenta">{a.label}</Label>
         <h2 className="mt-6 max-w-[24ch] text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1] tracking-[-0.045em]">{a.title}</h2>
@@ -92,7 +92,7 @@ export function PayloadSync() {
           </div>
         </div>
       </Reveal>
-    </section>
+    </>
   );
 }
 

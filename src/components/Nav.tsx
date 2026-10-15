@@ -5,7 +5,7 @@ import { Segmented, cx } from './ui';
 
 /** Top-level pages, in menu order. */
 export const NAV = [
-  { id: 'services', to: '/servicii' },
+  { id: 'services', to: '/platforma' },
   { id: 'work', to: '/lucrari' },
   { id: 'studio', to: '/studio' },
   { id: 'contact', to: '/contact' },
@@ -48,7 +48,7 @@ export function Nav() {
     <header
       className={cx(
         'fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top,0px)] transition-colors duration-300',
-        scrolled || open ? 'border-line bg-paper/95' : 'border-transparent bg-transparent',
+        scrolled || open ? 'border-line bg-paper' : 'border-transparent bg-transparent',
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-8">

@@ -37,6 +37,13 @@ function ScrollManager() {
   return null;
 }
 
+/** /servicii moved to /platforma; old anchors map onto the new chapter ids. */
+function LegacyServices() {
+  const { hash } = useLocation();
+  const old: Record<string, string> = { '#site-uri': '#web', '#software': '#api' };
+  return <Navigate to={`/platforma${old[hash] ?? hash}`} replace />;
+}
+
 export default function App() {
   useLayoutEffect(() => {
     if (!performance.getEntriesByName(MOUNT_MARK).length) performance.mark(MOUNT_MARK);
@@ -49,8 +56,8 @@ export default function App() {
       <main className="relative z-[2]">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/servicii" element={<ServicesPage />} />
-          <Route path="/platforma" element={<Navigate to="/servicii" replace />} />
+          <Route path="/platforma" element={<ServicesPage />} />
+          <Route path="/servicii" element={<LegacyServices />} />
           <Route path="/lucrari" element={<Portfolio />} />
           <Route path="/lucrari/:slug" element={<CaseStudy />} />
           <Route path="/studio" element={<Studio />} />

@@ -1,6 +1,5 @@
 import { Hero } from '../components/Hero';
 import { MoreLink, Services } from '../components/Services';
-import { Work } from '../components/Work';
 import { Button, Label, Reveal, usePageTitle } from '../components/ui';
 import { EMAIL } from '../data/company';
 import { useT } from '../i18n';
@@ -10,7 +9,6 @@ export function Home() {
   return (
     <>
       <Hero />
-      <Work />
       <Services />
       <StudioTeaser />
       <HomeCta />

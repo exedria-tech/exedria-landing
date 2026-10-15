@@ -65,8 +65,9 @@ export function WebSpeed() {
   const [timings, setTimings] = useState<Timings | null>(() => readTimings());
   const fps = useLiveFps(panel);
 
+  // DOMContentLoaded can land before React's first commit, so poll until both are known.
   useEffect(() => {
-    if (timings) return;
+    if (timings && timings.mount != null) return;
     const id = setInterval(() => {
       const v = readTimings();
       if (v) setTimings(v);
@@ -84,7 +85,7 @@ export function WebSpeed() {
   ];
 
   return (
-    <section id="viteza" className="scroll-mt-20 border-b border-line py-14 last:border-b-0 md:py-20">
+    <>
       <Reveal>
         <Label>{w.label}</Label>
         <h2 className="mt-6 max-w-[22ch] text-[clamp(30px,3.6vw,52px)] font-semibold leading-[1] tracking-[-0.045em]">{w.title}</h2>
@@ -133,7 +134,7 @@ export function WebSpeed() {
           <Layers />
         </div>
       </Reveal>
-    </section>
+    </>
   );
 }
 

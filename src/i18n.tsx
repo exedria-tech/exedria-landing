@@ -74,6 +74,8 @@ export const ro = {
     hoverHint: 'Mișcă cursorul',
     all: 'Toată platforma',
     quote: 'Explorează Modulul',
+    preview: 'Generează un Preview',
+    chapters: ['Video', 'Web', 'API'],
     work: 'Vezi Template-uri',
   },
   lab: {
@@ -319,6 +321,8 @@ const en: Copy = {
     hoverHint: 'Move your cursor',
     all: 'Explore the platform',
     quote: 'Explore Module',
+    preview: 'Generate Preview',
+    chapters: ['Video', 'Web', 'API'],
     work: 'View Templates',
   },
   lab: {

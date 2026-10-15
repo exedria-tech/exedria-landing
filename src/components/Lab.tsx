@@ -4,7 +4,8 @@ import { FORMATS, LAB_SECONDS, SpringCard, type Format } from '../compositions/S
 import { useT } from '../i18n';
 import { Label, Reveal, Segmented } from './ui';
 
-export function Lab() {
+/** The motion lab. `embedded` drops the section chrome and heading (used inside a Platform chapter). */
+export function Lab({ embedded }: { embedded?: boolean } = {}) {
   const { t, lang } = useT();
   const playerRef = useRef<PlayerRef>(null);
   const [bounce, setBounce] = useState(7);
@@ -38,7 +39,7 @@ export function Lab() {
     replay();
   };
 
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = sectionRef.current;
     if (!el) return;
@@ -56,15 +57,7 @@ export function Lab() {
     return () => clearTimeout(id);
   }, [bounce, speed, format]);
 
-  return (
-    <section id="lab" ref={sectionRef} className="relative border-t border-line py-24 md:py-32">
-      <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
-        <Reveal>
-          <Label tone="magenta">{t.lab.label}</Label>
-          <h2 className="mt-6 text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">{t.lab.title}</h2>
-        </Reveal>
-
-        <Reveal className="mt-14">
+  const panel = (
           <div className="grid grid-cols-[minmax(0,1fr)] border border-line bg-panel lg:grid-cols-[minmax(0,1fr)_320px]">
             <div className="min-w-0 border-b border-line p-3 sm:p-5 lg:border-b-0 lg:border-r">
               <div className="relative h-[clamp(320px,48vw,520px)] bg-paper">
@@ -111,7 +104,18 @@ export function Lab() {
               </button>
             </div>
           </div>
+  );
+
+  if (embedded) return <div ref={sectionRef}>{panel}</div>;
+
+  return (
+    <section id="lab" className="relative border-t border-line py-24 md:py-32">
+      <div ref={sectionRef} className="mx-auto max-w-[1440px] px-4 sm:px-8">
+        <Reveal>
+          <Label tone="magenta">{t.lab.label}</Label>
+          <h2 className="mt-6 text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">{t.lab.title}</h2>
         </Reveal>
+        <Reveal className="mt-14">{panel}</Reveal>
       </div>
     </section>
   );
