@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { Route, Routes, useLocation, useNavigationType } from 'react-router';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigationType } from 'react-router';
 import { Footer } from './components/Footer';
 import { Nav } from './components/Nav';
 import { CursorField } from './components/Overlays';
@@ -13,6 +13,7 @@ import { Privacy } from './pages/Privacy';
 import { ServicesPage } from './pages/ServicesPage';
 import { Studio } from './pages/Studio';
 import { Terms } from './pages/Terms';
+import { MOUNT_MARK } from './perf';
 
 /**
  * New pages start at the top; links with a hash scroll to that section once it is rendered.
@@ -37,6 +38,9 @@ function ScrollManager() {
 }
 
 export default function App() {
+  useLayoutEffect(() => {
+    if (!performance.getEntriesByName(MOUNT_MARK).length) performance.mark(MOUNT_MARK);
+  }, []);
   return (
     <LangProvider>
       <ScrollManager />
@@ -46,6 +50,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/servicii" element={<ServicesPage />} />
+          <Route path="/platforma" element={<Navigate to="/servicii" replace />} />
           <Route path="/lucrari" element={<Portfolio />} />
           <Route path="/lucrari/:slug" element={<CaseStudy />} />
           <Route path="/studio" element={<Studio />} />

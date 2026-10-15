@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { MARINA } from '../data/marina';
 import type { Category } from '../data/projects';
@@ -52,8 +52,8 @@ export function Services() {
   );
 }
 
-/** /servicii: one row per service with its live preview, the detail and where to go next. */
-export function ServiceRows() {
+/** /servicii: one row per service with its live preview, the detail and where to go next; `extras` follow a row by slug. */
+export function ServiceRows({ extras }: { extras?: Partial<Record<string, ReactNode>> }) {
   const { t } = useT();
   return (
     <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
@@ -61,7 +61,8 @@ export function ServiceRows() {
         const Preview = PREVIEWS[i];
         const { slug, category } = SERVICES[i];
         return (
-          <section key={slug} id={slug} className="grid scroll-mt-20 gap-8 border-b border-line py-14 last:border-b-0 md:grid-cols-2 md:gap-14 md:py-20">
+          <Fragment key={slug}>
+          <section id={slug} className="grid scroll-mt-20 gap-8 border-b border-line py-14 last:border-b-0 md:grid-cols-2 md:gap-14 md:py-20">
             <Reveal className="border border-line">
               <Card>{(state) => <Preview {...state} title={s.title} body={s.body} bare />}</Card>
             </Reveal>
@@ -77,6 +78,8 @@ export function ServiceRows() {
               </div>
             </Reveal>
           </section>
+          {extras?.[slug]}
+          </Fragment>
         );
       })}
     </div>
