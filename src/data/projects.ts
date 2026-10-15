@@ -64,8 +64,8 @@ export const PROJECTS: Project[] = [
       {
         title: { ro: 'Input', en: 'Input' },
         body: {
-          ro: 'Casa în stil dobrogean, căsuțele din lemn, foișorul, locurile de rulote și corturi și marea la 400 m. Totul trebuia să încapă în 40 de secunde, pe vertical.',
-          en: 'The Dobrogean-style house, the wooden cabins, the gazebo, the camper and tent pitches and the sea 400 m away. All of it had to fit into 40 seconds, vertically.',
+          ro: 'Casa în stil dobrogean, căsuțele din lemn, foișorul, locul de camping cu hamace și marea la 400 m. Totul trebuia să încapă în 40 de secunde, pe vertical.',
+          en: 'The Dobrogean-style house, the wooden cabins, the gazebo, the camping ground with hammocks and the sea 400 m away. All of it had to fit into 40 seconds, vertically.',
         },
       },
       {
