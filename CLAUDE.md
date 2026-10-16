@@ -38,7 +38,7 @@ Exedria este, deocamdată, o **agenție**: producem video programatic (React/Rem
 
 - Meniu: Lucrări · Servicii · Contact. Rutele și meniul sunt definite într-un singur loc: `src/routes.ts`.
 - Redirecturi în `vercel.json`: `/platforma` → `/servicii`, `/studio` → `/#cum-lucram`.
-- Portofoliu (`src/data/projects.ts`), în ordine: Marina Park, Flip Finder, Diagram AI. Media în `public/media/`.
+- Portofoliu (`src/data/projects.ts`), în ordine: Marina Park, Flip Finder, DiagramAI. Media în `public/media/`.
 - Date de contact: `src/data/company.ts` (hello@exedria.tech, domeniul exedria.tech; nu exedria.ro).
 
 ## Stack și build
