@@ -4,19 +4,8 @@ import { prerenderToNodeStream } from 'react-dom/static';
 import { StaticRouter } from 'react-router';
 import App from './App';
 import { ssrHead } from './components/ui';
-import { PROJECTS } from './data/projects';
 
-/** Every route that gets its own static HTML at build time. */
-export const ROUTES = [
-  '/',
-  '/platforma',
-  '/lucrari',
-  ...PROJECTS.map((p) => `/lucrari/${p.slug}`),
-  '/studio',
-  '/contact',
-  '/termeni',
-  '/confidentialitate',
-];
+export { ROUTES, pageFile } from './routes';
 
 const tree = (url: string) => (
   <StrictMode>

@@ -3,12 +3,12 @@ import type { PlayerRef } from '@remotion/player';
 import { FORMATS, LAB_SECONDS, type Format } from '../compositions/labFormats';
 import { useT } from '../i18n';
 import { ClientOnly } from './ClientOnly';
-import { Label, Reveal, Segmented } from './ui';
+import { Segmented } from './ui';
 
 const LabPlayer = lazy(() => import('./LabPlayer'));
 
-/** The motion lab. `embedded` drops the section chrome and heading (used inside a Platform chapter). */
-export function Lab({ embedded }: { embedded?: boolean } = {}) {
+/** The motion lab panel, shown in the Video chapter of /servicii. */
+export function Lab() {
   const { t, lang } = useT();
   const playerRef = useRef<PlayerRef>(null);
   const [bounce, setBounce] = useState(7);
@@ -110,19 +110,7 @@ export function Lab({ embedded }: { embedded?: boolean } = {}) {
           </div>
   );
 
-  if (embedded) return <div ref={sectionRef}>{panel}</div>;
-
-  return (
-    <section id="lab" className="relative border-t border-line py-24 md:py-32">
-      <div ref={sectionRef} className="mx-auto max-w-[1440px] px-4 sm:px-8">
-        <Reveal>
-          <Label tone="magenta">{t.lab.label}</Label>
-          <h2 className="mt-6 text-[clamp(34px,4.6vw,68px)] font-semibold leading-[0.98] tracking-[-0.045em]">{t.lab.title}</h2>
-        </Reveal>
-        <Reveal className="mt-14">{panel}</Reveal>
-      </div>
-    </section>
-  );
+  return <div ref={sectionRef}>{panel}</div>;
 }
 
 function Fader({

@@ -24,19 +24,17 @@ function page<P extends object>(load: () => Promise<ComponentType<P>>) {
 const ServicesPage = page(() => import('./pages/ServicesPage').then((m) => m.ServicesPage));
 const Portfolio = page(() => import('./pages/Portfolio').then((m) => m.Portfolio));
 const CaseStudy = page(() => import('./pages/CaseStudy').then((m) => m.CaseStudy));
-const Studio = page(() => import('./pages/Studio').then((m) => m.Studio));
 const ContactPage = page(() => import('./pages/ContactPage').then((m) => m.ContactPage));
 const Terms = page(() => import('./pages/Terms').then((m) => m.Terms));
 const Privacy = page(() => import('./pages/Privacy').then((m) => m.Privacy));
 const NotFound = page(() => import('./pages/NotFound').then((m) => m.NotFound));
-const PAGES = [ServicesPage, Portfolio, CaseStudy, Studio, ContactPage, Terms, Privacy, NotFound];
+const PAGES = [ServicesPage, Portfolio, CaseStudy, ContactPage, Terms, Privacy, NotFound];
 
 /** Loads the page chunk for a prerendered path, so hydration can run without suspending. */
 export function preloadPage(pathname: string): Promise<void> {
   const byPath: Record<string, { preload: () => Promise<void> }> = {
-    '/platforma': ServicesPage,
+    '/servicii': ServicesPage,
     '/lucrari': Portfolio,
-    '/studio': Studio,
     '/contact': ContactPage,
     '/termeni': Terms,
     '/confidentialitate': Privacy,
@@ -83,11 +81,11 @@ function MountMark() {
   return null;
 }
 
-/** /servicii moved to /platforma; old anchors map onto the new chapter ids. */
+/** /platforma became /servicii again; old anchors map onto the chapter ids. */
 function LegacyServices() {
   const { hash } = useLocation();
   const old: Record<string, string> = { '#site-uri': '#web', '#software': '#api' };
-  return <Navigate to={`/platforma${old[hash] ?? hash}`} replace />;
+  return <Navigate to={`/servicii${old[hash] ?? hash}`} replace />;
 }
 
 export default function App() {
@@ -110,11 +108,12 @@ export default function App() {
         <Suspense fallback={<div className="min-h-[100svh]" />}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/platforma" element={<ServicesPage />} />
-          <Route path="/servicii" element={<LegacyServices />} />
+          <Route path="/servicii" element={<ServicesPage />} />
+          <Route path="/platforma" element={<LegacyServices />} />
           <Route path="/lucrari" element={<Portfolio />} />
           <Route path="/lucrari/:slug" element={<CaseStudy />} />
-          <Route path="/studio" element={<Studio />} />
+          {/* The old Motor Grafic page: its pipeline now lives on /servicii, the lab in the Video chapter. */}
+          <Route path="/studio" element={<Navigate to="/servicii#cum-lucram" replace />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/termeni" element={<Terms />} />
           <Route path="/confidentialitate" element={<Privacy />} />

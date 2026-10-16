@@ -10,7 +10,7 @@ const FormatTrio = lazy(() => import('./FormatTrio'));
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
 /**
- * The services, in the order of t.services.items. `slug` is the chapter anchor on /platforma and the
+ * The services, in the order of t.services.items. `slug` is the chapter anchor on /servicii and the
  * ?serviciu= value the contact form understands; `category` filters /lucrari.
  */
 export const SERVICES: { slug: string; category: Category }[] = [
@@ -21,7 +21,7 @@ export const SERVICES: { slug: string; category: Category }[] = [
 
 const PREVIEWS = [VideoPreview, WebPreview, OpsPreview];
 
-/** Home page summary: the grid of live cards, each opening its chapter on /platforma. */
+/** Home page summary: the grid of live cards, each opening its chapter on /servicii. */
 export function Services() {
   const { t } = useT();
   return (
@@ -34,7 +34,7 @@ export function Services() {
               {t.services.title}
             </h2>
           </div>
-          <MoreLink to="/platforma">{t.services.all}</MoreLink>
+          <MoreLink to="/servicii">{t.services.all}</MoreLink>
         </Reveal>
 
         <div className="mt-14 grid border-l border-t border-line md:grid-cols-2 lg:grid-cols-3">
@@ -42,7 +42,7 @@ export function Services() {
             const Preview = PREVIEWS[i];
             return (
               <Reveal key={i} delay={i * 100} className="border-b border-r border-line md:last:col-span-2 lg:last:col-span-1">
-                <Link to={`/platforma#${SERVICES[i].slug}`} className="block h-full">
+                <Link to={`/servicii#${SERVICES[i].slug}`} className="block h-full">
                   <Card>{(state) => <Preview {...state} title={s.title} body={s.body} cta={t.services.quote} />}</Card>
                 </Link>
               </Reveal>

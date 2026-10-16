@@ -16,7 +16,7 @@ export function Home() {
   );
 }
 
-/** One line pointing to /studio, where the process and the motion lab live. */
+/** One line pointing to the pipeline on /servicii. */
 function StudioTeaser() {
   const { t } = useT();
   return (
@@ -26,7 +26,7 @@ function StudioTeaser() {
           <Label>{t.studio.label}</Label>
           <h2 className="mt-5 max-w-[22ch] text-[clamp(28px,3.2vw,44px)] font-semibold leading-[1.02] tracking-[-0.04em]">{t.studio.teaserTitle}</h2>
         </div>
-        <MoreLink to="/studio">{t.studio.teaserLink}</MoreLink>
+        <MoreLink to="/servicii#cum-lucram">{t.studio.teaserLink}</MoreLink>
       </Reveal>
     </section>
   );
