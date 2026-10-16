@@ -157,11 +157,6 @@ export const ro = {
     open: 'Studiul de caz',
     all: 'Toate lucrările',
   },
-  studio: {
-    label: 'Motor Grafic',
-    teaserTitle: 'Pipeline-ul și laboratorul de mișcare.',
-    teaserLink: 'Vezi tehnologia',
-  },
   caseStudy: {
     next: 'Template-ul următor',
     service: 'Modul folosit',
@@ -399,11 +394,6 @@ const en: Copy = {
     slotCta: 'Get a quote',
     open: 'Case study',
     all: 'All work',
-  },
-  studio: {
-    label: 'Motion Lab',
-    teaserTitle: 'The pipeline and the motion lab.',
-    teaserLink: 'Explore the tech',
   },
   caseStudy: {
     next: 'Next template',

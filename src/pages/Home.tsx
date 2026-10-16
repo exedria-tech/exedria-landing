@@ -1,5 +1,5 @@
 import { Hero } from '../components/Hero';
-import { MoreLink, Services } from '../components/Services';
+import { Services } from '../components/Services';
 import { Button, Label, Reveal, usePageTitle } from '../components/ui';
 import { EMAIL } from '../data/company';
 import { useT } from '../i18n';
@@ -10,25 +10,8 @@ export function Home() {
     <>
       <Hero />
       <Services />
-      <StudioTeaser />
       <HomeCta />
     </>
-  );
-}
-
-/** One line pointing to the pipeline on /servicii. */
-function StudioTeaser() {
-  const { t } = useT();
-  return (
-    <section className="border-t border-line py-16 md:py-20">
-      <Reveal className="mx-auto flex max-w-[1440px] flex-wrap items-end justify-between gap-6 px-4 sm:px-8">
-        <div>
-          <Label>{t.studio.label}</Label>
-          <h2 className="mt-5 max-w-[22ch] text-[clamp(28px,3.2vw,44px)] font-semibold leading-[1.02] tracking-[-0.04em]">{t.studio.teaserTitle}</h2>
-        </div>
-        <MoreLink to="/servicii#cum-lucram">{t.studio.teaserLink}</MoreLink>
-      </Reveal>
-    </section>
   );
 }
 
