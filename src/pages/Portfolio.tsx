@@ -1,19 +1,32 @@
-import { useState, type CSSProperties, type ReactNode } from 'react';
-import { Link, useSearchParams } from 'react-router';
+import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
+import { A } from '../components/A';
 import { Corners, PageHeader, Segmented, cx, timecode, usePageTitle } from '../components/ui';
 import { CATEGORIES, OPEN_SLOTS, PROJECTS, type Category, type Project } from '../data/projects';
 import { useT } from '../i18n';
+import { Island } from '../islands/Island';
 
 type Filter = 'all' | Category;
 
-export function Portfolio() {
+/** /lucrari: the filter and the cards hover-scrub, so the whole page body is one island. */
+export function PortfolioPage() {
   const { t } = useT();
   usePageTitle(t.portfolio.label);
-  // ?categorie=web arrives from the service pages.
-  const [params, setParams] = useSearchParams();
-  const fromUrl = CATEGORIES.find((c) => c === params.get('categorie'));
+  return <Island name="portfolio" component={Portfolio} when="idle" />;
+}
+
+export function Portfolio() {
+  const { t } = useT();
+  // ?categorie=web arrives from the service pages; read after hydration (the HTML shows all work).
+  const [fromUrl, setFromUrl] = useState<Category | undefined>();
+  useEffect(() => setFromUrl(CATEGORIES.find((c) => c === new URLSearchParams(location.search).get('categorie'))), []);
   const filter: Filter = fromUrl ?? 'all';
-  const setFilter = (f: Filter) => setParams(f === 'all' ? {} : { categorie: f }, { replace: true });
+  const setFilter = (f: Filter) => {
+    setFromUrl(f === 'all' ? undefined : f);
+    const url = new URL(location.href);
+    if (f === 'all') url.searchParams.delete('categorie');
+    else url.searchParams.set('categorie', f);
+    history.replaceState(null, '', url);
+  };
 
   // The filter shows once there is real work in more than one category, or when a link picked one,
   // so a filtered list always has a visible way back to all work.
@@ -85,7 +98,7 @@ function ProjectCard({ p }: { p: Project }) {
   const frame = p.strip && x !== null ? Math.min(p.strip.frames - 1, Math.floor(x * p.strip.frames)) : null;
 
   return (
-    <Link
+    <A
       to={`/lucrari/${p.slug}`}
       className="group block"
       onPointerMove={(e) => {
@@ -126,7 +139,7 @@ function ProjectCard({ p }: { p: Project }) {
         {t.portfolio.open}
         <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
       </span>
-    </Link>
+    </A>
   );
 }
 
@@ -135,7 +148,7 @@ function SlotCard({ category }: { category: Category }) {
   const { t } = useT();
   const portrait = category === 'video';
   return (
-    <Link to="/contact" className="group block">
+    <A to="/contact" className="group block">
       <Canvas>
         <div
           className={cx(
@@ -161,6 +174,6 @@ function SlotCard({ category }: { category: Category }) {
         {t.portfolio.slotCta}
         <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
       </span>
-    </Link>
+    </A>
   );
 }

@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router';
-import { SERVICES } from './Services';
+import { useEffect, useRef, useState } from 'react';
+import { A } from './A';
+import { SERVICES } from '../data/services';
 import { EMAIL } from '../data/company';
 import { ro, useT } from '../i18n';
 import { cx } from './ui';
@@ -32,10 +32,13 @@ export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  // ?serviciu=web (from the platform chapters) pre-ticks that module; the modules map 1:1 onto the options.
-  const [params] = useSearchParams();
-  const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
-  const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);
+  const [needs, setNeeds] = useState<number[]>([0]);
+  // ?serviciu=web (from the service pages) pre-ticks that module; the modules map 1:1 onto the options.
+  // Read after hydration, since the prerendered HTML has no query string.
+  useEffect(() => {
+    const preset = SERVICES.findIndex((s) => s.slug === new URLSearchParams(location.search).get('serviciu'));
+    if (preset > 0) setNeeds([preset]);
+  }, []);
   const [message, setMessage] = useState('');
   // Video quote details, asked only when the video module is ticked (option 0).
   const [volume, setVolume] = useState<string | null>(null);
@@ -215,9 +218,9 @@ export function ContactForm() {
       </div>
       <p className="mt-5 text-[13px] leading-[1.55] text-faint">
         {t.contactPage.privacy}{' '}
-        <Link to="/confidentialitate" className="text-dim underline decoration-line-strong underline-offset-2 hover:text-fg">
+        <A to="/confidentialitate" className="text-dim underline decoration-line-strong underline-offset-2 hover:text-fg">
           {t.contactPage.privacyLink}
-        </Link>
+        </A>
         .
       </p>
     </form>

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Link } from 'react-router';
+import { A } from './A';
 import type { Project } from '../data/projects';
 import { useT } from '../i18n';
 import { Label, Reveal, cx } from './ui';
@@ -236,14 +236,14 @@ export function Work({ p, intro, id = 'work' }: { p: Project; intro?: ReactNode;
                 </h2>
                 <p className="mt-5 max-w-[44ch] text-[16.5px] leading-[1.6] text-dim">{t.work.body}</p>
                 <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 font-mono text-[12px] uppercase tracking-[0.14em]">
-                  <Link to="/lucrari/marina-park" className="group inline-flex items-center gap-2 text-fg hover:text-sky-ink">
+                  <A to="/lucrari/marina-park" className="group inline-flex items-center gap-2 text-fg hover:text-sky-ink">
                     {t.portfolio.open}
                     <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
-                  </Link>
-                  <Link to="/lucrari" className="group inline-flex items-center gap-2 text-dim hover:text-fg">
+                  </A>
+                  <A to="/lucrari" className="group inline-flex items-center gap-2 text-dim hover:text-fg">
                     {t.portfolio.all}
                     <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
-                  </Link>
+                  </A>
                 </div>
               </>
             )}

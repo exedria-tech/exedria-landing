@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router';
-import { useT, type Lang } from '../i18n';
+import { useT } from '../i18n';
+import { counterpart, langOf, type Lang } from '../lang';
 import { NAV } from '../routes';
-import { Segmented, cx } from './ui';
+import { A } from './A';
+import { cx } from './ui';
 
 export { NAV };
 
@@ -21,35 +21,25 @@ export function Logo({ className }: { className?: string }) {
   );
 }
 
-export function Nav() {
-  const { t, lang, setLang } = useT();
-  const { pathname, key } = useLocation();
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => setOpen(false), [key]);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
+/**
+ * Static header for the page at `pathname`; src/behaviors/nav.ts adds the scrolled background and the
+ * mobile menu toggle (data-scrolled / data-open on the header).
+ */
+export function Nav({ pathname }: { pathname: string }) {
+  const { t, lang } = useT();
+  const page = langOf(pathname) === 'en' ? pathname.slice(3) || '/' : pathname;
   // The lit channel follows the route, including sub-pages like /lucrari/marina-park.
-  const idx = NAV.findIndex((n) => pathname === n.to || pathname.startsWith(`${n.to}/`));
+  const idx = NAV.findIndex((n) => page === n.to || page.startsWith(`${n.to}/`));
 
   return (
     <header
-      className={cx(
-        'fixed inset-x-0 top-0 z-50 border-b pt-[env(safe-area-inset-top,0px)] transition-colors duration-300',
-        scrolled || open ? 'border-line bg-paper' : 'border-transparent bg-transparent',
-      )}
+      data-nav
+      className="group/nav fixed inset-x-0 top-0 z-50 border-b border-transparent bg-transparent pt-[env(safe-area-inset-top,0px)] transition-colors duration-300 data-[open]:border-line data-[open]:bg-paper data-[scrolled]:border-line data-[scrolled]:bg-paper"
     >
       <div className="mx-auto flex h-16 max-w-[1440px] items-center justify-between gap-6 px-4 sm:px-8">
-        <Link to="/" className="text-fg transition-transform duration-300 ease-[var(--ease-spring)] active:scale-95" aria-label="Exedria">
+        <A to="/" className="text-fg transition-transform duration-300 ease-[var(--ease-spring)] active:scale-95" aria-label="Exedria">
           <Logo />
-        </Link>
+        </A>
 
         {/* Switchboard: one channel per destination */}
         <nav className="relative hidden rounded-[3px] border border-line bg-panel/80 p-[3px] lg:block">
@@ -61,7 +51,7 @@ export function Nav() {
           <ul className="relative grid grid-cols-3">
             {NAV.map(({ id, to }, i) => (
               <li key={id}>
-                <Link
+                <A
                   to={to}
                   aria-current={i === idx ? 'page' : undefined}
                   className={cx(
@@ -71,59 +61,87 @@ export function Nav() {
                 >
                   <span className={cx('size-[5px] transition-colors', i === idx ? 'bg-sky' : 'bg-line-strong')} />
                   {t.nav[id]}
-                </Link>
+                </A>
               </li>
             ))}
           </ul>
         </nav>
 
         <div className="flex items-center gap-3">
-          <Segmented<Lang> size="sm" options={['ro', 'en']} value={lang} onChange={setLang} ariaLabel="Language" />
-          <Link
+          <LangSwitch pathname={pathname} lang={lang} />
+          <A
             to="/contact"
             className="hidden items-center gap-2 rounded-[3px] bg-fg px-3.5 py-2 text-[13.5px] font-medium text-paper transition-transform duration-300 ease-[var(--ease-spring)] hover:-translate-y-0.5 active:translate-y-px active:scale-[0.97] sm:inline-flex"
           >
             {t.nav.cta}
             <span className="size-1.5 bg-magenta" />
-          </Link>
+          </A>
           <button
-            onClick={() => setOpen((o) => !o)}
-            aria-expanded={open}
+            data-menu-toggle
+            aria-expanded="false"
             aria-controls="mobile-nav"
             aria-label={t.menu}
             className="grid size-9 place-items-center rounded-[3px] border border-line-strong transition-transform duration-300 ease-[var(--ease-spring)] active:scale-90 lg:hidden"
           >
             <span className="relative block h-[9px] w-4">
-              <span className={cx('absolute left-0 top-0 h-[1.5px] w-full bg-fg transition-transform duration-300 ease-[var(--ease-spring)]', open && 'translate-y-[3.75px] rotate-45')} />
-              <span className={cx('absolute bottom-0 left-0 h-[1.5px] w-full bg-fg transition-transform duration-300 ease-[var(--ease-spring)]', open && '-translate-y-[3.75px] -rotate-45')} />
+              <span className="absolute left-0 top-0 h-[1.5px] w-full bg-fg transition-transform duration-300 ease-[var(--ease-spring)] group-data-[open]/nav:translate-y-[3.75px] group-data-[open]/nav:rotate-45" />
+              <span className="absolute bottom-0 left-0 h-[1.5px] w-full bg-fg transition-transform duration-300 ease-[var(--ease-spring)] group-data-[open]/nav:-translate-y-[3.75px] group-data-[open]/nav:-rotate-45" />
             </span>
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu; inert (unfocusable) while closed */}
       <nav
         id="mobile-nav"
-        className={cx(
-          'overflow-hidden border-line transition-[opacity,transform] duration-300 ease-[var(--ease-out-expo)] lg:hidden',
-          open ? 'translate-y-0 border-t opacity-100' : 'pointer-events-none h-0 -translate-y-2 opacity-0',
-        )}
+        inert
+        className="pointer-events-none h-0 -translate-y-2 overflow-hidden border-line opacity-0 transition-[opacity,transform] duration-300 ease-[var(--ease-out-expo)] group-data-[open]/nav:pointer-events-auto group-data-[open]/nav:h-auto group-data-[open]/nav:translate-y-0 group-data-[open]/nav:border-t group-data-[open]/nav:opacity-100 lg:hidden"
       >
         <ul className="mx-auto max-w-[1440px] px-4 py-3 sm:px-8">
           {NAV.map(({ id, to }, i) => (
             <li key={id} className="border-b border-line last:border-b-0">
-              <Link
+              <A
                 to={to}
-                tabIndex={open ? 0 : -1}
                 className={cx('flex items-center justify-between py-3.5 text-[22px] tracking-[-0.02em]', i === idx ? 'text-fg' : 'text-dim')}
               >
                 {t.nav[id]}
                 <span className={cx('size-[7px] rotate-45', i === idx ? 'bg-sky' : 'bg-line-strong')} />
-              </Link>
+              </A>
             </li>
           ))}
         </ul>
       </nav>
     </header>
+  );
+}
+
+/** RO/EN switch: two links to the same page in each language (the script saves the choice on click). */
+function LangSwitch({ pathname, lang }: { pathname: string; lang: Lang }) {
+  const options: Lang[] = ['ro', 'en'];
+  const idx = options.indexOf(lang);
+  return (
+    <nav aria-label="Language" className="relative inline-grid grid-cols-2 rounded-[3px] border border-line bg-panel p-[3px]">
+      <span
+        aria-hidden
+        className="absolute bottom-[3px] left-[3px] top-[3px] w-[calc((100%-6px)/2)] rounded-[2px] bg-raised ring-1 ring-line-strong"
+        style={{ transform: `translateX(${idx * 100}%)` }}
+      />
+      {options.map((o) => (
+        <a
+          key={o}
+          href={counterpart(pathname, o)}
+          hrefLang={o}
+          lang={o}
+          data-lang={o}
+          aria-current={o === lang ? 'true' : undefined}
+          className={cx(
+            'relative z-10 whitespace-nowrap px-2.5 py-1 font-mono text-[10.5px] uppercase tracking-[0.1em] transition-colors duration-200 active:scale-95',
+            o === lang ? 'text-fg' : 'text-faint hover:text-dim',
+          )}
+        >
+          {o}
+        </a>
+      ))}
+    </nav>
   );
 }

@@ -1,4 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
+import type { Lang } from './lang';
+
+export type { Lang };
 
 export const ro = {
   nav: {
@@ -201,8 +204,7 @@ export const ro = {
     metrics: {
       ttfb: ['TTFB', 'Time to First Byte'],
       dcl: ['DOM Ready', 'DOMContentLoaded'],
-      mount: ['Client Hydration', 'hydrateRoot'],
-      render: ['Client Render', 'createRoot'],
+      interactive: ['Interactiv', 'performance.mark'],
       fps: ['Live FPS', 'requestAnimationFrame'],
     },
     excellent: 'Excelent',
@@ -447,8 +449,7 @@ const en: Copy = {
     metrics: {
       ttfb: ['TTFB', 'Time to First Byte'],
       dcl: ['DOM Ready', 'DOMContentLoaded'],
-      mount: ['Client Hydration', 'hydrateRoot'],
-      render: ['Client Render', 'createRoot'],
+      interactive: ['Interactive', 'performance.mark'],
       fps: ['Live FPS', 'requestAnimationFrame'],
     },
     excellent: 'Excellent',
@@ -490,39 +491,16 @@ const en: Copy = {
   hud: 'Page',
 };
 
-export type Lang = 'ro' | 'en';
 const dict: Record<Lang, Copy> = { ro, en };
 
-const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; t: Copy }>({
-  lang: 'ro',
-  setLang: () => {},
-  t: ro,
-});
+const Ctx = createContext<{ lang: Lang; t: Copy }>({ lang: 'ro', t: ro });
 
-export function readLang(): Lang {
-  try {
-    const v = localStorage.getItem('exedria-lang');
-    if (v === 'ro' || v === 'en') return v;
-  } catch {
-    /* storage unavailable */
-  }
-  return 'ro';
-}
-
-export function LangProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(readLang);
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
-  const setLang = (l: Lang) => {
-    setLangState(l);
-    try {
-      localStorage.setItem('exedria-lang', l);
-    } catch {
-      /* storage unavailable */
-    }
-  };
-  return <Ctx.Provider value={{ lang, setLang, t: dict[lang] }}>{children}</Ctx.Provider>;
+/**
+ * The page's language comes from its URL (Romanian at /x, English at /en/x); the RO/EN switch in the
+ * header links between the two (src/behaviors/nav.ts).
+ */
+export function LangProvider({ lang, children }: { lang: Lang; children: ReactNode }) {
+  return <Ctx.Provider value={{ lang, t: dict[lang] }}>{children}</Ctx.Provider>;
 }
 
 export const useT = () => useContext(Ctx);

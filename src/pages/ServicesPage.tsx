@@ -1,11 +1,13 @@
-import { useEffect, useState, type ReactNode } from 'react';
-import { Link } from 'react-router';
+import type { ReactNode } from 'react';
+import { A } from '../components/A';
 import { Lab } from '../components/Lab';
 import { PayloadSync } from '../components/PayloadSync';
-import { MoreLink, SERVICES } from '../components/Services';
+import { MoreLink } from '../components/Services';
 import { WebSpeed } from '../components/WebSpeed';
 import { Label, PageHeader, Reveal, cx, usePageTitle } from '../components/ui';
+import { SERVICES } from '../data/services';
 import { useT } from '../i18n';
+import { Island } from '../islands/Island';
 
 /**
  * /servicii: the three services as chapters, each with its live demo and one call to action.
@@ -14,29 +16,27 @@ import { useT } from '../i18n';
 export function ServicesPage() {
   const { t } = useT();
   usePageTitle(t.nav.services);
-  const active = useActiveChapter();
   const video = t.services.items[0];
   return (
     <>
       <PageHeader label={t.nav.services} title={t.services.title} lead={t.services.body} />
 
-      {/* Chapter switcher, sticky under the main nav */}
+      {/* Chapter switcher, sticky under the main nav; src/behaviors/chapters.ts marks the chapter in view */}
       <nav className="sticky top-[calc(64px+env(safe-area-inset-top,0px))] z-40 border-y border-line bg-paper">
         <ul className="mx-auto grid max-w-[1440px] grid-cols-3 px-4 sm:px-8">
           {SERVICES.map(({ slug }, i) => (
             <li key={slug} className={cx(i > 0 && 'border-l border-line')}>
-              <Link
+              <A
                 to={`#${slug}`}
-                aria-current={active === slug ? 'location' : undefined}
-                className={cx(
-                  'relative flex items-center gap-2.5 px-3 py-3.5 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors sm:px-5',
-                  active === slug ? 'text-fg' : 'text-faint hover:text-dim',
-                )}
+                data-chapter-link={slug}
+                data-active={i === 0 ? '' : undefined}
+                aria-current={i === 0 ? 'location' : undefined}
+                className="group/ch relative flex items-center gap-2.5 px-3 py-3.5 font-mono text-[11px] uppercase tracking-[0.14em] text-faint transition-colors hover:text-dim data-[active]:text-fg data-[active]:hover:text-fg sm:px-5"
               >
-                <span className={cx('absolute inset-x-0 bottom-[-1px] h-[2px] transition-colors', active === slug ? 'bg-sky' : 'bg-transparent')} />
-                <span className={cx('transition-colors', active === slug ? 'text-sky-ink' : 'text-line-strong')}>0{i + 1}</span>
+                <span className="absolute inset-x-0 bottom-[-1px] h-[2px] bg-transparent transition-colors group-data-[active]/ch:bg-sky" />
+                <span className="text-line-strong transition-colors group-data-[active]/ch:text-sky-ink">0{i + 1}</span>
                 {t.services.chapters[i]}
-              </Link>
+              </A>
             </li>
           ))}
         </ul>
@@ -50,14 +50,14 @@ export function ServicesPage() {
             <p className="mt-5 max-w-[58ch] text-[16.5px] leading-[1.6] text-dim">{video.body}</p>
           </Reveal>
           <Reveal delay={100} className="mt-12">
-            <Lab />
+            <Island name="lab" component={Lab} />
           </Reveal>
         </Chapter>
         <Chapter slug="web">
           <WebSpeed />
         </Chapter>
         <Chapter slug="api">
-          <PayloadSync />
+          <Island name="payload" component={PayloadSync} />
         </Chapter>
       </div>
     </>
@@ -77,21 +77,4 @@ function Chapter({ slug, children, footer }: { slug: string; children: ReactNode
       </div>
     </section>
   );
-}
-
-/** The chapter crossing the upper third of the viewport. */
-function useActiveChapter() {
-  const [active, setActive] = useState<string>(SERVICES[0].slug);
-  useEffect(() => {
-    const els = [...document.querySelectorAll<HTMLElement>('[data-chapter]')];
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive((e.target as HTMLElement).dataset.chapter!);
-      },
-      { rootMargin: '-30% 0px -65% 0px' },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
-  }, []);
-  return active;
 }

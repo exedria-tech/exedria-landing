@@ -1,14 +1,6 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-  type ButtonHTMLAttributes,
-  type CSSProperties,
-  type ReactNode,
-} from 'react';
-import { Link } from 'react-router';
+import { useEffect, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
 import { useT } from '../i18n';
-import { useHydrated } from './ClientOnly';
+import { A } from './A';
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');
 
@@ -94,9 +86,9 @@ export function Button({ variant = 'primary', href, children, className, ...rest
   );
   if (href?.startsWith('/'))
     return (
-      <Link to={href} className={cls}>
+      <A to={href} className={cls}>
         {inner}
-      </Link>
+      </A>
     );
   if (href)
     return (
@@ -163,31 +155,9 @@ export function Segmented<T extends string>({
 }
 
 /**
- * `armed` hides the element until it scrolls into view. Prerendered HTML arrives unarmed (visible
- * without JS); after hydration the observer's first report arms only what is off screen, so nothing
- * visible flickers and no layout is forced during hydration.
+ * Fades its content in as it scrolls into view. Rendered as plain HTML (visible without JS); the
+ * page script (src/behaviors/reveal.ts) arms only what starts off screen, so nothing visible flickers.
  */
-export function useInView<T extends Element>(opts: IntersectionObserverInit = { threshold: 0.15 }) {
-  const ref = useRef<T>(null);
-  const hydrated = useHydrated();
-  const [inView, setInView] = useState(false);
-  const [armed, setArmed] = useState(hydrated);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        setInView(true);
-        io.disconnect();
-      } else setArmed(true);
-    }, opts);
-    io.observe(el);
-    return () => io.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-  return [ref, inView, armed] as const;
-}
-
 export function Reveal({
   children,
   delay = 0,
@@ -199,15 +169,8 @@ export function Reveal({
   className?: string;
   as?: 'div' | 'section' | 'li' | 'p';
 }) {
-  const [ref, inView, armed] = useInView<HTMLDivElement>();
   return (
-    <Tag
-      ref={ref as never}
-      data-in={inView}
-      data-armed={armed || undefined}
-      className={cx('reveal', className)}
-      style={{ '--d': `${delay}ms` } as CSSProperties}
-    >
+    <Tag data-reveal className={cx('reveal', className)} style={{ '--d': `${delay}ms` } as CSSProperties}>
       {children}
     </Tag>
   );

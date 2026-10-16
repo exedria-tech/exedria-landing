@@ -1,4 +1,5 @@
 import { ContactForm } from '../components/Contact';
+import { Island } from '../islands/Island';
 import { PageHeader, Reveal, usePageTitle } from '../components/ui';
 import { EMAIL } from '../data/company';
 import { useT } from '../i18n';
@@ -23,7 +24,7 @@ export function ContactPage() {
             </div>
           </Reveal>
           <Reveal delay={120} className="lg:col-span-8">
-            <ContactForm />
+            <Island name="contact" component={ContactForm} when="idle" />
           </Reveal>
         </div>
       </section>

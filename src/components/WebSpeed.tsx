@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useT } from '../i18n';
-import { MOUNT_MARK, boot } from '../perf';
+import { Island } from '../islands/Island';
+import { INTERACTIVE_MARK } from '../perf';
 import { Label, Reveal, cx } from './ui';
 
-type Timings = { ttfb: number; dcl: number; mount: number | null; hydrated: boolean };
+type Timings = { ttfb: number; dcl: number; interactive: number | null };
 
 /** Navigation Timing for the document this visitor actually loaded; null until DOMContentLoaded has fired. */
 function readTimings(): Timings | null {
@@ -11,12 +12,11 @@ function readTimings(): Timings | null {
   if (!nav || !nav.domContentLoadedEventStart) return null;
   // Prerendered pages count from activation, as web-vitals does.
   const start = (nav as PerformanceNavigationTiming & { activationStart?: number }).activationStart ?? 0;
-  const mount = performance.getEntriesByName(MOUNT_MARK)[0]?.startTime;
+  const interactive = performance.getEntriesByName(INTERACTIVE_MARK)[0]?.startTime;
   return {
     ttfb: Math.max(0, nav.responseStart - start),
     dcl: Math.max(0, nav.domContentLoadedEventStart - start),
-    mount: mount == null ? null : Math.max(0, mount - start),
-    hydrated: boot.hydrated,
+    interactive: interactive == null ? null : Math.max(0, interactive - start),
   };
 }
 
@@ -48,12 +48,19 @@ export function WebSpeed() {
       </Reveal>
 
       <Reveal delay={100} className="mt-12">
-        <div className="grid border border-line bg-panel lg:grid-cols-2">
-          <Telemetry />
-          <Layers />
-        </div>
+        <Island name="webspeed" component={WebSpeedPanel} />
       </Reveal>
     </>
+  );
+}
+
+/** Live telemetry and the layer stack. An island: hydrates as it nears the viewport. */
+export function WebSpeedPanel() {
+  return (
+    <div className="grid border border-line bg-panel lg:grid-cols-2">
+      <Telemetry />
+      <Layers />
+    </div>
   );
 }
 
@@ -67,8 +74,8 @@ function Telemetry() {
   const tiles = [
     { key: 'ttfb', value: ttfb, badge: ttfb != null && ttfb < 100 },
     { key: 'dcl', value: ms(timings?.dcl) },
-    // Hydration when main.tsx hydrated prerendered HTML, a plain client render otherwise.
-    { key: timings && !timings.hydrated ? 'render' : 'mount', value: ms(timings?.mount) },
+    // When the page script had the page wired up (static HTML, islands hydrate on their own later).
+    { key: 'interactive', value: ms(timings?.interactive) },
   ] as const;
 
   return (

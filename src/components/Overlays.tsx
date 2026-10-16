@@ -1,49 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useT } from '../i18n';
 import { timecode } from './ui';
 
 /**
- * A dot grid that only shows around the cursor. The window moves with the
- * pointer while the grid inside counter-moves, so the dots stay pinned to
- * the page: two transforms, no repaint.
+ * A dot grid that only shows around the cursor (src/behaviors/cursor.ts moves it). The window moves
+ * with the pointer while the grid inside counter-moves, so the dots stay pinned to the page.
  */
 export function CursorField() {
-  const outer = useRef<HTMLDivElement>(null);
-  const inner = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-    const target = { x: -500, y: -500 };
-    const pos = { x: -500, y: -500 };
-    let raf = 0;
-    const R = 160;
-    const tick = () => {
-      pos.x += (target.x - pos.x) * 0.2;
-      pos.y += (target.y - pos.y) * 0.2;
-      const x = pos.x - R;
-      const y = pos.y - R;
-      if (outer.current) outer.current.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      if (inner.current) inner.current.style.transform = `translate3d(${-x}px, ${-y}px, 0)`;
-      raf = Math.abs(target.x - pos.x) + Math.abs(target.y - pos.y) > 0.3 ? requestAnimationFrame(tick) : 0;
-    };
-    const onMove = (e: PointerEvent) => {
-      target.x = e.clientX;
-      target.y = e.clientY;
-      if (!raf) raf = requestAnimationFrame(tick);
-    };
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('pointermove', onMove);
-    };
-  }, []);
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-[1] overflow-hidden">
       <div
-        ref={outer}
+        data-cursor-window
         className="absolute left-0 top-0 size-[320px] overflow-hidden opacity-40 [mask-image:radial-gradient(circle,#000_0%,transparent_68%)]"
         style={{ transform: 'translate3d(-999px,-999px,0)' }}
       >
-        <div ref={inner} className="dotgrid absolute left-0 top-0 h-screen w-screen" />
+        <div data-cursor-grid className="dotgrid absolute left-0 top-0 h-screen w-screen" />
       </div>
     </div>
   );

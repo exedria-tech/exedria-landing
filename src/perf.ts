@@ -1,5 +1,2 @@
-/** performance.mark set when the routed page first commits (hydrated or rendered), read by the live telemetry on /servicii. */
-export const MOUNT_MARK = 'exedria:react-mount';
-
-/** True when main.tsx hydrated prerendered HTML instead of rendering from scratch. */
-export const boot = { hydrated: false };
+/** performance.mark set once the page script has wired up the page (src/main.ts), read by the live telemetry on /servicii. */
+export const INTERACTIVE_MARK = 'exedria:interactive';
