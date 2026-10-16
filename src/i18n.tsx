@@ -171,7 +171,7 @@ export const ro = {
   workDoor: {
     label: 'Lucrări',
     title: 'Vezi ce am construit pentru alții.',
-    body: 'Studii de caz: Marina Park, Flip Finder, DiagramAI.',
+    body: 'Studii de caz.',
   },
   audience: {
     label: 'Pentru cine',
@@ -427,7 +427,7 @@ const en: Copy = {
   workDoor: {
     label: 'Work',
     title: 'See what we’ve built for others.',
-    body: 'Case studies: Marina Park, Flip Finder, DiagramAI.',
+    body: 'Case studies.',
   },
   audience: {
     label: 'Who it’s for',
