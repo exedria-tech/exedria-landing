@@ -5,7 +5,7 @@ import { useT } from '../i18n';
 import { ClientOnly } from './ClientOnly';
 import { Corners, Label, Reveal, cx } from './ui';
 
-const FormatTrio = lazy(() => import('./FormatTrio'));
+const FormatTrio = lazy(() => import('./FormatTrio').then((m) => ({ default: m.FormatTrio })));
 
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
@@ -121,7 +121,7 @@ function Stage({ children }: { children: React.ReactNode }) {
 }
 
 /*
- * One payload, three aspect ratios: the same Remotion composition rendered at 9:16, 1:1 and 16:9.
+ * One payload, three aspect ratios: the same composition rendered at 9:16, 1:1 and 16:9.
  * Wireframe at rest; on hover every slot fills in.
  */
 function VideoPreview({ active, ...c }: PreviewState & CardContent) {

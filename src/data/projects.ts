@@ -106,8 +106,8 @@ export const PROJECTS: Project[] = [
     duration: 20,
     fps: 30,
     aspect: 9 / 16,
-    poster: '/media/flip-finder-v1-poster.jpg',
-    strip: { src: '/media/flip-finder-v1-strip.jpg', frames: 20 },
+    poster: '/media/flip-finder-v1-poster.webp',
+    strip: { src: '/media/flip-finder-v1-strip.webp', frames: 20 },
     video: '/media/flip-finder-v1.mp4',
     scenes: [
       { from: 0, to: 2, name: { ro: 'Eticheta de preț', en: 'Price tag' } },
@@ -157,8 +157,8 @@ export const PROJECTS: Project[] = [
     duration: 15,
     fps: 30,
     aspect: 9 / 16,
-    poster: '/media/diagram-ai-v1-poster.jpg',
-    strip: { src: '/media/diagram-ai-v1-strip.jpg', frames: 15 },
+    poster: '/media/diagram-ai-v1-poster.webp',
+    strip: { src: '/media/diagram-ai-v1-strip.webp', frames: 15 },
     video: '/media/diagram-ai-v1.mp4',
     scenes: [
       { from: 0, to: 2.5, name: { ro: 'Propoziția', en: 'The sentence' } },

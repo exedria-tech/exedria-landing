@@ -4,6 +4,18 @@ import type { Project } from '../data/projects';
 import { useT } from '../i18n';
 import { Label, Reveal, cx } from './ui';
 
+/** False until the window has loaded (and during prerender/hydration): lets images that can wait stay off the critical path. */
+function useLoaded() {
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    const on = () => setLoaded(true);
+    if (document.readyState === 'complete') on();
+    else window.addEventListener('load', on, { once: true });
+    return () => window.removeEventListener('load', on);
+  }, []);
+  return loaded;
+}
+
 function useVideoClock(ref: React.RefObject<HTMLVideoElement | null>) {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -54,6 +66,8 @@ export function Work({ p, intro, id = 'work' }: { p: Project; intro?: ReactNode;
   const videoRef = useRef<HTMLVideoElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const { time, playing } = useVideoClock(videoRef);
+  // The scene thumbnails share one strip image, fetched after the page (poster included) has loaded.
+  const loaded = useLoaded();
   const [muted, setMuted] = useState(true);
   const [hoverT, setHoverT] = useState<number | null>(null);
   const scrubRef = useRef<HTMLDivElement>(null);
@@ -258,7 +272,7 @@ export function Work({ p, intro, id = 'work' }: { p: Project; intro?: ReactNode;
                       on ? '-translate-y-2 border-sky' : 'border-line-strong',
                     )}
                     style={{
-                      backgroundImage: `url(${strip.src})`,
+                      backgroundImage: loaded ? `url(${strip.src})` : undefined,
                       backgroundSize: `${strip.frames * 100}% 100%`,
                       backgroundPosition: `${(k / (strip.frames - 1)) * 100}% 0`,
                     }}
