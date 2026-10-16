@@ -112,8 +112,8 @@ export default function App() {
           <Route path="/platforma" element={<LegacyServices />} />
           <Route path="/lucrari" element={<Portfolio />} />
           <Route path="/lucrari/:slug" element={<CaseStudy />} />
-          {/* The old Motor Grafic page: its pipeline now lives on /servicii, the lab in the Video chapter. */}
-          <Route path="/studio" element={<Navigate to="/servicii#cum-lucram" replace />} />
+          {/* The old Motor Grafic page: its pipeline now lives on the home page, the lab on /servicii. */}
+          <Route path="/studio" element={<Navigate to="/#cum-lucram" replace />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/termeni" element={<Terms />} />
           <Route path="/confidentialitate" element={<Privacy />} />

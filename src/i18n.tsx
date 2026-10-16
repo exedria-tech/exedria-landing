@@ -15,7 +15,7 @@ export const ro = {
     line2: 'scrisă în cod.',
     lead: 'Generare automată de reclame video randate din cod. Dinamice, scalabile și legate direct la datele afacerii.',
     ctaPrimary: 'Cere o ofertă',
-    ctaSecondary: 'Vezi Demo Interactiv',
+    ctaSecondary: 'Vezi lucrările',
     scrubHint: 'Trage de riglă. Fiecare punct e o funcție de cadru.',
   },
   work: {
@@ -45,7 +45,7 @@ export const ro = {
     { name: 'Final', note: 'Cadru de final cu adresa, facilitățile și site-ul.' },
   ],
   services: {
-    label: 'Platformă',
+    label: 'Servicii',
     title: 'Trei module, un singur pipeline.',
     body: 'Video, web și integrări rulează pe același cod, așa că o schimbare în date ajunge peste tot.',
     items: [
@@ -69,7 +69,7 @@ export const ro = {
       },
     ],
     hoverHint: 'Mișcă cursorul',
-    all: 'Toată platforma',
+    all: 'Toate serviciile',
     quote: 'Explorează Modulul',
     preview: 'Cere o ofertă',
     chapters: ['Video', 'Web', 'API'],
@@ -136,6 +136,10 @@ export const ro = {
     done: 'Cerere primită. Revenim cu un preview.',
     failed: 'Nu s-a trimis. Încearcă din nou sau scrie-ne la',
     pickNeed: 'Alege cel puțin un modul.',
+    volume: 'Câte companii',
+    formats: 'Format',
+    deadline: 'Până când (opțional)',
+    deadlinePh: 'Ex: înainte de 1 decembrie',
     direct: 'Direct',
   },
   footer: {
@@ -163,6 +167,20 @@ export const ro = {
     back: 'Toate lucrările',
     ask: 'Vrei același clip, randat din datele tale?',
     cta: 'Cere o ofertă',
+  },
+  workDoor: {
+    label: 'Lucrări',
+    title: 'Vezi ce am construit pentru alții.',
+    body: 'Studii de caz: Marina Park, Flip Finder, DiagramAI.',
+  },
+  audience: {
+    label: 'Pentru cine',
+    title: 'Pentru cine lucrăm.',
+    items: [
+      { title: 'Rețele și francize', body: 'Câte un video pentru fiecare locație, cu datele și recenziile ei.' },
+      { title: 'Agenții și platforme', body: 'Clipuri pentru fiecare client din portofoliu, randate în serie.' },
+      { title: 'Afaceri locale', body: 'Un video de prezentare făcut din pozele și recenziile pe care le ai deja.' },
+    ],
   },
   homeCta: {
     title: 'Conectează datele. Noi randăm restul.',
@@ -253,7 +271,7 @@ const en: Copy = {
     line2: 'infrastructure.',
     lead: 'Automated video ads rendered from code. Dynamic, scalable and wired straight to your business data.',
     ctaPrimary: 'Get a quote',
-    ctaSecondary: 'Interactive Demo',
+    ctaSecondary: 'See the work',
     scrubHint: 'Drag the ruler. Every dot is a function of the frame.',
   },
   work: {
@@ -283,7 +301,7 @@ const en: Copy = {
     { name: 'End card', note: 'Closing frame with address, amenities and website.' },
   ],
   services: {
-    label: 'Platform',
+    label: 'Services',
     title: 'Three modules, one pipeline.',
     body: 'Video, web and integrations run on the same codebase, so a change in your data propagates everywhere.',
     items: [
@@ -307,7 +325,7 @@ const en: Copy = {
       },
     ],
     hoverHint: 'Move your cursor',
-    all: 'Explore the platform',
+    all: 'All services',
     quote: 'Explore Module',
     preview: 'Get a quote',
     chapters: ['Video', 'Web', 'API'],
@@ -374,6 +392,10 @@ const en: Copy = {
     done: "Request received. We'll follow up with a preview.",
     failed: 'It did not send. Try again or write to us at',
     pickNeed: 'Pick at least one module.',
+    volume: 'How many companies',
+    formats: 'Format',
+    deadline: 'By when (optional)',
+    deadlinePh: 'E.g. before December 1',
     direct: 'Direct',
   },
   footer: {
@@ -401,6 +423,20 @@ const en: Copy = {
     back: 'All work',
     ask: 'Want this rendered from your own data?',
     cta: 'Get a quote',
+  },
+  workDoor: {
+    label: 'Work',
+    title: 'See what we’ve built for others.',
+    body: 'Case studies: Marina Park, Flip Finder, DiagramAI.',
+  },
+  audience: {
+    label: 'Who it’s for',
+    title: 'Who we work with.',
+    items: [
+      { title: 'Chains and franchises', body: 'One video per location, built from its own data and reviews.' },
+      { title: 'Agencies and platforms', body: 'A clip for every client in the portfolio, rendered in batches.' },
+      { title: 'Local businesses', body: 'A showcase video made from the photos and reviews you already have.' },
+    ],
   },
   homeCta: {
     title: 'Plug in your data. We render the rest.',

@@ -51,7 +51,7 @@ export function Hero() {
               </p>
               <div className="fade-up mt-7 flex flex-wrap gap-3" style={{ '--d': '520ms' } as CSSProperties}>
                 <Button href="/contact">{t.hero.ctaPrimary}</Button>
-                <Button href="/servicii" variant="ghost">
+                <Button href="/lucrari" variant="ghost">
                   {t.hero.ctaSecondary}
                 </Button>
               </div>

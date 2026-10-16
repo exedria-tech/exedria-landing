@@ -2,15 +2,14 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Lab } from '../components/Lab';
 import { PayloadSync } from '../components/PayloadSync';
-import { Process } from '../components/Process';
 import { MoreLink, SERVICES } from '../components/Services';
 import { WebSpeed } from '../components/WebSpeed';
 import { Label, PageHeader, Reveal, cx, usePageTitle } from '../components/ui';
 import { useT } from '../i18n';
 
 /**
- * /servicii: the three services as chapters, each with its live demo and one call to action, then how
- * a project runs. The motion lab lives only here, in the Video chapter.
+ * /servicii: the three services as chapters, each with its live demo and one call to action.
+ * The motion lab lives only here, in the Video chapter.
  */
 export function ServicesPage() {
   const { t } = useT();
@@ -61,8 +60,6 @@ export function ServicesPage() {
           <PayloadSync />
         </Chapter>
       </div>
-
-      <Process id="cum-lucram" />
     </>
   );
 }

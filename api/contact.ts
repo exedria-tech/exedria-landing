@@ -6,6 +6,8 @@ import { Resend } from 'resend';
 import { z } from 'zod';
 
 const MODULE = ['Video programatic', 'Frontend web', 'Intake lead-uri', 'API & integrări'] as const;
+const VOLUM = ['1', '2–10', '11–50', '50+'] as const;
+const FORMAT = ['9:16', '1:1', '16:9'] as const;
 
 const TO = process.env.CONTACT_TO ?? 'hello@exedria.tech';
 const FROM = process.env.RESEND_FROM ?? 'Exedria Brief <brief@exedria.tech>';
@@ -26,6 +28,10 @@ const ContactSchema = z.object({
     .refine((v) => EMAIL_RE.test(v) || PHONE_RE.test(v), 'Contactul trebuie să fie un email sau un număr de telefon valid.'),
   module: z.array(z.enum(MODULE, { message: 'Modul necunoscut.' })).min(1, 'Alege cel puțin un modul.'),
   mesaj: z.string().trim().min(1, 'Mesajul este obligatoriu.').max(5000),
+  // Optional brief details for a video quote.
+  volum: z.enum(VOLUM).optional(),
+  formate: z.array(z.enum(FORMAT)).max(FORMAT.length).optional(),
+  termen: z.string().trim().max(120).optional(),
 });
 
 type ContactResult = { success: true; id: string } | { success: false; error: string };
@@ -127,6 +133,9 @@ function renderText(d: AccessRequest) {
     `nume:     ${d.nume}`,
     `contact:  ${d.contact}`,
     `module:   ${d.module.join(', ')}`,
+    ...(d.volum ? [`companii: ${d.volum}`] : []),
+    ...(d.formate?.length ? [`format:   ${d.formate.join(', ')}`] : []),
+    ...(d.termen ? [`termen:   ${d.termen}`] : []),
     '',
     d.mesaj,
   ].join('\n');
@@ -161,6 +170,9 @@ function renderHtml(d: AccessRequest) {
     ${row('nume', esc(d.nume))}
     ${row('contact', contactCell)}
     ${row('module', chips)}
+    ${d.volum ? row('companii', esc(d.volum)) : ''}
+    ${d.formate?.length ? row('format', esc(d.formate.join(', '))) : ''}
+    ${d.termen ? row('termen', esc(d.termen)) : ''}
     <tr>
       <td colspan="2" style="padding:10px 14px 4px;border-top:1px solid #e3e8ef;color:#64748b;font:12px ${mono};text-transform:uppercase;letter-spacing:.12em;">mesaj</td>
     </tr>
