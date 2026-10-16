@@ -38,15 +38,16 @@ Exedria este, deocamdată, o **agenție**: producem video programatic (React/Rem
 
 - Meniu: Lucrări · Servicii · Contact. Rutele și meniul sunt definite într-un singur loc: `src/routes.ts`.
 - Redirecturi în `vercel.json`: `/platforma` → `/servicii`, `/studio` → `/#cum-lucram`.
-- Portofoliu (`src/data/projects.ts`), în ordine: Marina Park, Flip Finder, DiagramAI. Media în `public/media/`.
+- Portofoliu (`src/data/projects.ts`), în ordine: Marina Park, Flip Finder, DiagramAI. Media în `public/media/` (postere și benzi de cadre în WebP; un fișier înlocuit primește nume nou, pentru cache).
 - Date de contact: `src/data/company.ts` (hello@exedria.tech, domeniul exedria.tech; nu exedria.ro).
 
 ## Stack și build
 
-- Vite 7 + React 19 + Tailwind v4 + react-router 7 + `@remotion/player` 4.0.535. Fonturi Geist / Geist Mono (`@fontsource-variable`, cu latin-ext pentru ș ț ă).
+- Vite 7 + React 19 + Tailwind v4 + react-router 7 + `@remotion/player` 4.0.535. Fonturi Geist / Geist Mono găzduite în `src/assets/fonts/`: fișierele latin din `@fontsource-variable` plus câte un subset mic doar cu ă ș ț (comanda e în `src/index.css`); toate patru sunt preîncărcate.
 - `npm run build` = `tsc -b` + build client + build SSR (`src/entry-server.tsx`) + `scripts/prerender.mjs`, care scrie `dist/<rută>.html` pentru fiecare rută din `ROUTES`. O pagină nouă se adaugă în `src/routes.ts`.
+- Fiecare pagină include inline doar CSS-ul pe care îl folosește (beasties, în `prerender.mjs`), ca HTML-ul comprimat să rămână sub ~14 KB. Loader-ul `boot-*.js` aplică stylesheet-ul complet și abia apoi importă aplicația.
 - `main.tsx` hidratează doar când `data-path` se potrivește, fără query string și cu limba RO. Widget-urile care au nevoie de browser stau în `ClientOnly`.
-- Codul Remotion și paginile interioare sunt chunk-uri lazy; nu aduce Remotion în bundle-ul principal.
+- Codul Remotion și paginile interioare sunt chunk-uri lazy; nu aduce Remotion în bundle-ul principal. Home nu încarcă deloc Remotion: hero-ul e un shader WebGL (`HeroCanvas.tsx`, 30 FPS, cadru fix la reduced motion sau randare software), iar cardul video desenează `MultiFormat` fără Remotion.
 - CSP strict în `vercel.json`: fără `<script>` inline, fără resurse externe în afară de Cloudflare Turnstile.
 - Ultimele reguli CSS fără layer cu `!important` din `src/index.css` protejează previzualizarea de reset-ul injectat de host; nu le șterge.
 

@@ -1,31 +1,15 @@
-import { Suspense, lazy, type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import { useT } from '../i18n';
-import { ClientOnly } from './ClientOnly';
+import { HeroCanvas } from './HeroCanvas';
 import { Button } from './ui';
-
-// Remotion loads after first paint, outside the critical path.
-const HeroPlayer = lazy(() => import('./HeroPlayer'));
 
 export function Hero() {
   const { t } = useT();
   return (
     <section id="top" className="subgrid relative min-h-[100svh] overflow-hidden pt-16">
-      {/* Composition layer, cover-scaled */}
+      {/* Dot ribbon, cover-scaled */}
       <div className="absolute inset-x-0 bottom-0 top-16 overflow-hidden opacity-75 md:opacity-100" aria-hidden>
-        <div
-          className="absolute left-1/2 top-1/2"
-          style={{
-            width: 'max(100%, calc((100svh - 4rem) * 16 / 9))',
-            aspectRatio: '16 / 9',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
-          <ClientOnly>
-            <Suspense fallback={null}>
-              <HeroPlayer />
-            </Suspense>
-          </ClientOnly>
-        </div>
+        <HeroCanvas />
         {/* readability falloff under the headline */}
         <div className="absolute inset-0 bg-[linear-gradient(to_top,var(--color-paper)_30%,transparent_75%)] md:bg-[linear-gradient(to_top,var(--color-paper)_0%,transparent_38%)]" />
       </div>
@@ -34,12 +18,13 @@ export function Hero() {
         <span />
         <div>
           <div className="grid items-end gap-10 md:px-6 lg:grid-cols-12">
+            {/* No entry delay on the headline: it is the page's largest paint. */}
             <h1 className="font-semibold leading-[0.86] tracking-[-0.055em] text-fg lg:col-span-8" style={{ fontSize: 'clamp(56px, 9.2vw, 140px)' }}>
               <span className="line-mask">
-                <span style={{ '--d': '80ms' } as CSSProperties}>{t.hero.line1}</span>
+                <span>{t.hero.line1}</span>
               </span>
               <span className="line-mask">
-                <span style={{ '--d': '200ms' } as CSSProperties}>
+                <span>
                   {t.hero.line2}
                   <span className="ml-[0.06em] inline-block h-[0.72em] w-[0.08em] translate-y-[0.04em] bg-magenta align-baseline [animation:caret_1.1s_steps(1)_infinite]" />
                 </span>

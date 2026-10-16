@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Thumbnail } from '@remotion/player';
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { MF_FPS, MF_FRAMES, MF_SIZES, MultiFormat } from '../compositions/MultiFormat';
 import { useT } from '../i18n';
 import { cx } from './ui';
@@ -27,8 +26,32 @@ function useHoverFrame(active: boolean) {
   return Math.round(frame);
 }
 
-/** Lazy-loaded so Remotion stays out of the main bundle. */
-export default function FormatTrio({ active }: { active: boolean }) {
+/** Draws a width × height composition scaled down to fit its box, hidden until the scale is known. */
+function Fit({ width, height, children }: { width: number; height: number; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [k, setK] = useState(0);
+  useLayoutEffect(() => {
+    const el = ref.current!;
+    const fit = () => setK(Math.min(el.clientWidth / width, el.clientHeight / height));
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [width, height]);
+  return (
+    <div ref={ref} className="relative size-full overflow-hidden">
+      <div
+        className="absolute left-0 top-0 origin-top-left"
+        style={{ width, height, transform: `scale(${k})`, visibility: k ? undefined : 'hidden' }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/** The same composition at three aspect ratios, drawn without Remotion so the library stays off the home page. */
+export function FormatTrio({ active }: { active: boolean }) {
   const { t } = useT();
   const { product, price, badge, cta } = t.apiDemo.presets[0].data;
   const frame = useHoverFrame(active);
@@ -51,16 +74,9 @@ export default function FormatTrio({ active }: { active: boolean }) {
               )}
               style={{ aspectRatio: `${width} / ${height}` }}
             >
-              <Thumbnail
-                component={MultiFormat}
-                inputProps={{ product, price, badge, cta }}
-                compositionWidth={width}
-                compositionHeight={height}
-                durationInFrames={MF_FRAMES + 1}
-                fps={MF_FPS}
-                frameToDisplay={frame}
-                style={{ width: '100%', height: '100%' }}
-              />
+              <Fit width={width} height={height}>
+                <MultiFormat product={product} price={price} badge={badge} cta={cta} frame={frame} width={width} height={height} />
+              </Fit>
             </div>
             <span className={cx('font-mono text-[10.5px] tracking-[0.08em]', main ? 'text-sky-ink' : 'text-faint')}>{f}</span>
           </div>

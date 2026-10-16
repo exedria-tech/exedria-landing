@@ -1,10 +1,11 @@
 // Writes one static HTML file per route (dist/<route>.html) from the SSR build, so every page
-// arrives with its content and the client hydrates it. Also: a non-blocking entry loader, inlined CSS,
-// preloaded fonts. Vercel serves /servicii from servicii.html (cleanUrls).
+// arrives with its content and the client hydrates it. Also: a non-blocking entry loader, the page's own
+// critical CSS inlined, preloaded fonts. Vercel serves /servicii from servicii.html (cleanUrls).
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import Beasties from 'beasties';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -12,30 +13,42 @@ const { render, ROUTES, pageFile } = await import(join(root, 'dist-ssr/entry-ser
 
 let template = await readFile(join(dist, 'index.html'), 'utf8');
 
-// The entry script is replaced by a tiny loader that import()s the app bundle. A dynamic import never
-// holds back DOMContentLoaded in any browser (Safari waits for async scripts); the modulepreload starts
-// the bundle download right away. The HTML already holds the page, so nothing waits on the bundle.
+// Each page inlines only the CSS rules its own HTML uses, so the first response stays small. The full
+// stylesheet is preloaded; the loader (below) applies it and only then imports the app bundle, so
+// anything rendered on the client (menus, widgets, other pages, English) has every rule it needs.
+// A dynamic import never holds back DOMContentLoaded in any browser (Safari waits for async scripts);
+// the modulepreload starts the bundle download right away. The HTML already holds the page.
 const entryMatch = template.match(/<script type="module" crossorigin src="([^"]+)"><\/script>/);
 if (!entryMatch) throw new Error('entry script not found in index.html');
-const loader = `import(${JSON.stringify(entryMatch[1])});\n`;
+const cssMatch = template.match(/<link rel="stylesheet" crossorigin href="([^"]+)">/);
+if (!cssMatch) throw new Error('stylesheet not found in index.html');
+const fullCss = await readFile(join(dist, cssMatch[1]), 'utf8');
+// @font-face rules are kept whole in their own <style>: beasties cannot tell that `var(--font-sans)` uses them.
+const fontFaces = fullCss.match(/@font-face\{[^}]*\}/g)?.join('') ?? '';
+if (!fontFaces) throw new Error('no @font-face rules in the stylesheet');
+const css = fullCss.replace(/@font-face\{[^}]*\}/g, '');
+// Vite's dynamic-import helper finds this <link> and does not add the sheet a second time.
+const loader = `const l = document.createElement('link');
+l.rel = 'stylesheet';
+l.href = ${JSON.stringify(cssMatch[1])};
+l.onload = l.onerror = () => import(${JSON.stringify(entryMatch[1])});
+document.head.append(l);
+`;
 const loaderFile = `assets/boot-${createHash('sha256').update(loader).digest('hex').slice(0, 8)}.js`;
 await writeFile(join(dist, loaderFile), loader);
 template = template.replace(
   entryMatch[0],
   () => `<link rel="modulepreload" crossorigin href="${entryMatch[1]}"><script type="module" crossorigin src="/${loaderFile}"></script>`,
 );
+template = template.replace(cssMatch[0], () => `<style>${css}</style><link rel="preload" as="style" href="${cssMatch[1]}">`);
+// Prunes the inline <style> to the selectors present in each page. Selectors with :where() (Tailwind's
+// space-y-*, group-hover) and all @keyframes (Tailwind names them through var()) are kept whole.
+const beasties = new Beasties({ path: dist, publicPath: '/', external: false, fonts: false, allowRules: [/:where\(/], keyframes: 'all', logLevel: 'warn' });
 
-// Inline the stylesheet: one less render-blocking request.
-const cssMatch = template.match(/<link rel="stylesheet" crossorigin href="([^"]+)">/);
-if (cssMatch) {
-  const css = await readFile(join(dist, cssMatch[1]), 'utf8');
-  // The disabled link is never fetched; it only tells Vite's dynamic-import helper the sheet is already present.
-  template = template.replace(cssMatch[0], () => `<style>${css}</style><link rel="stylesheet" href="${cssMatch[1]}" disabled>`);
-}
-
-// Preload the two Latin font files every page uses.
+// Preload the font files every page uses: Latin and the Romanian letters, for Geist and Geist Mono.
 const assets = await readdir(join(dist, 'assets'));
-const fonts = assets.filter((f) => /^geist(-mono)?-latin-wght-normal-.*\.woff2$/.test(f));
+const fonts = assets.filter((f) => /^geist(-mono)?-(latin|ro)-.*\.woff2$/.test(f));
+if (fonts.length !== 4) throw new Error(`expected 4 font files, found ${fonts.length}`);
 const preload = fonts.map((f) => `<link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`).join('');
 template = template.replace('</title>', `</title>${preload}`);
 
@@ -63,6 +76,7 @@ for (const route of ROUTES) {
   }
   if (title) page = page.replace(/<title>[^<]*<\/title>/, () => `<title>${escape(title)}</title>`);
   if (/<script>|<template/.test(html)) throw new Error(`${route}: prerender left a pending Suspense boundary`);
+  page = (await beasties.process(page)).replace('<style>', () => `<style>${fontFaces}</style><style>`);
   const file = route === '/' ? 'index.html' : `${route.slice(1)}.html`;
   await mkdir(dirname(join(dist, file)), { recursive: true });
   await writeFile(join(dist, file), page);

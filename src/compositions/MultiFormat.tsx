@@ -1,5 +1,3 @@
-import { AbsoluteFill, spring, useCurrentFrame, useVideoConfig } from 'remotion';
-
 export type MultiFormatProps = { product: string; price: string; badge: string; cta: string };
 
 export const MF_FPS = 60;
@@ -18,16 +16,26 @@ const MAGENTA = '#e0179e';
 const LINE = 'rgba(11,18,32,0.18)';
 
 /**
+ * Remotion's spring() from 0 to 1 (damping 15, stiffness 140, mass 0.6), in closed form. The card on
+ * the home page draws this composition without Remotion, so the library stays off that page.
+ */
+function spring(frame: number, fps: number) {
+  const t = Math.max(0, frame) / fps;
+  const zeta = 15 / (2 * Math.sqrt(140 * 0.6));
+  const w0 = Math.sqrt(140 / 0.6);
+  const w1 = w0 * Math.sqrt(1 - zeta ** 2);
+  return 1 - Math.exp(-zeta * w0 * t) * (((zeta * w0) / w1) * Math.sin(w1 * t) + Math.cos(w1 * t));
+}
+
+/**
  * One offer, any aspect ratio: the layout is derived from width/height, the content from props.
  * Frame 0 is the bare wireframe (dashed slots); each slot then fills in on a spring, staggered.
  */
-export function MultiFormat({ product, price, badge, cta }: MultiFormatProps) {
-  const frame = useCurrentFrame();
-  const { fps, width: W, height: H } = useVideoConfig();
+export function MultiFormat({ product, price, badge, cta, frame, width: W, height: H }: MultiFormatProps & { frame: number; width: number; height: number }) {
   const u = Math.min(W, H) / 100;
   const portrait = H > W * 1.2;
   const wide = W > H * 1.2;
-  const s = (i: number) => spring({ frame: frame - i * 5, fps, config: { damping: 15, stiffness: 140, mass: 0.6 } });
+  const s = (i: number) => spring(frame - i * 5, MF_FPS);
 
   // A slot: dashed outline always, content revealed left-to-right by its spring.
   const Slot = ({ i, style, fill, children }: { i: number; style: React.CSSProperties; fill?: string; children: React.ReactNode }) => {
@@ -86,8 +94,10 @@ export function MultiFormat({ product, price, badge, cta }: MultiFormatProps) {
 
   const pad = u * 8;
   return (
-    <AbsoluteFill
+    <div
       style={{
+        position: 'absolute',
+        inset: 0,
         background: '#ffffff',
         backgroundImage: `linear-gradient(to right, rgba(11,18,32,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(11,18,32,0.05) 1px, transparent 1px)`,
         backgroundSize: `${u * 8}px ${u * 8}px`,
@@ -133,6 +143,6 @@ export function MultiFormat({ product, price, badge, cta }: MultiFormatProps) {
           </div>
         </>
       )}
-    </AbsoluteFill>
+    </div>
   );
 }
