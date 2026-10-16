@@ -111,7 +111,7 @@ export const ro = {
       },
       {
         name: 'Compilare',
-        body: 'Randare instantanee în formatele 9:16 și 1:1.',
+        body: 'Randare instantanee.',
         out: ['9:16', '1:1', 'QA'],
       },
       {
@@ -354,7 +354,7 @@ const en: Copy = {
       },
       {
         name: 'Compile',
-        body: 'Instant programmatic rendering across 9:16 and 1:1.',
+        body: 'Instant rendering.',
         out: ['9:16', '1:1', 'QA'],
       },
       {
