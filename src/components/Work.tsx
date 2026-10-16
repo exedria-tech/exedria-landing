@@ -1,11 +1,8 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
-import { MARINA, SCENES } from '../data/marina';
+import type { Project } from '../data/projects';
 import { useT } from '../i18n';
 import { Label, Reveal, cx } from './ui';
-
-const D = MARINA.duration;
-const pct = (s: number) => `${(s / D) * 100}%`;
 
 function useVideoClock(ref: React.RefObject<HTMLVideoElement | null>) {
   const [time, setTime] = useState(0);
@@ -45,11 +42,15 @@ function useVideoClock(ref: React.RefObject<HTMLVideoElement | null>) {
 }
 
 /**
- * The Marina Park reel: player with scene scrub bar plus the scene thumbnails.
+ * A project's reel: player with scene scrub bar plus the scene thumbnails.
  * On the home page it carries its own heading; the case study page passes `intro` instead.
  */
-export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string }) {
-  const { t } = useT();
+export function Work({ p, intro, id = 'work' }: { p: Project; intro?: ReactNode; id?: string }) {
+  const { t, lang } = useT();
+  const D = p.duration;
+  const pct = (s: number) => `${(s / D) * 100}%`;
+  const scenes = p.scenes ?? [{ from: 0, to: D, name: { ro: p.client, en: p.client } }];
+  const strip = p.strip;
   const videoRef = useRef<HTMLVideoElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const { time, playing } = useVideoClock(videoRef);
@@ -84,7 +85,10 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
     return Math.min(1, Math.max(0, (clientX - r.left) / r.width)) * D;
   };
 
-  const currentScene = SCENES.findIndex((s) => time >= s.from && time < s.to);
+  /** Strip frame index for a time in seconds (the strip covers the whole clip evenly). */
+  const frameAt = (s: number) => (strip ? Math.min(strip.frames - 1, Math.floor((s / D) * strip.frames)) : 0);
+
+  const currentScene = scenes.findIndex((s) => time >= s.from && time < s.to);
   const progress = time / D;
 
   const toggle = () => {
@@ -103,8 +107,8 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
               <div className="relative aspect-[9/16] overflow-hidden rounded-[3px] border border-line bg-panel">
                 <video
                   ref={videoRef}
-                  src={MARINA.src}
-                  poster={MARINA.poster}
+                  src={p.video}
+                  poster={p.poster}
                   muted={muted}
                   playsInline
                   loop
@@ -162,7 +166,7 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
                   onPointerLeave={() => setHoverT(null)}
                 >
                   <div className="absolute inset-x-0 top-1/2 flex h-[6px] -translate-y-1/2 gap-[2px]">
-                    {SCENES.map((s, i) => (
+                    {scenes.map((s, i) => (
                       <span
                         key={i}
                         className={cx('h-full rounded-[1px] transition-colors', i === currentScene ? 'bg-line-strong' : 'bg-line')}
@@ -174,7 +178,7 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
                     className="absolute inset-x-0 top-1/2 h-[6px] origin-left bg-sky/80 mix-blend-screen"
                     style={{ transform: `translateY(-50%) scaleX(${progress})` }}
                   />
-                  {hoverT !== null && (
+                  {hoverT !== null && strip && (
                     <div
                       className="pointer-events-none absolute bottom-full left-0 mb-3 w-full"
                       style={{ transform: `translateX(${(hoverT / D) * 100}%)` }}
@@ -182,12 +186,12 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
                       <div className="w-[92px] -translate-x-1/2 overflow-hidden rounded-[2px] border border-line-strong bg-paper shadow-[0_12px_32px_rgb(11_18_32/0.18)]">
                         <div className="relative h-[160px] w-[90px] overflow-hidden">
                           <img
-                            src={MARINA.strip}
+                            src={strip.src}
                             alt=""
                             className="absolute left-0 top-0 h-[160px] max-w-none"
                             style={{
-                              width: 90 * MARINA.stripFrames,
-                              transform: `translateX(${-Math.min(MARINA.stripFrames - 1, Math.floor(hoverT)) * 90}px)`,
+                              width: 90 * strip.frames,
+                              transform: `translateX(${-frameAt(hoverT) * 90}px)`,
                             }}
                           />
                         </div>
@@ -231,10 +235,16 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
             )}
 
             {/* Scenes: one thumbnail each, the playing one lifts */}
-            <div className="mt-10 grid grid-cols-8 gap-1.5 sm:gap-2.5">
-              {SCENES.map((sc, i) => {
+            {/* At least 8 columns, so thumbnails keep the same size whatever the scene count. */}
+            {strip && scenes.length > 1 && (
+            <>
+            <div
+              className="mt-10 grid gap-1.5 sm:gap-2.5"
+              style={{ gridTemplateColumns: `repeat(${Math.max(8, scenes.length)}, minmax(0, 1fr))` }}
+            >
+              {scenes.map((sc, i) => {
                 const on = i === currentScene;
-                const k = Math.min(MARINA.stripFrames - 1, Math.floor(sc.from) + 1);
+                const k = frameAt(Math.min(sc.from + 1, (sc.from + sc.to) / 2));
                 return (
                   <button
                     key={i}
@@ -242,15 +252,15 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
                       seek(sc.from + 0.02);
                       videoRef.current?.play().catch(() => {});
                     }}
-                    aria-label={t.scenes[i].name}
+                    aria-label={sc.name[lang]}
                     className={cx(
                       'relative aspect-[9/16] overflow-hidden rounded-[2px] border transition-[transform,border-color] duration-500 ease-[var(--ease-spring)] hover:-translate-y-1',
                       on ? '-translate-y-2 border-sky' : 'border-line-strong',
                     )}
                     style={{
-                      backgroundImage: `url(${MARINA.strip})`,
-                      backgroundSize: `${MARINA.stripFrames * 100}% 100%`,
-                      backgroundPosition: `${(k / (MARINA.stripFrames - 1)) * 100}% 0`,
+                      backgroundImage: `url(${strip.src})`,
+                      backgroundSize: `${strip.frames * 100}% 100%`,
+                      backgroundPosition: `${(k / (strip.frames - 1)) * 100}% 0`,
                     }}
                   >
                     <span
@@ -262,8 +272,10 @@ export function Work({ intro, id = 'work' }: { intro?: ReactNode; id?: string })
               })}
             </div>
             <p key={currentScene} className="fade-up mt-4 text-[15px] text-dim">
-              <span className="font-medium text-fg">{t.scenes[Math.max(0, currentScene)].name}</span>
+              <span className="font-medium text-fg">{scenes[Math.max(0, currentScene)].name[lang]}</span>
             </p>
+            </>
+            )}
           </Reveal>
       </div>
     </section>

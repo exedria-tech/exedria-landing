@@ -7,18 +7,6 @@ export const MARINA = {
   fps: 30,
 };
 
-/** Scene cuts in seconds, read off the delivered cut. */
-export const SCENES: { from: number; to: number; component: string }[] = [
-  { from: 0, to: 4, component: 'Logo' },
-  { from: 4, to: 14, component: 'Casa' },
-  { from: 14, to: 18, component: 'Casute' },
-  { from: 18, to: 22.3, component: 'Foisor' },
-  { from: 22.3, to: 24, component: 'Soare' },
-  { from: 24, to: 27, component: 'CampingHamace' },
-  { from: 27, to: 35, component: 'Marea' },
-  { from: 35, to: 40, component: 'Final' },
-];
-
 /** On-screen type layers (kept in the original Romanian). */
 export const TEXT_LAYERS: { from: number; to: number; text: string; display?: boolean }[] = [
   { from: 1, to: 3.4, text: 'MARINA PARK', display: true },

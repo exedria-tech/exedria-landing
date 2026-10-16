@@ -34,16 +34,6 @@ export const ro = {
       ['Livrare', 'Reels, TikTok, Stories'],
     ] as [string, string][],
   },
-  scenes: [
-    { name: 'Logo', note: 'Litere din lemn, construite cadru cu cadru.' },
-    { name: 'Casa', note: 'Stil dobrogean, din 2000. Etichetele de material apar pe rând.' },
-    { name: 'Căsuțe din lemn', note: 'Bungalouri cu terasă. Cameră în travelling lateral.' },
-    { name: 'Foișor', note: 'Cafea, prieteni, umbră. Text italic: „la umbră, sub stuf…”' },
-    { name: 'Soare', note: 'Tranziție radială: „…și ieși la soare”.' },
-    { name: 'Camping și hamace', note: 'Loc generos, la umbră de copaci. „STAI. RESPIRĂ.”' },
-    { name: 'Marea, la 400 m', note: 'Seara, pe nisip. „CALD. LIBER. VAMA.”' },
-    { name: 'Final', note: 'Cadru de final cu adresa, facilitățile și site-ul.' },
-  ],
   services: {
     label: 'Servicii',
     title: 'Trei module, un singur pipeline.',
@@ -290,16 +280,6 @@ const en: Copy = {
       ['Delivered', 'Reels, TikTok, Stories'],
     ],
   },
-  scenes: [
-    { name: 'Logo', note: 'Wooden letters, built frame by frame.' },
-    { name: 'The house', note: 'Dobrogean style, since 2000. Material labels appear one by one.' },
-    { name: 'Wooden cabins', note: 'Bungalows with terraces. Lateral tracking camera.' },
-    { name: 'Gazebo', note: 'Coffee, friends, shade. Italic line: “in the shade, under the reed…”' },
-    { name: 'Sun', note: 'Radial transition: “…and step out into the sun”.' },
-    { name: 'Camping and hammocks', note: 'Plenty of room, shaded by trees. “STAY. BREATHE.”' },
-    { name: 'The sea, 400 m away', note: 'Evenings on the sand. “WARM. FREE. VAMA.”' },
-    { name: 'End card', note: 'Closing frame with address, amenities and website.' },
-  ],
   services: {
     label: 'Services',
     title: 'Three modules, one pipeline.',

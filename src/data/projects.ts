@@ -25,6 +25,8 @@ export type Project = {
   /** Horizontal thumbnail strip used for hover-scrubbing the card. */
   strip?: { src: string; frames: number };
   video?: string;
+  /** Scene cuts in seconds; drive the scrub-bar segments and the thumbnail row on the case study. */
+  scenes?: { from: number; to: number; name: L }[];
   facts: { k: L; v: L }[];
   sections: { title: L; body: L }[];
 };
@@ -54,6 +56,16 @@ export const PROJECTS: Project[] = [
     poster: MARINA.poster,
     strip: { src: MARINA.strip, frames: MARINA.stripFrames },
     video: MARINA.src,
+    scenes: [
+      { from: 0, to: 4, name: { ro: 'Logo', en: 'Logo' } },
+      { from: 4, to: 14, name: { ro: 'Casa', en: 'The house' } },
+      { from: 14, to: 18, name: { ro: 'Căsuțe din lemn', en: 'Wooden cabins' } },
+      { from: 18, to: 22.3, name: { ro: 'Foișor', en: 'Gazebo' } },
+      { from: 22.3, to: 24, name: { ro: 'Soare', en: 'Sun' } },
+      { from: 24, to: 27, name: { ro: 'Camping și hamace', en: 'Camping and hammocks' } },
+      { from: 27, to: 35, name: { ro: 'Marea, la 400 m', en: 'The sea, 400 m away' } },
+      { from: 35, to: 40, name: { ro: 'Final', en: 'End card' } },
+    ],
     facts: [
       { k: { ro: 'Client', en: 'Client' }, v: { ro: 'Marina Park, Vama Veche', en: 'Marina Park, Vama Veche' } },
       { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },
@@ -97,6 +109,14 @@ export const PROJECTS: Project[] = [
     poster: '/media/flip-finder-v1-poster.jpg',
     strip: { src: '/media/flip-finder-v1-strip.jpg', frames: 20 },
     video: '/media/flip-finder-v1.mp4',
+    scenes: [
+      { from: 0, to: 2, name: { ro: 'Eticheta de preț', en: 'Price tag' } },
+      { from: 2, to: 6.5, name: { ro: 'Sub valoarea de piață', en: 'Below market value' } },
+      { from: 6.5, to: 10, name: { ro: 'Harta ofertelor', en: 'Deal map' } },
+      { from: 10, to: 14, name: { ro: 'Dashboard', en: 'Dashboard' } },
+      { from: 14, to: 18, name: { ro: 'Notificarea de dimineață', en: 'Morning notification' } },
+      { from: 18, to: 20, name: { ro: 'Final', en: 'End card' } },
+    ],
     facts: [
       { k: { ro: 'Client', en: 'Client' }, v: { ro: 'Flip Finder', en: 'Flip Finder' } },
       { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },
@@ -140,6 +160,13 @@ export const PROJECTS: Project[] = [
     poster: '/media/diagram-ai-v1-poster.jpg',
     strip: { src: '/media/diagram-ai-v1-strip.jpg', frames: 15 },
     video: '/media/diagram-ai-v1.mp4',
+    scenes: [
+      { from: 0, to: 2.5, name: { ro: 'Propoziția', en: 'The sentence' } },
+      { from: 2.5, to: 4, name: { ro: 'Codul', en: 'The code' } },
+      { from: 4, to: 6.5, name: { ro: 'Diagrama', en: 'The diagram' } },
+      { from: 6.5, to: 11, name: { ro: 'Pas nou din prompt', en: 'New step from a prompt' } },
+      { from: 11, to: 15, name: { ro: 'Final', en: 'End card' } },
+    ],
     facts: [
       { k: { ro: 'Client', en: 'Client' }, v: { ro: 'DiagramAI', en: 'DiagramAI' } },
       { k: { ro: 'Format', en: 'Format' }, v: { ro: '9:16 · 1080×1920', en: '9:16 · 1080×1920' } },

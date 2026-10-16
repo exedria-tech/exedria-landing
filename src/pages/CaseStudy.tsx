@@ -34,18 +34,13 @@ function CaseStudyPage({ p }: { p: Project }) {
         </Link>
       </PageHeader>
 
-      {/* Marina Park has the interactive scene player; other projects get a plain player. */}
-      {p.slug === 'marina-park' ? (
-        <Work id="reel" intro={details} />
+      {p.video ? (
+        <Work p={p} id="reel" intro={details} />
       ) : (
         <section className="border-t border-line py-24 md:py-32">
-          <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
+          <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-8 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:gap-16">
             <Reveal>
-              {p.video ? (
-                <video src={p.video} poster={p.poster} controls playsInline className="w-full rounded-[3px] border border-line bg-panel" />
-              ) : (
-                <img src={p.poster} alt="" className="w-full rounded-[3px] border border-line" />
-              )}
+              <img src={p.poster} alt="" className="mx-auto w-full max-w-[400px] rounded-[3px] border border-line" />
             </Reveal>
             <Reveal delay={120}>{details}</Reveal>
           </div>
