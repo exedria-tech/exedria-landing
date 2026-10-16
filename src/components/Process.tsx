@@ -4,7 +4,8 @@ import { Label, Reveal, cx } from './ui';
 
 const STEPS = 4;
 
-export function Process() {
+/** The four pipeline steps, lit one by one as the visitor scrolls. */
+export function Process({ id = 'process' }: { id?: string }) {
   const { t } = useT();
   const ref = useRef<HTMLDivElement>(null);
   const [p, setP] = useState(0);
@@ -38,7 +39,7 @@ export function Process() {
   const reached = (i: number) => p >= i / (STEPS - 1) - 0.02;
 
   return (
-    <section id="process" className="relative border-t border-line py-24 md:py-32">
+    <section id={id} className="relative scroll-mt-[120px] border-t border-line py-24 md:py-32">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-8">
         <Reveal>
           <Label tone="sky">{t.process.label}</Label>

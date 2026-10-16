@@ -60,7 +60,7 @@ function CaseStudyPage({ p }: { p: Project }) {
           </div>
           <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 border-t border-line pt-6">
             {serviceIdx >= 0 && (
-              <MoreLink to={`/platforma#${SERVICES[serviceIdx].slug}`}>
+              <MoreLink to={`/servicii#${SERVICES[serviceIdx].slug}`}>
                 {t.caseStudy.service}: {t.services.items[serviceIdx].title}
               </MoreLink>
             )}

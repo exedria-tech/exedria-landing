@@ -5,6 +5,18 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/platforma",
+      "destination": "/servicii",
+      "permanent": true
+    },
+    {
+      "source": "/studio",
+      "destination": "/servicii#cum-lucram",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/).*)",

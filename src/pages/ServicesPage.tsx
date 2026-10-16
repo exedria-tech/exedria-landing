@@ -2,20 +2,24 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Lab } from '../components/Lab';
 import { PayloadSync } from '../components/PayloadSync';
+import { Process } from '../components/Process';
 import { MoreLink, SERVICES } from '../components/Services';
 import { WebSpeed } from '../components/WebSpeed';
 import { Label, PageHeader, Reveal, cx, usePageTitle } from '../components/ui';
 import { useT } from '../i18n';
 
-/** /platforma: the three modules as chapters, each with its live demo and one call to action. */
+/**
+ * /servicii: the three services as chapters, each with its live demo and one call to action, then how
+ * a project runs. The motion lab lives only here, in the Video chapter.
+ */
 export function ServicesPage() {
   const { t } = useT();
-  usePageTitle(t.services.label);
+  usePageTitle(t.nav.services);
   const active = useActiveChapter();
   const video = t.services.items[0];
   return (
     <>
-      <PageHeader label={t.services.label} title={t.services.title} lead={t.services.body} />
+      <PageHeader label={t.nav.services} title={t.services.title} lead={t.services.body} />
 
       {/* Chapter switcher, sticky under the main nav */}
       <nav className="sticky top-[calc(64px+env(safe-area-inset-top,0px))] z-40 border-y border-line bg-paper">
@@ -47,7 +51,7 @@ export function ServicesPage() {
             <p className="mt-5 max-w-[58ch] text-[16.5px] leading-[1.6] text-dim">{video.body}</p>
           </Reveal>
           <Reveal delay={100} className="mt-12">
-            <Lab embedded />
+            <Lab />
           </Reveal>
         </Chapter>
         <Chapter slug="web">
@@ -57,6 +61,8 @@ export function ServicesPage() {
           <PayloadSync />
         </Chapter>
       </div>
+
+      <Process id="cum-lucram" />
     </>
   );
 }

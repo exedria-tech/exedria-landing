@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { useT, type Lang } from '../i18n';
+import { NAV } from '../routes';
 import { Segmented, cx } from './ui';
 
-/** Top-level pages, in menu order. */
-export const NAV = [
-  { id: 'services', to: '/platforma' },
-  { id: 'work', to: '/lucrari' },
-  { id: 'studio', to: '/studio' },
-  { id: 'contact', to: '/contact' },
-] as const;
+export { NAV };
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -60,10 +55,10 @@ export function Nav() {
         <nav className="relative hidden rounded-[3px] border border-line bg-panel/80 p-[3px] lg:block">
           <span
             aria-hidden
-            className="absolute bottom-[3px] left-[3px] top-[3px] w-[calc((100%-6px)/4)] rounded-[2px] bg-raised ring-1 ring-line-strong transition-[transform,opacity] duration-500 ease-[var(--ease-spring)]"
+            className="absolute bottom-[3px] left-[3px] top-[3px] w-[calc((100%-6px)/3)] rounded-[2px] bg-raised ring-1 ring-line-strong transition-[transform,opacity] duration-500 ease-[var(--ease-spring)]"
             style={{ transform: `translateX(${Math.max(0, idx) * 100}%)`, opacity: idx < 0 ? 0 : 1 }}
           />
-          <ul className="relative grid grid-cols-4">
+          <ul className="relative grid grid-cols-3">
             {NAV.map(({ id, to }, i) => (
               <li key={id}>
                 <Link
