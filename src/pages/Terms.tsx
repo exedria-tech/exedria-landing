@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { A } from '../components/A';
 import { LegalPage, type LegalSection } from '../components/Legal';
 import { COMPANY, EMAIL } from '../data/company';
 import { useT } from '../i18n';
@@ -43,7 +43,7 @@ const SECTIONS: LegalSection[] = [
       <p>
         Când ne trimiți o cerere, te rugăm să folosești date corecte și să nu incluzi informații confidențiale sau datele altor persoane
         fără acordul lor. Trimiterea formularului nu creează un contract. Cum folosim datele pe care ni le trimiți afli din{' '}
-        <Link to="/confidentialitate">Politica de confidențialitate</Link>.
+        <A to="/confidentialitate">Politica de confidențialitate</A>.
       </p>
     ),
   },
@@ -136,7 +136,7 @@ const SECTIONS: LegalSection[] = [
     body: (
       <p>
         Pentru orice întrebare despre acești termeni, scrie-ne la <a href={`mailto:${EMAIL}`}>{EMAIL}</a> sau folosește{' '}
-        <Link to="/contact">pagina de contact</Link>.
+        <A to="/contact">pagina de contact</A>.
       </p>
     ),
   },

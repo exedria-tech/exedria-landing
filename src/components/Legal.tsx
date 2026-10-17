@@ -1,33 +1,17 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { LEGAL_UPDATED } from '../data/company';
 import { useT } from '../i18n';
-import { PageHeader, cx, usePageTitle } from './ui';
+import { PageHeader, usePageTitle } from './ui';
 
 export type LegalSection = { id: string; title: string; body: ReactNode };
 
 /**
  * Layout for the legal pages: sticky contents on the left that follows the
- * scroll, the text on the right. The text itself is Romanian only.
+ * scroll (src/behaviors/toc.ts), the text on the right. The text itself is Romanian only.
  */
 export function LegalPage({ title, sections }: { title: string; sections: LegalSection[] }) {
   const { t } = useT();
   usePageTitle(title);
-  const [active, setActive] = useState(sections[0]?.id);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const mid = window.innerHeight * 0.3;
-      let cur = sections[0]?.id;
-      for (const s of sections) {
-        const el = document.getElementById(s.id);
-        if (el && el.getBoundingClientRect().top <= mid) cur = s.id;
-      }
-      setActive(cur);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [sections]);
 
   return (
     <>
@@ -44,10 +28,9 @@ export function LegalPage({ title, sections }: { title: string; sections: LegalS
                   <li key={s.id}>
                     <a
                       href={`#${s.id}`}
-                      className={cx(
-                        '-ml-px flex gap-3 border-l py-1.5 pl-4 text-[14px] leading-[1.4] transition-colors duration-200',
-                        active === s.id ? 'border-sky text-fg' : 'border-transparent text-faint hover:text-dim',
-                      )}
+                      data-toc={s.id}
+                      data-active={i === 0 ? '' : undefined}
+                      className="-ml-px flex gap-3 border-l border-transparent py-1.5 pl-4 text-[14px] leading-[1.4] text-faint transition-colors duration-200 hover:text-dim data-[active]:border-sky data-[active]:text-fg data-[active]:hover:text-fg"
                     >
                       <span className="font-mono text-[11px] tabular-nums leading-[1.75]">{i + 1}.</span>
                       {s.title}

@@ -1,7 +1,8 @@
 import { Suspense, lazy, useRef, useState } from 'react';
-import { Link } from 'react-router';
-import type { Category } from '../data/projects';
+import { SERVICES } from '../data/services';
 import { useT } from '../i18n';
+import { Island } from '../islands/Island';
+import { A } from './A';
 import { ClientOnly } from './ClientOnly';
 import { Corners, Label, Reveal, cx } from './ui';
 
@@ -9,19 +10,11 @@ const FormatTrio = lazy(() => import('./FormatTrio').then((m) => ({ default: m.F
 
 const spring = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
 
-/**
- * The services, in the order of t.services.items. `slug` is the chapter anchor on /servicii and the
- * ?serviciu= value the contact form understands; `category` filters /lucrari.
- */
-export const SERVICES: { slug: string; category: Category }[] = [
-  { slug: 'video', category: 'video' },
-  { slug: 'web', category: 'web' },
-  { slug: 'api', category: 'software' },
-];
+export { SERVICES };
 
 const PREVIEWS = [VideoPreview, WebPreview, OpsPreview];
 
-/** Home page summary: the grid of live cards, each opening its chapter on /servicii. */
+/** Home page summary: heading plus the grid of live cards. */
 export function Services() {
   const { t } = useT();
   return (
@@ -37,26 +30,34 @@ export function Services() {
           <MoreLink to="/servicii">{t.services.all}</MoreLink>
         </Reveal>
 
-        <div className="mt-14 grid border-l border-t border-line md:grid-cols-2 lg:grid-cols-3">
-          {t.services.items.map((s, i) => {
-            const Preview = PREVIEWS[i];
-            return (
-              <Reveal key={i} delay={i * 100} className="border-b border-r border-line md:last:col-span-2 lg:last:col-span-1">
-                <Link to={`/servicii#${SERVICES[i].slug}`} className="block h-full">
-                  <Card>{(state) => <Preview {...state} title={s.title} body={s.body} cta={t.services.quote} />}</Card>
-                </Link>
-              </Reveal>
-            );
-          })}
-        </div>
+        <Island name="services" component={ServiceCards} />
       </div>
     </section>
   );
 }
 
+/** The live cards, each opening its chapter on /servicii. An island: hydrates as it nears the viewport. */
+export function ServiceCards() {
+  const { t } = useT();
+  return (
+    <div className="mt-14 grid border-l border-t border-line md:grid-cols-2 lg:grid-cols-3">
+      {t.services.items.map((s, i) => {
+        const Preview = PREVIEWS[i];
+        return (
+          <Reveal key={i} delay={i * 100} className="border-b border-r border-line md:last:col-span-2 lg:last:col-span-1">
+            <A to={`/servicii#${SERVICES[i].slug}`} className="block h-full">
+              <Card>{(state) => <Preview {...state} title={s.title} body={s.body} cta={t.services.quote} />}</Card>
+            </A>
+          </Reveal>
+        );
+      })}
+    </div>
+  );
+}
+
 export function MoreLink({ to, children, accent }: { to: string; children: React.ReactNode; accent?: boolean }) {
   return (
-    <Link
+    <A
       to={to}
       className={cx(
         'group inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.14em] transition-colors',
@@ -65,7 +66,7 @@ export function MoreLink({ to, children, accent }: { to: string; children: React
     >
       {children}
       <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1">→</span>
-    </Link>
+    </A>
   );
 }
 

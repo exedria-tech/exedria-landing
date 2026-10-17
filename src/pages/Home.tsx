@@ -1,4 +1,4 @@
-import { Link } from 'react-router';
+import { A } from '../components/A';
 import { Hero } from '../components/Hero';
 import { Process } from '../components/Process';
 import { Services } from '../components/Services';
@@ -26,7 +26,7 @@ function WorkDoor() {
   return (
     <section className="border-t border-line">
       <Reveal className="mx-auto max-w-[1440px]">
-        <Link to="/lucrari" className="group relative block overflow-hidden px-4 py-14 sm:px-8 md:py-20">
+        <A to="/lucrari" className="group relative block overflow-hidden px-4 py-14 sm:px-8 md:py-20">
           {/* fills from the left on hover */}
           <span
             aria-hidden
@@ -45,7 +45,7 @@ function WorkDoor() {
             </span>
             <span className="mt-4 block max-w-[44ch] text-[16.5px] leading-[1.6] text-dim">{t.workDoor.body}</span>
           </span>
-        </Link>
+        </A>
       </Reveal>
     </section>
   );

@@ -12,7 +12,7 @@ Exedria este, deocamdată, o **agenție**: producem video programatic (React/Rem
 
 ## Ton și copy
 
-- Româna e limba implicită; engleza e opțională (comutator RO/EN în meniu). Alegerea salvată a vizitatorului (`localStorage` `exedria-lang`) are prioritate.
+- Româna e limba implicită; engleza e opțională (comutator RO/EN în meniu). Fiecare pagină există în ambele limbi: `/servicii` și `/en/servicii`. Alegerea salvată a vizitatorului (`localStorage` `exedria-lang`, scrisă la click pe comutator) are prioritate: loader-ul `boot-*.js` redirecționează spre limba aleasă. Linkurile interne se scriu cu `<A to="/servicii">` (`src/components/A.tsx`), care adaugă `/en` pe paginile în engleză.
 - Tot textul stă în `src/i18n.tsx`, în ambele limbi. Păstrează cheile RO și EN sincronizate.
 - CTA principal: „Cere o ofertă” / „Get a quote”. Meniul și formularul: „Contact”. Butonul formularului: „Trimite cererea”.
 - Ton de agenție profesionistă, scurt și concret. Formulări de agenție sunt în regulă; evită jargonul SaaS („Request Access”, „Explore API”, „Generate Preview”).
@@ -36,18 +36,20 @@ Exedria este, deocamdată, o **agenție**: producem video programatic (React/Rem
 | `/contact` | `src/pages/ContactPage.tsx` | Formular de ofertă |
 | `/termeni`, `/confidentialitate` | `src/pages/Terms.tsx`, `Privacy.tsx` | Pagini legale (doar RO, șabloane de revizuit) |
 
-- Meniu: Lucrări · Servicii · Contact. Rutele și meniul sunt definite într-un singur loc: `src/routes.ts`.
-- Redirecturi în `vercel.json`: `/platforma` → `/servicii`, `/studio` → `/#cum-lucram`.
+- Meniu: Lucrări · Servicii · Contact. Rutele și meniul sunt în `src/routes.ts`; componenta fiecărei pagini e în `src/entry-server.tsx`.
+- Redirecturi în `vercel.json`: `/platforma` → `/servicii`, `/studio` → `/#cum-lucram` (și variantele `/en/...`).
 - Portofoliu (`src/data/projects.ts`), în ordine: Marina Park, Flip Finder, DiagramAI. Media în `public/media/` (postere și benzi de cadre în WebP; un fișier înlocuit primește nume nou, pentru cache).
 - Date de contact: `src/data/company.ts` (hello@exedria.tech, domeniul exedria.tech; nu exedria.ro).
 
 ## Stack și build
 
-- Vite 7 + React 19 + Tailwind v4 + react-router 7 + `@remotion/player` 4.0.535. Fonturi Geist / Geist Mono găzduite în `src/assets/fonts/`: fișierele latin din `@fontsource-variable` plus câte un subset mic doar cu ă ș ț (comanda e în `src/index.css`); toate patru sunt preîncărcate.
-- `npm run build` = `tsc -b` + build client + build SSR (`src/entry-server.tsx`) + `scripts/prerender.mjs`, care scrie `dist/<rută>.html` pentru fiecare rută din `ROUTES`. O pagină nouă se adaugă în `src/routes.ts`.
+- Vite 7 + React 19 + Tailwind v4 + `@remotion/player` 4.0.535, fără router: fiecare pagină e un fișier HTML separat (MPA). Fonturi Geist / Geist Mono găzduite în `src/assets/fonts/`: fișierele latin din `@fontsource-variable` plus câte un subset mic doar cu ă ș ț (comanda e în `src/index.css`); toate patru sunt preîncărcate.
+- `npm run build` = `tsc -b` + build client + build SSR (`src/entry-server.tsx`) + `scripts/prerender.mjs`, care scrie `dist/<rută>.html` și `dist/en/<rută>.html` pentru fiecare rută din `ROUTES`, plus `404.html`. O pagină nouă se adaugă în `src/routes.ts` și în `PAGES` din `src/entry-server.tsx`.
 - Fiecare pagină include inline doar CSS-ul pe care îl folosește (beasties, în `prerender.mjs`), ca HTML-ul comprimat să rămână sub ~14 KB. Loader-ul `boot-*.js` aplică stylesheet-ul complet și abia apoi importă aplicația.
-- `main.tsx` hidratează doar când `data-path` se potrivește, fără query string și cu limba RO. Widget-urile care au nevoie de browser stau în `ClientOnly`.
-- Codul Remotion și paginile interioare sunt chunk-uri lazy; nu aduce Remotion în bundle-ul principal. Home nu încarcă deloc Remotion: hero-ul e un shader WebGL (`HeroCanvas.tsx`, 30 FPS, cadru fix la reduced motion sau randare software), iar cardul video desenează `MultiFormat` fără Remotion.
+- **Insule:** paginile sunt HTML static; React rulează doar în widget-urile interactive, marcate cu `<Island name component props when>` (`src/islands/`). Fiecare insulă se hidratează separat (`when`: `visible` implicit, `idle` sau `load`); o insulă nouă se adaugă în `src/islands/registry.ts`, iar props-urile ei trebuie să fie JSON. Query string-ul (`?categorie`, `?serviciu`) se citește în `useEffect`, după hidratare. Widget-urile care au nevoie de browser stau în `ClientOnly`.
+- Restul comportamentului (meniu, reveal la scroll, cursor, timeline-ul „Cum lucrăm”, capitolele din /servicii, cuprinsul paginilor legale, hero-ul WebGL, wordmark-ul) e JS simplu, fără React: `src/behaviors/*`, pornite din `src/main.ts`. Componentele lor randează doar markup cu atribute `data-*`, iar stările vizuale folosesc variante Tailwind (`data-[open]:`, `group-data-[on]/step:`).
+- Navigarea între pagini e preîncărcată la hover prin Speculation Rules (`public/speculation-rules.json`, trimis prin headerul `Speculation-Rules` din `vercel.json`).
+- Codul Remotion și React sunt chunk-uri lazy, încărcate doar de insule; nu le importa din `main.ts` sau din `src/behaviors`. Home nu încarcă deloc Remotion: hero-ul e un shader WebGL (`HeroCanvas.tsx`, 30 FPS, cadru fix la reduced motion sau randare software), iar cardul video desenează `MultiFormat` fără Remotion.
 - CSP strict în `vercel.json`: fără `<script>` inline, fără resurse externe în afară de Cloudflare Turnstile.
 - Ultimele reguli CSS fără layer cu `!important` din `src/index.css` protejează previzualizarea de reset-ul injectat de host; nu le șterge.
 

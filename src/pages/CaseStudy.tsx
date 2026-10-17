@@ -1,13 +1,14 @@
-import { Link, useParams } from 'react-router';
-import { MoreLink, SERVICES } from '../components/Services';
-import { Work } from '../components/Work';
-import { Button, Label, PageHeader, Reveal, usePageTitle } from '../components/ui';
+import { A } from '../components/A';
+import { MoreLink } from '../components/Services';
+import { Button, PageHeader, Reveal, usePageTitle } from '../components/ui';
 import { PROJECTS, findProject, type Project } from '../data/projects';
+import { SERVICES } from '../data/services';
 import { useT } from '../i18n';
+import { CaseReel, Details } from '../islands/CaseReel';
+import { Island } from '../islands/Island';
 import { NotFound } from './NotFound';
 
-export function CaseStudy() {
-  const { slug } = useParams();
+export function CaseStudy({ slug }: { slug: string }) {
   const p = findProject(slug);
   if (!p) return <NotFound />;
   return <CaseStudyPage p={p} />;
@@ -17,7 +18,6 @@ function CaseStudyPage({ p }: { p: Project }) {
   const { t, lang } = useT();
   usePageTitle(p.client);
 
-  const details = <Details p={p} />;
   const serviceIdx = SERVICES.findIndex((s) => s.category === p.category);
   const i = PROJECTS.indexOf(p);
   const next = PROJECTS.length > 1 ? PROJECTS[(i + 1) % PROJECTS.length] : null;
@@ -25,24 +25,26 @@ function CaseStudyPage({ p }: { p: Project }) {
   return (
     <>
       <PageHeader label={`${p.client} · ${p.place[lang]}`} title={p.title[lang]} lead={p.summary[lang]}>
-        <Link
+        <A
           to="/lucrari"
           className="group mt-8 inline-flex items-center gap-2 font-mono text-[12px] uppercase tracking-[0.14em] text-dim hover:text-fg"
         >
           <span className="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:-translate-x-1">←</span>
           {t.caseStudy.back}
-        </Link>
+        </A>
       </PageHeader>
 
       {p.video ? (
-        <Work p={p} id="reel" intro={details} />
+        <Island name="reel" component={CaseReel} props={{ slug: p.slug }} />
       ) : (
         <section className="border-t border-line py-24 md:py-32">
           <div className="mx-auto grid max-w-[1440px] gap-10 px-4 sm:px-8 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)] lg:gap-16">
             <Reveal>
               <img src={p.poster} alt="" className="mx-auto w-full max-w-[400px] rounded-[3px] border border-line" />
             </Reveal>
-            <Reveal delay={120}>{details}</Reveal>
+            <Reveal delay={120}>
+              <Details p={p} />
+            </Reveal>
           </div>
         </section>
       )}
@@ -68,30 +70,5 @@ function CaseStudyPage({ p }: { p: Project }) {
         </Reveal>
       </section>
     </>
-  );
-}
-
-/** Facts table plus the short write-up. */
-function Details({ p }: { p: Project }) {
-  const { lang } = useT();
-  return (
-    <div>
-      <dl className="grid grid-cols-2 border-t border-line">
-        {p.facts.map((f) => (
-          <div key={f.k.ro} className="border-b border-line py-3 pr-4">
-            <dt className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-faint">{f.k[lang]}</dt>
-            <dd className="mt-1 text-[15px] text-fg">{f.v[lang]}</dd>
-          </div>
-        ))}
-      </dl>
-      <div className="mt-10 space-y-8">
-        {p.sections.map((s) => (
-          <div key={s.title.ro}>
-            <Label>{s.title[lang]}</Label>
-            <p className="mt-3 max-w-[52ch] text-[16.5px] leading-[1.6] text-dim">{s.body[lang]}</p>
-          </div>
-        ))}
-      </div>
-    </div>
   );
 }
