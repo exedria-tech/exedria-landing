@@ -8,10 +8,6 @@ import { useTurnstile } from '../turnstile';
 
 const RENDER_FRAMES = 48;
 
-// Same values api/contact.ts accepts.
-const VOLUMES = ['1', '2–10', '11–50', '50+'];
-const FORMATS = ['9:16', '1:1', '16:9'];
-
 type ContactResult = { success: true; id: string } | { success: false; error: string };
 
 async function postBrief(payload: Record<string, unknown>): Promise<ContactResult> {
@@ -40,11 +36,7 @@ export function ContactForm() {
     if (preset > 0) setNeeds([preset]);
   }, []);
   const [message, setMessage] = useState('');
-  // Video quote details, asked only when the video module is ticked (option 0).
-  const [volume, setVolume] = useState<string | null>(null);
-  const [formats, setFormats] = useState<string[]>([]);
   const [deadline, setDeadline] = useState('');
-  const video = needs.includes(0);
   const [phase, setPhase] = useState<'idle' | 'rendering' | 'done' | 'error'>('idle');
   const [frame, setFrame] = useState(0);
   const [error, setError] = useState('');
@@ -74,8 +66,6 @@ export function ContactForm() {
       contact: reach,
       module: needs.map((i) => ro.contact.needOptions[i]),
       mesaj: message,
-      ...(video && volume ? { volum: volume } : {}),
-      ...(video && formats.length ? { formate: formats } : {}),
       ...(deadline.trim() ? { termen: deadline.trim() } : {}),
       website,
       elapsed: Date.now() - openedAt.current,
@@ -101,8 +91,6 @@ export function ContactForm() {
         setName('');
         setReach('');
         setMessage('');
-        setVolume(null);
-        setFormats([]);
         setDeadline('');
       } else {
         setPhase('error');
@@ -135,29 +123,6 @@ export function ContactForm() {
           ))}
         </div>
       </Field>
-
-      {video && (
-        <div className="fade-up mt-5 grid gap-5 sm:grid-cols-2">
-          <Field label={t.contact.volume}>
-            <div className="flex flex-wrap gap-2">
-              {VOLUMES.map((v) => (
-                <Chip key={v} on={volume === v} onClick={() => setVolume((cur) => (cur === v ? null : v))}>
-                  {v}
-                </Chip>
-              ))}
-            </div>
-          </Field>
-          <Field label={t.contact.formats}>
-            <div className="flex flex-wrap gap-2">
-              {FORMATS.map((f) => (
-                <Chip key={f} on={formats.includes(f)} onClick={() => setFormats((cur) => (cur.includes(f) ? cur.filter((x) => x !== f) : [...cur, f]))}>
-                  {f}
-                </Chip>
-              ))}
-            </div>
-          </Field>
-        </div>
-      )}
 
       <Field label={t.contact.deadline} className="mt-5">
         <input value={deadline} onChange={(e) => setDeadline(e.target.value)} placeholder={t.contact.deadlinePh} maxLength={120} className={field} />

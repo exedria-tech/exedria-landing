@@ -56,7 +56,7 @@ Exedria este, deocamdată, o **agenție**: producem video programatic (React/Rem
 ## Formularul de contact
 
 - `api/contact.ts` (Vercel Function, zod + Resend) trimite cererea la `CONTACT_TO` (implicit hello@exedria.tech). Trimite etichetele în română indiferent de limbă.
-- Câmpuri: nume, contact, servicii, număr de companii, formate (când e bifat Video), termen opțional, mesaj. Opțiunile din `i18n.tsx`, `Contact.tsx` și enum-urile din `api/contact.ts` trebuie să rămână sincronizate.
+- Câmpuri: nume, contact, servicii, termen opțional, mesaj (fără număr de companii sau formate). Opțiunile din `i18n.tsx`, `Contact.tsx` și enum-urile din `api/contact.ts` trebuie să rămână sincronizate.
 - Variabile Vercel: `RESEND_API_KEY`, opțional `RESEND_FROM`, `CONTACT_TO`, `TURNSTILE_SECRET_KEY`; la build `VITE_TURNSTILE_SITE_KEY` (vezi `.env.example`).
 - `npm run dev` nu servește `/api`; folosește `vercel dev`.
 
