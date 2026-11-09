@@ -251,15 +251,20 @@ export function PageHeader({
 }
 
 /** Title collected while prerendering, written into each page's <title>. */
-export const ssrHead = { title: '' };
+export const ssrHead = { title: '', description: '' };
 
-/** Sets the tab title for the current page. */
-export function usePageTitle(title: string) {
-  const { lang } = useT();
+/** Sets the tab title and meta description for the current page; an empty description keeps the home one. */
+export function usePageTitle(title: string, description = '') {
+  const { lang, t } = useT();
+  const desc = description || t.meta.home;
   const home = lang === 'en' ? 'Exedria · Programmatic video, web and API' : 'Exedria · Video programatic, web și API';
   const full = title ? `${title} · Exedria` : home;
-  if (typeof document === 'undefined') ssrHead.title = full;
+  if (typeof document === 'undefined') {
+    ssrHead.title = full;
+    ssrHead.description = desc;
+  }
   useEffect(() => {
     document.title = full;
-  }, [full]);
+    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
+  }, [full, desc]);
 }

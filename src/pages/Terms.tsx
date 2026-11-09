@@ -26,11 +26,11 @@ const SECTIONS: LegalSection[] = [
     body: (
       <>
         <p>
-          Site-ul prezintă platforma Exedria (randare video programatică, frontend-uri web, API și
-          integrări) și îți permite să soliciți acces.
+          Site-ul prezintă serviciile echipei Exedria (video programatic, site-uri, integrări API) și îți permite
+          să ceri o ofertă.
         </p>
         <p>
-          Informațiile de pe site au caracter general și nu sunt o ofertă fermă. Prețul, accesul și condițiile de utilizare se
+          Informațiile de pe site au caracter general și nu sunt o ofertă fermă. Prețul și condițiile de lucru se
           stabilesc printr-o propunere scrisă și un contract separat, care au prioritate față de acești termeni.
         </p>
       </>
@@ -144,5 +144,5 @@ const SECTIONS: LegalSection[] = [
 
 export function Terms() {
   const { t } = useT();
-  return <LegalPage title={t.legal.terms} sections={SECTIONS} />;
+  return <LegalPage title={t.legal.terms} description={t.meta.terms} sections={SECTIONS} />;
 }

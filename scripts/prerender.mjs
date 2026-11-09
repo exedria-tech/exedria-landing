@@ -63,10 +63,10 @@ function chunkFiles(key, seen = new Set()) {
   return seen;
 }
 
-const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 
 for (const route of ROUTES) {
-  const { html, title } = await render(route);
+  const { html, title, description } = await render(route);
   let page = template.replace('<div id="root"></div>', () => `<div id="root" data-path="${route}">${html}</div>`);
   const src = pageFile(route);
   if (src) {
@@ -75,6 +75,7 @@ for (const route of ROUTES) {
     page = page.replace('</head>', `${links}</head>`);
   }
   if (title) page = page.replace(/<title>[^<]*<\/title>/, () => `<title>${escape(title)}</title>`);
+  if (description) page = page.replace(/<meta name="description" content="[^"]*" \/>/, () => `<meta name="description" content="${escape(description)}" />`);
   if (/<script>|<template/.test(html)) throw new Error(`${route}: prerender left a pending Suspense boundary`);
   page = (await beasties.process(page)).replace('<style>', () => `<style>${fontFaces}</style><style>`);
   const file = route === '/' ? 'index.html' : `${route.slice(1)}.html`;

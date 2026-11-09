@@ -8,7 +8,7 @@ type Filter = 'all' | Category;
 
 export function Portfolio() {
   const { t } = useT();
-  usePageTitle(t.portfolio.label);
+  usePageTitle(t.portfolio.label, t.meta.work);
   // ?categorie=web arrives from the service pages.
   const [params, setParams] = useSearchParams();
   const fromUrl = CATEGORIES.find((c) => c === params.get('categorie'));

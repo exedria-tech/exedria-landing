@@ -15,7 +15,7 @@ export function CaseStudy() {
 
 function CaseStudyPage({ p }: { p: Project }) {
   const { t, lang } = useT();
-  usePageTitle(p.client);
+  usePageTitle(p.client, `${p.title[lang]} ${p.summary[lang]}`);
 
   const details = <Details p={p} />;
   const serviceIdx = SERVICES.findIndex((s) => s.category === p.category);

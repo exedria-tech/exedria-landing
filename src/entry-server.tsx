@@ -24,6 +24,7 @@ export async function render(url: string) {
   const { prelude } = await prerenderToNodeStream(tree(url));
   for await (const _ of prelude as unknown as AsyncIterable<unknown>) void _;
   ssrHead.title = '';
+  ssrHead.description = '';
   const html = renderToString(tree(url));
-  return { html, title: ssrHead.title };
+  return { html, title: ssrHead.title, description: ssrHead.description };
 }

@@ -13,7 +13,7 @@ import { useT } from '../i18n';
  */
 export function ServicesPage() {
   const { t } = useT();
-  usePageTitle(t.nav.services);
+  usePageTitle(t.nav.services, t.meta.services);
   const active = useActiveChapter();
   const video = t.services.items[0];
   return (

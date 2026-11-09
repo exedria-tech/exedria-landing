@@ -9,9 +9,9 @@ export type LegalSection = { id: string; title: string; body: ReactNode };
  * Layout for the legal pages: sticky contents on the left that follows the
  * scroll, the text on the right. The text itself is Romanian only.
  */
-export function LegalPage({ title, sections }: { title: string; sections: LegalSection[] }) {
+export function LegalPage({ title, description, sections }: { title: string; description: string; sections: LegalSection[] }) {
   const { t } = useT();
-  usePageTitle(title);
+  usePageTitle(title, description);
   const [active, setActive] = useState(sections[0]?.id);
 
   useEffect(() => {

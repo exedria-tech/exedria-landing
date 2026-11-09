@@ -81,10 +81,10 @@ export const PROJECTS: Project[] = [
         },
       },
       {
-        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
+        title: { ro: 'Ce am făcut', en: 'What we made' },
         body: {
-          ro: 'Opt scene, fiecare un component Remotion: text animat cadru cu cadru, tranziții calculate și un cadru de final cu adresa. Textul și ordinea scenelor vin din date, deci clipul se poate re-randa oricând.',
-          en: 'Eight scenes, each a Remotion component: type animated frame by frame, computed transitions and an end card with the address. Copy and scene order come from data, so the clip can be re-rendered any time.',
+          ro: 'Opt scene, fiecare scrisă în cod: text animat cadru cu cadru, tranziții calculate și un cadru de final cu adresa. Textul și ordinea scenelor vin din date, deci clipul se poate re-randa oricând.',
+          en: 'Eight scenes, each written in code: type animated frame by frame, computed transitions and an end card with the address. Copy and scene order come from data, so the clip can be re-rendered any time.',
         },
       },
     ],
@@ -132,7 +132,7 @@ export const PROJECTS: Project[] = [
         },
       },
       {
-        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
+        title: { ro: 'Ce am făcut', en: 'What we made' },
         body: {
           ro: 'Eticheta de preț, graficul de scădere față de valoarea de piață, harta cu ofertele noi, lista din dashboard și notificarea de dimineață. Toate se desenează din aceleași date, deci schimbi anunțul și video-ul se re-randează cu noile cifre.',
           en: 'The price tag, the drop chart against market value, the map of new deals, the dashboard list and the morning notification. All of it is drawn from the same data, so swap the listing and the video re-renders with the new numbers.',
@@ -182,7 +182,7 @@ export const PROJECTS: Project[] = [
         },
       },
       {
-        title: { ro: 'Ce randează motorul', en: 'What the engine renders' },
+        title: { ro: 'Ce am făcut', en: 'What we made' },
         body: {
           ro: 'Propoziția scrisă cuvânt cu cuvânt, aceeași frază rescrisă ca cod, nodurile care se așază în diagramă, un pas nou („Resend link”) adăugat din prompt și cadrul de final cu logo-ul. Textul, codul și nodurile vin din aceleași date, deci schimbi fluxul și video-ul se re-randează.',
           en: 'The sentence typed word by word, the same sentence rewritten as code, the nodes settling into a diagram, a new step ("Resend link") added from a prompt, and the logo end card. Text, code and nodes come from the same data, so change the flow and the video re-renders.',

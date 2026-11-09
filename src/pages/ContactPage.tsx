@@ -5,7 +5,7 @@ import { useT } from '../i18n';
 
 export function ContactPage() {
   const { t } = useT();
-  usePageTitle(t.contact.label);
+  usePageTitle(t.contact.label, t.meta.contact);
   return (
     <>
       <PageHeader label={t.contact.label} tone="magenta" title={t.contact.title} lead={t.contact.body} />

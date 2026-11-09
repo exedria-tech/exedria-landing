@@ -168,5 +168,5 @@ const SECTIONS: LegalSection[] = [
 
 export function Privacy() {
   const { t } = useT();
-  return <LegalPage title={t.legal.privacy} sections={SECTIONS} />;
+  return <LegalPage title={t.legal.privacy} description={t.meta.privacy} sections={SECTIONS} />;
 }

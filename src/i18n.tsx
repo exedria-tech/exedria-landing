@@ -11,8 +11,8 @@ export const ro = {
     metaA: 'Agenție de video programatic',
     metaB: 'Tu ne dai materialele, noi livrăm clipul',
     status: 'rendering',
-    line1: 'Video pentru firme,',
-    line2: 'făcut în cod.',
+    line1: 'Video în cod,',
+    line2: 'pentru firme.',
     lead: 'Facem clipuri de prezentare și reclame pentru firme. Fiecare clip e scris în cod, așa că putem face unul sau o sută, fiecare cu pozele și recenziile companiei.',
     ctaPrimary: 'Cere o ofertă',
     ctaSecondary: 'Vezi lucrările',
@@ -41,8 +41,8 @@ export const ro = {
     items: [
       {
         title: 'Video pentru firme',
-        body: 'Facem clipul din pozele, recenziile și oferta ta. Îl primești gata de postat, în toate formatele.',
-        more: 'Facem clipul din pozele, recenziile și oferta ta. Îl primești gata de postat, în toate formatele.',
+        body: 'Facem clipul din pozele, recenziile și oferta ta, cât de lung vrei. Îl primești gata de postat, în toate formatele.',
+        more: 'Facem clipul din pozele, recenziile și oferta ta, cât de lung vrei. Îl primești gata de postat, în toate formatele.',
         tags: ['9:16 · 1:1 · 16:9', 'Reels · TikTok', 'Variante A/B'],
       },
       {
@@ -96,7 +96,7 @@ export const ro = {
       },
       {
         name: 'Scripting',
-        body: 'Scriem scenariul. Îl citești și îl aprobi înainte să facem clipul.',
+        body: 'Scriem scenariul, de orice durată ai nevoie. Îl citești și îl aprobi înainte să facem clipul.',
         out: ['Scenariu', 'Aprobare'],
       },
       {
@@ -237,6 +237,14 @@ export const ro = {
     ad: '[B] Clipul 9:16',
     left: (n: number) => (n <= 0 ? 'Stoc epuizat' : n < 10 ? `Doar ${n} rămase` : `${n} disponibile`),
   },
+  meta: {
+    home: 'Agenție de video programatic, site-uri rapide și integrări API pentru firme din România. Facem clipuri cu pozele și recenziile fiecărei companii.',
+    services: 'Video pentru firme, site-uri rapide și integrări API. Ce facem și cum lucrăm.',
+    work: 'Clipuri și site-uri făcute de Exedria pentru clienți: Marina Park, Flip Finder, DiagramAI.',
+    contact: 'Spune-ne ce ai de făcut și revenim cu o ofertă pentru video, site sau integrări API.',
+    terms: 'Termenii de folosire a site-ului exedria.tech.',
+    privacy: 'Ce date colectăm prin formularul de contact, de ce și ce drepturi ai.',
+  },
   menu: 'Meniu',
   hud: 'Pagina',
 };
@@ -254,8 +262,8 @@ const en: Copy = {
     metaA: 'Programmatic video agency',
     metaB: 'You send the material, we deliver the clip',
     status: 'rendering',
-    line1: 'Video for businesses,',
-    line2: 'made in code.',
+    line1: 'Video in code,',
+    line2: 'for business.',
     lead: 'We make showcase videos and ads for businesses. Every clip is written in code, so we can make one or a hundred, each with the company’s own photos and reviews.',
     ctaPrimary: 'Get a quote',
     ctaSecondary: 'See the work',
@@ -284,8 +292,8 @@ const en: Copy = {
     items: [
       {
         title: 'Video for businesses',
-        body: 'We make the clip from your photos, reviews and offer. You get it ready to post, in every format.',
-        more: 'We make the clip from your photos, reviews and offer. You get it ready to post, in every format.',
+        body: 'We make the clip from your photos, reviews and offer, as long as you want it. You get it ready to post, in every format.',
+        more: 'We make the clip from your photos, reviews and offer, as long as you want it. You get it ready to post, in every format.',
         tags: ['9:16 · 1:1 · 16:9', 'Reels · TikTok', 'A/B variants'],
       },
       {
@@ -339,7 +347,7 @@ const en: Copy = {
       },
       {
         name: 'Scripting',
-        body: 'We write the script. You read it and approve it before we make the clip.',
+        body: 'We write the script, at whatever length you need. You read it and approve it before we make the clip.',
         out: ['Script', 'Approval'],
       },
       {
@@ -479,6 +487,14 @@ const en: Copy = {
     web: '[A] Web page',
     ad: '[B] 9:16 clip',
     left: (n: number) => (n <= 0 ? 'Sold out' : n < 10 ? `Only ${n} left` : `${n} available`),
+  },
+  meta: {
+    home: 'A programmatic video agency building fast websites and API integrations for businesses in Romania. Clips made from each company’s own photos and reviews.',
+    services: 'Video for businesses, fast websites and API integrations. What we do and how we work.',
+    work: 'Videos and websites Exedria made for clients: Marina Park, Flip Finder, DiagramAI.',
+    contact: 'Tell us what you need and we will get back to you with a quote for video, web or API work.',
+    terms: 'Terms of use for exedria.tech.',
+    privacy: 'What data the contact form collects, why, and what your rights are.',
   },
   menu: 'Menu',
   hud: 'Page',
