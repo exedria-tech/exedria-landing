@@ -46,8 +46,8 @@ export const PROJECTS: Project[] = [
       en: 'A campsite in Vama Veche, told in 40 seconds.',
     },
     summary: {
-      ro: 'Promo vertical pentru Reels și TikTok. Fiecare scenă e un component.',
-      en: 'A vertical promo for Reels and TikTok. Every scene is a component.',
+      ro: 'Promo vertical pentru Reels și TikTok, făcut din pozele locației.',
+      en: 'A vertical promo for Reels and TikTok, made from photos of the place.',
     },
     format: '9:16 · 00:40',
     duration: MARINA.duration,
