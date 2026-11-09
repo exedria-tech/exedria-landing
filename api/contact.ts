@@ -1,11 +1,11 @@
 // Vercel Function: POST /api/contact
-// Validates the access request from the contact form and sends it to CONTACT_TO (default hello@exedria.tech) via Resend.
+// Validates the quote request from the contact form and sends it to CONTACT_TO (default hello@exedria.tech) via Resend.
 // Needs RESEND_API_KEY (and optionally RESEND_FROM, CONTACT_TO) in the Vercel project env.
 // Spam guards: same-origin check, honeypot field, minimum fill time, and Cloudflare Turnstile once TURNSTILE_SECRET_KEY is set.
 import { Resend } from 'resend';
 import { z } from 'zod';
 
-const MODULE = ['Video programatic', 'Frontend web', 'Intake lead-uri', 'API & integrări'] as const;
+const MODULE = ['Video programatic', 'Frontend web', 'API & integrări'] as const;
 
 const TO = process.env.CONTACT_TO ?? 'hello@exedria.tech';
 const FROM = process.env.RESEND_FROM ?? 'Exedria Brief <brief@exedria.tech>';
@@ -70,7 +70,7 @@ export async function POST(request: Request): Promise<Response> {
       from: FROM,
       to: [TO],
       replyTo: isEmail ? data.contact : undefined,
-      subject: `[acces] ${data.nume} · ${data.module.join(' + ')}`,
+      subject: `[ofertă] ${data.nume} · ${data.module.join(' + ')}`,
       html: renderHtml(data),
       text: renderText(data),
     });
@@ -113,7 +113,7 @@ async function verifyTurnstile(secret: string, token: unknown, request: Request)
   }
 }
 
-type AccessRequest = z.output<typeof ContactSchema>;
+type QuoteRequest = z.output<typeof ContactSchema>;
 
 function esc(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -123,7 +123,7 @@ function timecode(d: Date) {
   return d.toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest', hour12: false });
 }
 
-function renderText(d: AccessRequest) {
+function renderText(d: QuoteRequest) {
   return [
     `nume:     ${d.nume}`,
     `contact:  ${d.contact}`,
@@ -134,7 +134,7 @@ function renderText(d: AccessRequest) {
   ].join('\n');
 }
 
-function renderHtml(d: AccessRequest) {
+function renderHtml(d: QuoteRequest) {
   const mono = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace";
   const row = (key: string, value: string) => `
     <tr>
@@ -156,7 +156,7 @@ function renderHtml(d: AccessRequest) {
   <table role="presentation" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #d5dce6;border-collapse:collapse;">
     <tr>
       <td colspan="2" style="padding:14px;background:#0b1220;color:#f5f7fa;font:12px ${mono};letter-spacing:.08em;">
-        <span style="color:#e0179e;">●</span> CERERE ACCES · exedria.tech
+        <span style="color:#e0179e;">●</span> CERERE OFERTĂ · exedria.tech
         <span style="float:right;color:#94a3b8;">[${esc(timecode(new Date()))}]</span>
       </td>
     </tr>

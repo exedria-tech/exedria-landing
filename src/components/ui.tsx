@@ -256,7 +256,7 @@ export const ssrHead = { title: '' };
 /** Sets the tab title for the current page. */
 export function usePageTitle(title: string) {
   const { lang } = useT();
-  const home = lang === 'en' ? 'Exedria · Programmatic Video Infrastructure' : 'Exedria · Infrastructură video programatică';
+  const home = lang === 'en' ? 'Exedria · Programmatic video, web and API' : 'Exedria · Video programatic, web și API';
   const full = title ? `${title} · Exedria` : home;
   if (typeof document === 'undefined') ssrHead.title = full;
   useEffect(() => {

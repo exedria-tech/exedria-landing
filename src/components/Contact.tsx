@@ -23,12 +23,12 @@ async function postBrief(payload: Record<string, unknown>): Promise<ContactResul
   }
 }
 
-/** The access request form. Posts to api/contact.ts, which emails it through Resend. */
+/** The quote request form. Posts to api/contact.ts, which emails it through Resend. */
 export function ContactForm() {
   const { t, lang } = useT();
   const [name, setName] = useState('');
   const [reach, setReach] = useState('');
-  // ?serviciu=web (from the platform chapters) pre-ticks that module; the modules map 1:1 onto the options.
+  // ?serviciu=web (from the service chapters) pre-ticks that module; the modules map 1:1 onto the options.
   const [params] = useSearchParams();
   const preset = SERVICES.findIndex((s) => s.slug === params.get('serviciu'));
   const [needs, setNeeds] = useState<number[]>([Math.max(0, preset)]);
