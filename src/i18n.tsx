@@ -41,8 +41,8 @@ export const ro = {
     items: [
       {
         title: 'Video pentru firme',
-        body: 'Facem clipul din pozele, recenziile și oferta ta, cât de lung vrei. Îl primești gata de postat, în toate formatele.',
-        more: 'Facem clipul din pozele, recenziile și oferta ta, cât de lung vrei. Îl primești gata de postat, în toate formatele.',
+        body: 'Facem clipul din pozele, recenziile și oferta ta, cât de lung vrei. Gata de postat, în toate formatele, de la 190 lei.',
+        more: 'Facem clipul din pozele, recenziile și oferta ta, cât de lung vrei. Gata de postat, în toate formatele, de la 190 lei.',
         tags: ['9:16 · 1:1 · 16:9', 'Reels · TikTok', 'Variante A/B'],
       },
       {
@@ -101,7 +101,7 @@ export const ro = {
       },
       {
         name: 'Compilare',
-        body: 'Facem clipul în toate formatele. Ceri modificări până îți place.',
+        body: 'Facem clipul în toate formatele. Ai inclusă o rundă de modificări.',
         out: ['9:16', '1:1', 'Modificări'],
       },
       {
@@ -114,7 +114,7 @@ export const ro = {
   contact: {
     label: 'Contact',
     title: 'Spune-ne ce ai de făcut.',
-    body: 'Câteva rânduri despre proiect ne ajung. Revenim cu o ofertă.',
+    body: 'Un clip pornește de la 190 lei, iar la volum prețul pe clip scade. Scrie-ne câteva rânduri și revenim cu o ofertă.',
     name: 'Nume',
     email: 'Email sau telefon',
     needs: 'Servicii',
@@ -292,8 +292,8 @@ const en: Copy = {
     items: [
       {
         title: 'Video for businesses',
-        body: 'We make the clip from your photos, reviews and offer, as long as you want it. You get it ready to post, in every format.',
-        more: 'We make the clip from your photos, reviews and offer, as long as you want it. You get it ready to post, in every format.',
+        body: 'We make the clip from your photos, reviews and offer, as long as you want it. Ready to post, in every format, from 190 lei.',
+        more: 'We make the clip from your photos, reviews and offer, as long as you want it. Ready to post, in every format, from 190 lei.',
         tags: ['9:16 · 1:1 · 16:9', 'Reels · TikTok', 'A/B variants'],
       },
       {
@@ -352,7 +352,7 @@ const en: Copy = {
       },
       {
         name: 'Compile',
-        body: 'We make the clip in every format. Ask for changes until you like it.',
+        body: 'We make the clip in every format. One round of changes is included.',
         out: ['9:16', '1:1', 'Changes'],
       },
       {
@@ -365,7 +365,7 @@ const en: Copy = {
   contact: {
     label: 'Contact',
     title: 'Tell us what you need.',
-    body: "A few lines about the project are enough. We'll get back to you with a quote.",
+    body: "A clip starts at 190 lei, and the price per clip drops with volume. Send us a few lines and we'll get back to you with a quote.",
     name: 'Name',
     email: 'Email or phone',
     needs: 'Services',
